@@ -1,4 +1,4 @@
-﻿namespace FolkDanceTime.Bll.Entities
+﻿namespace FolkDanceTime.Dal.Entities
 {
     public class ItemSet
     {
@@ -6,6 +6,6 @@
         public string Name { get; set; }
 
         public virtual List<Item> Items { get; set; }
-        public virtual ItemSetTransaction ItemSetTransaction { get; set; }
+        public virtual List<ItemSetTransaction> ItemSetTransactions { get; set; }
     }
 }

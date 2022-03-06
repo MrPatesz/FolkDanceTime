@@ -8,8 +8,11 @@
 
   <ItemGroup>
     <Folder Include="Dtos\" />
-    <Folder Include="IRepositories\" />
     <Folder Include="Services\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FolkDanceTime.Dal\FolkDanceTime.Dal.csproj" />
   </ItemGroup>
 
 </Project>

@@ -11,8 +11,4 @@
     <Folder Include="Repositories\" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\FolkDanceTime.Bll\FolkDanceTime.Bll.csproj" />
-  </ItemGroup>
-
 </Project>

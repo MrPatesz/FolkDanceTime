@@ -1,4 +1,4 @@
-﻿namespace FolkDanceTime.Bll.Entities
+﻿namespace FolkDanceTime.Dal.Entities
 {
     public class PropertyValue
     {

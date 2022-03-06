@@ -1,4 +1,4 @@
-﻿namespace FolkDanceTime.Bll.Entities
+﻿namespace FolkDanceTime.Dal.Entities
 {
     public class User
     {
@@ -7,7 +7,7 @@
         public string Email { get; set; }
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
-        public Role Role { get; set; }
+        public string Role { get; set; }
 
         public virtual List<Item> Items { get; set; }
         public virtual List<ItemTransaction> ItemTransactions { get; set; }

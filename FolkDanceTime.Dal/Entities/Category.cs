@@ -1,4 +1,4 @@
-﻿namespace FolkDanceTime.Bll.Entities
+﻿namespace FolkDanceTime.Dal.Entities
 {
     public class Category
     {
@@ -6,7 +6,6 @@
         public string Name { get; set; }
 
         public virtual List<Item> Items { get; set; }
-        public virtual List<Property> Properties { get; set; }
         public virtual List<PropertyToCategory> CategoryToProperties { get; set; }
     }
 }
