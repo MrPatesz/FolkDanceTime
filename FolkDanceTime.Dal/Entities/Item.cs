@@ -6,7 +6,7 @@
         public string Name { get; set; }
         public string? Description { get; set; }
         public string? PictureFilename { get; set; }
-        public int OwnerUserId { get; set; }
+        public string OwnerUserId { get; set; }
         public int CategoryId { get; set; }
         public int? ItemSetId { get; set; }
 

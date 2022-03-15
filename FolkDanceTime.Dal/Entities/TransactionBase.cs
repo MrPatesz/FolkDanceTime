@@ -4,8 +4,8 @@
     {
         public int Id { get; set; }
         public Status Status { get; set; }
-        public int ReceiverUserId { get; set; }
-        public int SenderUserId { get; set; }
+        public string ReceiverUserId { get; set; }
+        public string SenderUserId { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? CompletedAt { get; set; }
 
