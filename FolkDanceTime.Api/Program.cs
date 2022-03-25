@@ -1,3 +1,4 @@
+using FolkDanceTime.Bll.Mappings;
 using FolkDanceTime.Bll.Services;
 using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
@@ -25,6 +26,8 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddSingleton(s => MapperConfig.ConfigureAutoMapper());
 
 var app = builder.Build();
 

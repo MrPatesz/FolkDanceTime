@@ -1,5 +1,8 @@
-﻿using FolkDanceTime.Dal.DbContext;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
+using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
+using FolkDanceTime.Shared.Dtos;
 using Microsoft.EntityFrameworkCore;
 
 namespace FolkDanceTime.Bll.Services
@@ -7,19 +10,22 @@ namespace FolkDanceTime.Bll.Services
     public class CategoryService
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public CategoryService(ApplicationDbContext dbContext)
+        public CategoryService(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
-        // TODO: DTO
-        public async Task<List<Category>> GetCategoriesAsync()
+        public async Task<List<CategoryDto>> GetCategoriesAsync()
         {
-            return await _dbContext.Categories.ToListAsync();
+            return await _dbContext.Categories
+                .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
         }
 
-        public async Task<Category> GetCategoryAsync(int id)
+        public async Task<CategoryDto> GetCategoryAsync(int id)
         {
             var category = await _dbContext.Categories.FindAsync(id);
 
@@ -31,15 +37,20 @@ namespace FolkDanceTime.Bll.Services
                 throw new Exception();
             }
 
-            return category;
+            return _mapper.Map<CategoryDto>(category);
         }
 
-        public async Task<Category> AddCategoryAsync(Category category)
+        public async Task<CategoryDto> AddCategoryAsync(CategoryDto categoryDto)
         {
+            var category = new Category
+            {
+                Name = categoryDto.Name,
+            };
+
             _dbContext.Categories.Add(category);
             await _dbContext.SaveChangesAsync();
 
-            return category;
+            return _mapper.Map<CategoryDto>(category);
         }
 
         public async Task DeleteCategoryAsync(int id)
@@ -55,7 +66,7 @@ namespace FolkDanceTime.Bll.Services
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<Category> EditCategoryAsync(Category categoryDto)
+        public async Task<CategoryDto> EditCategoryAsync(CategoryDto categoryDto)
         {
             var category = await _dbContext.Categories.FindAsync(categoryDto.Id);
 
@@ -67,7 +78,7 @@ namespace FolkDanceTime.Bll.Services
             category.Name = categoryDto.Name;
 
             await _dbContext.SaveChangesAsync();
-            return category;
+            return _mapper.Map<CategoryDto>(category);
         }
     }
 }

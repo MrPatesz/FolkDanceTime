@@ -1,5 +1,5 @@
 ﻿using FolkDanceTime.Bll.Services;
-using FolkDanceTime.Dal.Entities;
+using FolkDanceTime.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,7 +18,7 @@ namespace FolkDanceTime.Api.Controllers
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<Category>>> GetCategories()
+        public async Task<ActionResult<List<CategoryDto>>> GetCategoriesAsync()
         {
             return Ok(await _categoryService.GetCategoriesAsync());
         }
@@ -26,7 +26,7 @@ namespace FolkDanceTime.Api.Controllers
         [HttpGet("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Category>> GetCategoryById(int id)
+        public async Task<ActionResult<CategoryDto>> GetCategoryAsync(int id)
         {
             return Ok(await _categoryService.GetCategoryAsync(id));
         }
@@ -34,7 +34,7 @@ namespace FolkDanceTime.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Category>> AddCategory([FromBody] Category category)
+        public async Task<ActionResult<CategoryDto>> AddCategoryAsync([FromBody] CategoryDto category)
         {
             return Ok(await _categoryService.AddCategoryAsync(category));
         }
@@ -42,7 +42,7 @@ namespace FolkDanceTime.Api.Controllers
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<Category>> EditAlbum([FromBody] Category category)
+        public async Task<ActionResult<CategoryDto>> EditCategoryAsync([FromBody] CategoryDto category)
         {
             return Ok(await _categoryService.EditCategoryAsync(category));
         }
@@ -50,7 +50,7 @@ namespace FolkDanceTime.Api.Controllers
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> DeleteCategoryById(int id)
+        public async Task<ActionResult> DeleteCategoryAsync(int id)
         {
             await _categoryService.DeleteCategoryAsync(id);
             return Ok();
