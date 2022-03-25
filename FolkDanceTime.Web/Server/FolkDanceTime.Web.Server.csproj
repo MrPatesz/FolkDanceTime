@@ -14,6 +14,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\FolkDanceTime.Bll\FolkDanceTime.Bll.csproj" />
     <ProjectReference Include="..\..\FolkDanceTime.Dal\FolkDanceTime.Dal.csproj" />
+    <ProjectReference Include="..\Client\FolkDanceTime.Web.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>

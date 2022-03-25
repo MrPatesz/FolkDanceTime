@@ -1,69 +1,73 @@
 ﻿using FolkDanceTime.Dal.Data;
 using FolkDanceTime.Dal.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace FolkDanceTime.Bll.Services
 {
     public class CategoryService
     {
-        private readonly ApplicationDbContext dbContext;
+        private readonly ApplicationDbContext _dbContext;
 
         public CategoryService(ApplicationDbContext dbContext)
         {
-            this.dbContext = dbContext;
+            _dbContext = dbContext;
         }
 
-        public List<Category> GetCategories()
+        // TODO: DTO
+        public async Task<List<Category>> GetCategoriesAsync()
         {
-            return dbContext.Categories.ToList();
+            return await _dbContext.Categories.ToListAsync();
         }
 
-        public Category GetCategoryById(int id)
+        public async Task<Category> GetCategoryAsync(int id)
         {
-            var category = dbContext.Categories.FirstOrDefault(c => c.Id == id);
+            var category = await _dbContext.Categories.FindAsync(id);
+
+            // TODO: throw exception ha null, MVC action filter vagy middleware elkapja ezt
+            // problem details nevű middleware, config: milyen kivételekre milyen hibakódot adjon
+
+            if (category == null)
+            {
+                throw new Exception();
+            }
 
             return category;
         }
 
-        public async Task<Category> AddCategory(Category category)
+        public async Task<Category> AddCategoryAsync(Category category)
         {
-            dbContext.Categories.Add(category);
-            await dbContext.SaveChangesAsync();
+            _dbContext.Categories.Add(category);
+            await _dbContext.SaveChangesAsync();
 
             return category;
         }
 
-        public async Task<bool> DeleteCategoryById(int id)
+        public async Task DeleteCategoryAsync(int id)
         {
-            var toRemove = dbContext.Categories.FirstOrDefault(c => c.Id == id);
+            var category = await _dbContext.Categories.FindAsync(id);
 
-            if (toRemove != null)
+            if (category == null)
             {
-                dbContext.Categories.Remove(toRemove);
-                await dbContext.SaveChangesAsync();
+                throw new Exception();
+            }
 
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            _dbContext.Categories.Remove(category);
+            await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<Category> EditCategory(Category category)
+        public async Task<Category> EditCategoryAsync(Category categoryDto)
         {
-            var toEdit = dbContext.Categories.FirstOrDefault(c => c.Id == category.Id);
+            var category = await _dbContext.Categories.FindAsync(categoryDto.Id);
 
-            if (toEdit == null)
+            if (category == null)
             {
-                return null;
+                throw new Exception();
             }
 
-            toEdit.Name = category.Name;
+            category.Name = categoryDto.Name;
 
-            dbContext.Categories.Update(toEdit);
-            await dbContext.SaveChangesAsync();
-
-            return toEdit;
+            await _dbContext.SaveChangesAsync();
+            return category;
         }
     }
 }

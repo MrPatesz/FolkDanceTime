@@ -7,11 +7,16 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Bll", "FolkDa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Dal", "FolkDanceTime.Dal\FolkDanceTime.Dal.csproj", "{36C9F821-8033-4129-8815-2369DFB6D0EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolkDanceTime.Web.Server", "FolkDanceTime.Web\Server\FolkDanceTime.Web.Server.csproj", "{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Web.Server", "FolkDanceTime.Web\Server\FolkDanceTime.Web.Server.csproj", "{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FolkDanceTime.Web.Client", "FolkDanceTime.Web\Client\FolkDanceTime.Web.Client.csproj", "{72035C34-9184-4399-B907-DBDB03C98800}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Web.Client", "FolkDanceTime.Web\Client\FolkDanceTime.Web.Client.csproj", "{72035C34-9184-4399-B907-DBDB03C98800}"
 	ProjectSection(ProjectDependencies) = postProject
 		{64F71152-76A4-4256-9A3C-4DCA1ACDD123} = {64F71152-76A4-4256-9A3C-4DCA1ACDD123}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0255932A-334E-4C52-86AC-15F7B92C0BED}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
 Global

@@ -14,7 +14,6 @@ namespace FolkDanceTime.Dal.Data
         {
         }
 
-        public DbSet<User> Users { get; set; }
         public DbSet<Item> Items { get; set; }
         public DbSet<ItemSet> ItemsSets { get; set; }
         public DbSet<ItemTransaction> ItemTransactions { get; set; }
@@ -28,9 +27,6 @@ namespace FolkDanceTime.Dal.Data
         {
             base.OnModelCreating(builder);
 
-            builder.Entity<User>()
-                .ToTable("Users")
-                .HasKey(u => u.Id);
             builder.Entity<User>()
                 .HasMany(u => u.Items)
                 .WithOne(i => i.OwnerUser)
@@ -53,23 +49,19 @@ namespace FolkDanceTime.Dal.Data
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Item>()
-                .ToTable("Items")
-                .HasKey(i => i.Id);
-            builder.Entity<Item>()
                 .HasOne(i => i.OwnerUser)
                 .WithMany(u => u.Items)
                 .HasForeignKey(i => i.OwnerUserId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<Item>()
                 .HasOne(i => i.Category)
                 .WithMany(c => c.Items)
                 .HasForeignKey(i => i.CategoryId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<Item>()
                 .HasOne(i => i.ItemSet)
                 .WithMany(set => set.Items)
-                .HasForeignKey(i => i.ItemSetId)
-                .IsRequired(required: false);
+                .HasForeignKey(i => i.ItemSetId);
             builder.Entity<Item>()
                 .HasMany(i => i.ItemTransactions)
                 .WithOne(it => it.Item);
@@ -78,9 +70,6 @@ namespace FolkDanceTime.Dal.Data
                 .WithOne(pv => pv.Item);
 
             builder.Entity<ItemSet>()
-                .ToTable("ItemSets")
-                .HasKey(set => set.Id);
-            builder.Entity<ItemSet>()
                 .HasMany(set => set.Items)
                 .WithOne(i => i.ItemSet);
             builder.Entity<ItemSet>()
@@ -88,46 +77,37 @@ namespace FolkDanceTime.Dal.Data
                 .WithOne(ist => ist.ItemSet);
 
             builder.Entity<ItemTransaction>()
-                .ToTable("ItemTransactions")
-                .HasKey(t => t.Id);
-            builder.Entity<ItemTransaction>()
                 .HasOne(it => it.Item)
                 .WithMany(i => i.ItemTransactions)
                 .HasForeignKey(it => it.ItemId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.ReceiverUser)
                 .WithMany(u => u.IncomingItemTransactions)
                 .HasForeignKey(it => it.ReceiverUserId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.SenderUser)
                 .WithMany(u => u.OutgoingItemTransactions)
                 .HasForeignKey(it => it.SenderUserId)
-                .IsRequired(required: true);
+                .IsRequired();
 
-            builder.Entity<ItemSetTransaction>()
-                .ToTable("ItemSetTransactions")
-                .HasKey(t => t.Id);
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.ItemSet)
                 .WithMany(i => i.ItemSetTransactions)
                 .HasForeignKey(it => it.ItemSetId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.ReceiverUser)
                 .WithMany(u => u.IncomingItemSetTransactions)
                 .HasForeignKey(it => it.ReceiverUserId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.SenderUser)
                 .WithMany(u => u.OutgoingItemSetTransactions)
                 .HasForeignKey(it => it.SenderUserId)
-                .IsRequired(required: true);
+                .IsRequired();
 
-            builder.Entity<Category>()
-                .ToTable("Categories")
-                .HasKey(t => t.Id);
             builder.Entity<Category>()
                 .HasIndex(c => c.Name)
                 .IsUnique();
@@ -139,9 +119,6 @@ namespace FolkDanceTime.Dal.Data
                 .WithOne(ctp => ctp.Category);
 
             builder.Entity<Property>()
-                .ToTable("Properties")
-                .HasKey(p => p.Id);
-            builder.Entity<Property>()
                 .HasMany(p => p.PropertyToCategories)
                 .WithOne(ptc => ptc.Property);
             builder.Entity<Property>()
@@ -149,32 +126,26 @@ namespace FolkDanceTime.Dal.Data
                 .WithOne(pv => pv.Property);
 
             builder.Entity<PropertyToCategory>()
-                .ToTable("PropertyToCategoryRecords")
-                .HasKey(t => t.Id);
-            builder.Entity<PropertyToCategory>()
                 .HasOne(it => it.Property)
                 .WithMany(u => u.PropertyToCategories)
                 .HasForeignKey(it => it.PropertyId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<PropertyToCategory>()
                 .HasOne(it => it.Category)
                 .WithMany(u => u.CategoryToProperties)
                 .HasForeignKey(it => it.CategoryId)
-                .IsRequired(required: true);
+                .IsRequired();
 
-            builder.Entity<PropertyValue>()
-                .ToTable("PropertyValues")
-                .HasKey(t => t.Id);
             builder.Entity<PropertyValue>()
                 .HasOne(it => it.Item)
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.ItemId)
-                .IsRequired(required: true);
+                .IsRequired();
             builder.Entity<PropertyValue>()
                 .HasOne(it => it.Property)
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.PropertyId)
-                .IsRequired(required: true);
+                .IsRequired();
         }
     }
 }

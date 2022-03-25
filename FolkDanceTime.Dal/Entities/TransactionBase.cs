@@ -1,4 +1,6 @@
-﻿namespace FolkDanceTime.Dal.Entities
+﻿using FolkDanceTime.Dal.Enums;
+
+namespace FolkDanceTime.Dal.Entities
 {
     public class TransactionBase
     {
