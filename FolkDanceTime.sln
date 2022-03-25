@@ -7,17 +7,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Bll", "FolkDa
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Dal", "FolkDanceTime.Dal\FolkDanceTime.Dal.csproj", "{36C9F821-8033-4129-8815-2369DFB6D0EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Web.Server", "FolkDanceTime.Web\Server\FolkDanceTime.Web.Server.csproj", "{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Web.Client", "FolkDanceTime.Web\Client\FolkDanceTime.Web.Client.csproj", "{72035C34-9184-4399-B907-DBDB03C98800}"
-	ProjectSection(ProjectDependencies) = postProject
-		{64F71152-76A4-4256-9A3C-4DCA1ACDD123} = {64F71152-76A4-4256-9A3C-4DCA1ACDD123}
-	EndProjectSection
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{0255932A-334E-4C52-86AC-15F7B92C0BED}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Api", "FolkDanceTime.Api\FolkDanceTime.Api.csproj", "{5ED9FE49-A8B3-4EB2-93AB-35C29A826955}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FolkDanceTime.Web", "FolkDanceTime.Web\FolkDanceTime.Web.csproj", "{808D71E7-9D13-4A58-9AA5-D404BFFEF79C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,14 +30,14 @@ Global
 		{36C9F821-8033-4129-8815-2369DFB6D0EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{36C9F821-8033-4129-8815-2369DFB6D0EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{36C9F821-8033-4129-8815-2369DFB6D0EC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A8A5A3B2-C363-41C2-8AD4-D00B9C4423E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{72035C34-9184-4399-B907-DBDB03C98800}.Debug|Any CPU.ActiveCfg = Release|Any CPU
-		{72035C34-9184-4399-B907-DBDB03C98800}.Debug|Any CPU.Build.0 = Release|Any CPU
-		{72035C34-9184-4399-B907-DBDB03C98800}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{72035C34-9184-4399-B907-DBDB03C98800}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5ED9FE49-A8B3-4EB2-93AB-35C29A826955}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5ED9FE49-A8B3-4EB2-93AB-35C29A826955}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5ED9FE49-A8B3-4EB2-93AB-35C29A826955}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5ED9FE49-A8B3-4EB2-93AB-35C29A826955}.Release|Any CPU.Build.0 = Release|Any CPU
+		{808D71E7-9D13-4A58-9AA5-D404BFFEF79C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{808D71E7-9D13-4A58-9AA5-D404BFFEF79C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{808D71E7-9D13-4A58-9AA5-D404BFFEF79C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{808D71E7-9D13-4A58-9AA5-D404BFFEF79C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

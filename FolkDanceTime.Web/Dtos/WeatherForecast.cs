@@ -1,4 +1,4 @@
-namespace FolkDanceTime.Web.Client.Dtos
+namespace FolkDanceTime.Web.Dtos
 {
     public class WeatherForecast
     {

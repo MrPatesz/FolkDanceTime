@@ -1,10 +1,10 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <UserSecretsId>FolkDanceTime.Web.Server-5ABD830E-210F-482D-82A8-1515A5F51363</UserSecretsId>
+    <UserSecretsId>FolkDanceTime.Api-5ABD830E-210F-482D-82A8-1515A5F51363</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FolkDanceTime.Bll\FolkDanceTime.Bll.csproj" />
-    <ProjectReference Include="..\..\FolkDanceTime.Dal\FolkDanceTime.Dal.csproj" />
-    <ProjectReference Include="..\Client\FolkDanceTime.Web.Client.csproj" />
+    <ProjectReference Include="..\FolkDanceTime.Bll\FolkDanceTime.Bll.csproj" />
+    <ProjectReference Include="..\FolkDanceTime.Dal\FolkDanceTime.Dal.csproj" />
+    <ProjectReference Include="..\FolkDanceTime.Web\FolkDanceTime.Web.csproj" />
   </ItemGroup>
 
   <ItemGroup>

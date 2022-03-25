@@ -3,7 +3,7 @@ using FolkDanceTime.Dal.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FolkDanceTime.Web.Server.Controllers
+namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [Authorize]

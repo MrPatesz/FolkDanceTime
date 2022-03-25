@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FolkDanceTime.Web.Server.Controllers
+namespace FolkDanceTime.Api.Controllers
 {
     public class OidcConfigurationController : Controller
     {

@@ -2,7 +2,7 @@ using FolkDanceTime.Bll.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace FolkDanceTime.Web.Server.Controllers
+namespace FolkDanceTime.Api.Controllers
 {
     [Authorize]
     [ApiController]
