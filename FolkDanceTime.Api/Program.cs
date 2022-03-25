@@ -29,6 +29,8 @@ builder.Services.AddRazorPages();
 
 builder.Services.AddSingleton(s => MapperConfig.ConfigureAutoMapper());
 
+builder.Services.AddSwaggerDocument();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -36,6 +38,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
     app.UseWebAssemblyDebugging();
+    app.UseOpenApi();
 }
 else
 {

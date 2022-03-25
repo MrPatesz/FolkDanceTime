@@ -1,3 +1,4 @@
+using Client;
 using FolkDanceTime.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -14,5 +15,7 @@ builder.Services.AddHttpClient("FolkDanceTime.ApiAPI", client => client.BaseAddr
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("FolkDanceTime.ApiAPI"));
 
 builder.Services.AddApiAuthorization();
+
+builder.Services.AddScoped<ICategoryClient, CategoryClient>();
 
 await builder.Build().RunAsync();
