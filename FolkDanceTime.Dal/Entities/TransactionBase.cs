@@ -1,4 +1,4 @@
-﻿using FolkDanceTime.Dal.Enums;
+﻿using FolkDanceTime.Shared.Enums;
 
 namespace FolkDanceTime.Dal.Entities
 {

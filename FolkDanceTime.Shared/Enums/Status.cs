@@ -1,4 +1,4 @@
-﻿namespace FolkDanceTime.Dal.Enums
+﻿namespace FolkDanceTime.Shared.Enums
 {
     public enum Status
     {

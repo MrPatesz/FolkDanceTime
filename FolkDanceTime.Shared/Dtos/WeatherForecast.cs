@@ -1,4 +1,4 @@
-namespace FolkDanceTime.Bll.Dtos
+namespace FolkDanceTime.Shared.Dtos
 {
     public class WeatherForecast
     {

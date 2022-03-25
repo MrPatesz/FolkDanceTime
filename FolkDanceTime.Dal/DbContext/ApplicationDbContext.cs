@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace FolkDanceTime.Dal.Data
+namespace FolkDanceTime.Dal.DbContext
 {
     public class ApplicationDbContext : ApiAuthorizationDbContext<User>
     {

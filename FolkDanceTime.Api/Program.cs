@@ -1,5 +1,5 @@
 using FolkDanceTime.Bll.Services;
-using FolkDanceTime.Dal.Data;
+using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
