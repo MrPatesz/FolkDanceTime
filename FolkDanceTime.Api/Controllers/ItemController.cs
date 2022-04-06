@@ -36,6 +36,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ItemDto>> AddItemAsync([FromBody] ItemDto item, [FromQuery] int categoryId)
         {
+            // var userId = HttpContext.User.FindFirst("ide a claim kulcsa kell"); // TODO
             return Ok(await _itemService.AddItemAsync(item, categoryId, userId));
         }
 

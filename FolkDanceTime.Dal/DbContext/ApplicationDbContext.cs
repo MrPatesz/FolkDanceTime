@@ -1,6 +1,7 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
 using FolkDanceTime.Dal.Entities;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -146,6 +147,20 @@ namespace FolkDanceTime.Dal.DbContext
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.PropertyId)
                 .IsRequired();
+
+            builder.Entity<User>()
+                .HasData();
+            // TODO UserManageren keresztül beszúrni egy User-t
+
+            builder.Entity<IdentityRole>()
+                .HasData();
+            // TODO Admin, Dancer
+
+            builder.Entity<IdentityUserRole>()
+                .HasData();
+            // TODO Admin user és Admin role összekapcsolása
+
+            // Api projecten jobb klikk / Add / New Scaffolded Item / bal oldalon Identity
         }
     }
 }
