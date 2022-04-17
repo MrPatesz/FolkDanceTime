@@ -148,31 +148,42 @@ namespace FolkDanceTime.Dal.DbContext
                 .HasForeignKey(it => it.PropertyId)
                 .IsRequired();
 
+            // TODO új regisztrációt hozzáadni a Dancer role-hoz
+            // Api projecten jobb klikk / Add / New Scaffolded Item / bal oldalon Identity
+
+            var passwordHasher = new PasswordHasher<User>();
+
+            var admin =
+                new User
+                {
+                    Id = "AdminId",
+                    UserName = "Admin",
+                    Email = "admin@folkdancetime.com",
+                };
+            admin.PasswordHash = passwordHasher.HashPassword(admin, "P@ssword1");
+
+            builder.Entity<User>()
+                .HasData(admin);
+
             builder.Entity<IdentityRole>()
                 .HasData(new[]
                 {
-                    new IdentityRole {
-                        Name = "Admin"
-                    },
-                    new IdentityRole
+                    new IdentityRole("Admin")
                     {
-                        Name = "Dancer"
-                    }
+                        Id = "Admin"
+                    },
+                    new IdentityRole("Dancer")
+                    {
+                        Id = "Dancer"
+                    },
                 });
 
-            /*var passwordHasher = new PasswordHasher();
-
-            builder.Entity<User>()
-                .HasData(
-                    new User
-                    {
-                        UserName = "Admin",
-                        Email = "admin@folkdancetime.com",
-                        PasswordHash = passwordHasher.HashPassword("P@ssword1"),
-                    }
-                );
-
-            builder.Entity<> // TODO: add user to Admin role*/
+            builder.Entity<IdentityUserRole<string>>()
+                .HasData(new IdentityUserRole<string>
+                {
+                    UserId = "AdminId",
+                    RoleId = "Admin",
+                });
         }
     }
 }

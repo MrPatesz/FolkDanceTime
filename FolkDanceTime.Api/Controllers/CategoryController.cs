@@ -20,6 +20,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CategoryDto>>> GetCategoriesAsync()
         {
+            // TODO create CategoryHeaderDto and use that here
             return Ok(await _categoryService.GetCategoriesAsync());
         }
 
@@ -31,12 +32,16 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _categoryService.GetCategoryAsync(id));
         }
 
+        // TODO AddPropertyToCategoryAsync
+        // TODO RemovePropertyFromCategoryAsync
+
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CategoryDto>> AddCategoryAsync([FromBody] CategoryDto category)
         {
             return Ok(await _categoryService.AddCategoryAsync(category));
+            // TODO use CategoryHeaderDto here
         }
 
         [HttpPut("{id}")]
@@ -45,6 +50,7 @@ namespace FolkDanceTime.Api.Controllers
         public async Task<ActionResult<CategoryDto>> EditCategoryAsync([FromBody] CategoryDto category)
         {
             return Ok(await _categoryService.EditCategoryAsync(category));
+            // TODO rename to RenameCategory, use CategoryHeaderDto here
         }
 
         [HttpDelete("{id}")]

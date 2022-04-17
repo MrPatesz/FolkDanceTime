@@ -2,6 +2,7 @@
 using FolkDanceTime.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FolkDanceTime.Api.Controllers
 {
@@ -20,6 +21,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemDto>>> GetItemsAsync()
         {
+            // TODO create ItemHeaderDto and use that here
             return Ok(await _itemService.GetItemsAsync());
         }
 
@@ -36,6 +38,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ItemDto>> AddItemAsync([FromBody] ItemDto item, [FromQuery] int categoryId)
         {
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
             return Ok(await _itemService.AddItemAsync(item, categoryId, userId));
         }
 
@@ -54,6 +57,14 @@ namespace FolkDanceTime.Api.Controllers
         {
             await _itemService.DeleteItemAsync(id);
             return Ok();
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult> HandOverItemAsync(int id, [FromQuery] int toUserId)
+        {
+            return Ok(); // TODO await _itemService.HandOverItemAsync(id, toUserId));
         }
     }
 }
