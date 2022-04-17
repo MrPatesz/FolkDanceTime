@@ -1,6 +1,7 @@
 ﻿using Duende.IdentityServer.EntityFramework.Options;
 using FolkDanceTime.Dal.Entities;
 using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
@@ -146,6 +147,32 @@ namespace FolkDanceTime.Dal.DbContext
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.PropertyId)
                 .IsRequired();
+
+            builder.Entity<IdentityRole>()
+                .HasData(new[]
+                {
+                    new IdentityRole {
+                        Name = "Admin"
+                    },
+                    new IdentityRole
+                    {
+                        Name = "Dancer"
+                    }
+                });
+
+            /*var passwordHasher = new PasswordHasher();
+
+            builder.Entity<User>()
+                .HasData(
+                    new User
+                    {
+                        UserName = "Admin",
+                        Email = "admin@folkdancetime.com",
+                        PasswordHash = passwordHasher.HashPassword("P@ssword1"),
+                    }
+                );
+
+            builder.Entity<> // TODO: add user to Admin role*/
         }
     }
 }
