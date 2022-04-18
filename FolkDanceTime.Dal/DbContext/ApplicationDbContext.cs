@@ -153,12 +153,18 @@ namespace FolkDanceTime.Dal.DbContext
 
             var passwordHasher = new PasswordHasher<User>();
 
+            var adminId = new Guid().ToString();
+
             var admin =
                 new User
                 {
-                    Id = "AdminId",
-                    UserName = "Admin",
+                    Id = adminId,
+                    UserName = "admin@folkdancetime.com",
                     Email = "admin@folkdancetime.com",
+                    NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
+                    NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
+                    LockoutEnabled = true,
+                    EmailConfirmed = true,
                 };
             admin.PasswordHash = passwordHasher.HashPassword(admin, "P@ssword1");
 
@@ -168,21 +174,25 @@ namespace FolkDanceTime.Dal.DbContext
             builder.Entity<IdentityRole>()
                 .HasData(new[]
                 {
-                    new IdentityRole("Admin")
+                    new IdentityRole
                     {
-                        Id = "Admin"
+                        Id = "AdminRoleId",
+                        Name = "Admin",
+                        NormalizedName = "ADMIN",
                     },
-                    new IdentityRole("Dancer")
+                    new IdentityRole
                     {
-                        Id = "Dancer"
+                        Id = "DancerRoleId",
+                        Name = "Dancer",
+                        NormalizedName = "DANCER",
                     },
                 });
 
             builder.Entity<IdentityUserRole<string>>()
                 .HasData(new IdentityUserRole<string>
                 {
-                    UserId = "AdminId",
-                    RoleId = "Admin",
+                    UserId = adminId,
+                    RoleId = "AdminRoleId",
                 });
         }
     }

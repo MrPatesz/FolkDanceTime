@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [Authorize]
+    [Authorize(Roles = "Admin,Dancer")]
     public class ItemController : ControllerBase
     {
         private readonly ItemService _itemService;
@@ -17,6 +17,7 @@ namespace FolkDanceTime.Api.Controllers
             _itemService = itemService;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemDto>>> GetItemsAsync()
@@ -33,6 +34,7 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.GetItemAsync(id));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -42,6 +44,7 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.AddItemAsync(item, categoryId, userId));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -50,6 +53,7 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.EditItemAsync(item));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,12 +63,15 @@ namespace FolkDanceTime.Api.Controllers
             return Ok();
         }
 
-        [HttpPut("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult> HandOverItemAsync(int id, [FromQuery] int toUserId)
-        {
-            return Ok(); // TODO await _itemService.HandOverItemAsync(id, toUserId));
-        }
+        // TODO
+        //[HttpPut("{id}")]
+        //[ProducesResponseType(StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
+        //public async Task<ActionResult> HandOverItemAsync(int id, [FromQuery] int toUserId)
+        //{
+        //    return Ok(await _itemService.HandOverItemAsync(id, toUserId));
+        //}
+
+        // TODO GetMyItems
     }
 }

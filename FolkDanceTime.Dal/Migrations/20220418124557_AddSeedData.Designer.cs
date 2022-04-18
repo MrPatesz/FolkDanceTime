@@ -4,6 +4,7 @@ using FolkDanceTime.Dal.DbContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FolkDanceTime.Dal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220418124557_AddSeedData")]
+    partial class AddSeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -451,19 +453,17 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "00000000-0000-0000-0000-000000000000",
+                            Id = "AdminId",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "23e5f5bd-09af-48ff-96cf-fcaf567618f8",
+                            ConcurrencyStamp = "40fdc9ef-5a11-4ea4-ab89-4d75a42c499b",
                             Email = "admin@folkdancetime.com",
-                            EmailConfirmed = true,
-                            LockoutEnabled = true,
-                            NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
-                            NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEC22jPI9DWj3rrjWRKDQ6TfmtM9Su2atcYYtq2RL0UJecTTrRc1AbjqgdLgV04oJUQ==",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAELgY/pgSH0Ry//YMd5IzW8KQTEppmqynU7wMIXoIT/jc5VnG9ya4dH0ObWAPSPXT0A==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "70bccd14-42c1-4280-8b4a-332e3e347800",
+                            SecurityStamp = "19b41aee-fc84-43a0-ab00-64af38c374bc",
                             TwoFactorEnabled = false,
-                            UserName = "admin@folkdancetime.com"
+                            UserName = "Admin"
                         });
                 });
 
@@ -496,17 +496,15 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "AdminRoleId",
-                            ConcurrencyStamp = "d5742994-15bf-41da-8583-e21a3a611881",
-                            Name = "Admin",
-                            NormalizedName = "ADMIN"
+                            Id = "Admin",
+                            ConcurrencyStamp = "c8053393-35e8-46f9-8852-54de04f7d9f8",
+                            Name = "Admin"
                         },
                         new
                         {
-                            Id = "DancerRoleId",
-                            ConcurrencyStamp = "12a5c121-d9b2-4bd7-bd5c-3085d0c9d27d",
-                            Name = "Dancer",
-                            NormalizedName = "DANCER"
+                            Id = "Dancer",
+                            ConcurrencyStamp = "f4e2ff97-783a-4207-8435-de8b219ffec5",
+                            Name = "Dancer"
                         });
                 });
 
@@ -601,8 +599,8 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "00000000-0000-0000-0000-000000000000",
-                            RoleId = "AdminRoleId"
+                            UserId = "AdminId",
+                            RoleId = "Admin"
                         });
                 });
 

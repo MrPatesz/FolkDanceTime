@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [Authorize]
+    [Authorize(Roles = "Admin")]
     public class CategoryController : ControllerBase
     {
         private readonly CategoryService _categoryService;
