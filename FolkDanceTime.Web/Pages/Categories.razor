@@ -1,0 +1,118 @@
+﻿@page "/categories"
+@using Client
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject ICategoryClient CategoryClient
+
+<PageTitle>Categories</PageTitle>
+
+<div class="d-flex flex-row justify-content-between">
+    <h1>Categories</h1>
+    <button
+        class="btn btn-primary"
+        @onclick="() => showAdd = true"
+    >
+        <span class="oi oi-plus"/>
+    </button>
+</div>
+
+@if (categories == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Properties</th>
+                <th/>
+            </tr>
+        </thead>
+        <tbody>
+            @if (showAdd)
+            {
+                <tr>
+                    <td>
+                        <input
+                            value="@newCategoryName"
+                            placeholder="Name"
+                            type="text"
+                            onchange="@((ChangeEventArgs e) => newCategoryName = e.Value?.ToString() ?? "")"
+                        />
+                    </td>
+                    <td>
+                        <div class="d-flex flex-row">
+                            <button
+                                class="btn btn-success"
+                                @onclick="AddCategory"
+                            >
+                                <span class="oi oi-check"/>
+                            </button>
+                            <button
+                                class="btn btn-warning"
+                                @onclick="@(() => {
+                                    showAdd = false;
+                                    newCategoryName = "";
+                                })"
+                            >
+                                <span class="oi oi-x"/>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+            @foreach (var category in categories)
+            {
+                <tr>
+                    <td>@category.Name</td>
+                    <td>@string.Join(",", category.Properties)</td>
+                    <td>
+                        <div class="d-flex flex-row">
+                            <div class="flex-grow-1"/>
+                            <button
+                                class="btn btn-danger"
+                                @onclick="() => DeleteCategory(category.Id)"
+                            >
+                                <span class="oi oi-trash"/>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private ICollection<CategoryDto>? categories = new HashSet<CategoryDto>();
+    private bool showAdd = false;
+    private string newCategoryName = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = await CategoryClient.GetCategoriesAsync();
+    }
+
+    protected async Task AddCategory()
+    {
+        var createdCategory = await CategoryClient.AddCategoryAsync(new CategoryDto
+        {
+            Name = newCategoryName,
+        });
+
+        if(createdCategory != null)
+        {
+            categories?.Add(createdCategory);
+        }
+        showAdd = false;
+    }
+
+    protected async Task DeleteCategory(int id)
+    {
+        await CategoryClient.DeleteCategoryAsync(id);
+        categories = categories.Where(c => c.Id != id).ToHashSet();
+    }
+}
