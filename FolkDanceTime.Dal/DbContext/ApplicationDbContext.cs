@@ -153,7 +153,7 @@ namespace FolkDanceTime.Dal.DbContext
 
             var passwordHasher = new PasswordHasher<User>();
 
-            var adminId = new Guid().ToString();
+            var adminId = Guid.NewGuid().ToString();
 
             var admin =
                 new User
