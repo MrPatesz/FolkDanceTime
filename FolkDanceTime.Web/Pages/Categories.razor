@@ -43,8 +43,10 @@ else
                             onchange="@((ChangeEventArgs e) => newCategoryName = e.Value?.ToString() ?? "")"
                         />
                     </td>
+                    <td/>
                     <td>
                         <div class="d-flex flex-row">
+                            <div class="flex-grow-1"/>
                             <button
                                 class="btn btn-success"
                                 @onclick="AddCategory"
