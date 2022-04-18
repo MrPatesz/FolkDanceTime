@@ -3,6 +3,7 @@ using FolkDanceTime.Web;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using MudBlazor.Services;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -17,5 +18,8 @@ builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().Cre
 builder.Services.AddApiAuthorization();
 
 builder.Services.AddScoped<ICategoryClient, CategoryClient>();
+builder.Services.AddScoped<IItemClient, ItemClient>();
+
+builder.Services.AddMudServices();
 
 await builder.Build().RunAsync();
