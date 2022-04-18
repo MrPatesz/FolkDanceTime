@@ -1,5 +1,6 @@
 ﻿@page "/categories"
 @using Client
+@using FolkDanceTime.Web.Components
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
@@ -8,13 +9,12 @@
 <PageTitle>Categories</PageTitle>
 
 <div class="d-flex flex-row justify-content-between">
-    <h1>Categories</h1>
-    <button
-        class="btn btn-primary"
+    <MudText Typo="Typo.h1">Categories</MudText>
+    <MudIconButton
+        Color="Color.Default"
+        Icon="@Icons.Filled.AddCircle"
         @onclick="() => showAdd = true"
-    >
-        <span class="oi oi-plus"/>
-    </button>
+    />
 </div>
 
 @if (categories == null)
@@ -23,98 +23,40 @@
 }
 else
 {
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Properties</th>
-                <th/>
-            </tr>
-        </thead>
-        <tbody>
-            @if (showAdd)
-            {
-                <tr>
-                    <td>
-                        <input
-                            value="@newCategoryName"
-                            placeholder="Name"
-                            type="text"
-                            onchange="@((ChangeEventArgs e) => newCategoryName = e.Value?.ToString() ?? "")"
-                        />
-                    </td>
-                    <td/>
-                    <td>
-                        <div class="d-flex flex-row">
-                            <div class="flex-grow-1"/>
-                            <button
-                                class="btn btn-success"
-                                @onclick="AddCategory"
-                            >
-                                <span class="oi oi-check"/>
-                            </button>
-                            <button
-                                class="btn btn-warning"
-                                @onclick="@(() => {
-                                    showAdd = false;
-                                    newCategoryName = "";
-                                })"
-                            >
-                                <span class="oi oi-x"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            }
-            @foreach (var category in categories)
-            {
-                <tr>
-                    <td>@category.Name</td>
-                    <td>@string.Join(",", category.Properties)</td>
-                    <td>
-                        <div class="d-flex flex-row">
-                            <div class="flex-grow-1"/>
-                            <button
-                                class="btn btn-danger"
-                                @onclick="() => DeleteCategory(category.Id)"
-                            >
-                                <span class="oi oi-trash"/>
-                            </button>
-                        </div>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    @foreach (var category in categories)
+    {
+        <div class="pb-2">
+            <CategoryListItem
+                Category="@category"
+                OnDelete="@OnDelete"
+            />
+        </div>
+    }
+    @if (showAdd)
+    {
+        <AddCategory
+            OnClose="() => showAdd = false"
+            OnAdd="@OnAdd"
+        />
+    }
 }
 
 @code {
-    private ICollection<CategoryDto>? categories = new HashSet<CategoryDto>();
+    private ICollection<CategoryDto> categories = new HashSet<CategoryDto>();
     private bool showAdd = false;
-    private string newCategoryName = "";
 
     protected override async Task OnInitializedAsync()
     {
         categories = await CategoryClient.GetCategoriesAsync();
     }
 
-    protected async Task AddCategory()
+    protected void OnAdd(CategoryDto newCategory)
     {
-        var createdCategory = await CategoryClient.AddCategoryAsync(new CategoryDto
-        {
-            Name = newCategoryName,
-        });
-
-        if(createdCategory != null)
-        {
-            categories?.Add(createdCategory);
-        }
-        showAdd = false;
+        categories.Add(newCategory);
     }
 
-    protected async Task DeleteCategory(int id)
+    protected void OnDelete(int id)
     {
-        await CategoryClient.DeleteCategoryAsync(id);
         categories = categories.Where(c => c.Id != id).ToHashSet();
     }
 }

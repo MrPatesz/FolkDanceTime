@@ -1,0 +1,35 @@
+﻿@using Client
+@inject ICategoryClient CategoryClient
+
+<MudPaper Class="d-flex justify-content-between align-center">
+    <MudText Class="py-3 px-4">
+        @Category.Name
+    </MudText>
+    <MudIconButton
+        Color="Color.Error"
+        Icon="@Icons.Filled.RemoveCircle"
+        @onclick="@DeleteCategory"
+    />
+</MudPaper>
+
+@code {
+    [Parameter]
+    public CategoryDto Category { get; set; }
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    protected async Task DeleteCategory()
+    {
+        // TODO confirm dialog (will delete all items too)
+        
+        try
+        {
+            await CategoryClient.DeleteCategoryAsync(Category.Id);
+            await OnDelete.InvokeAsync(Category.Id);
+        }
+        catch (Exception e)
+        {
+            // TODO toast message: something went wrong
+        }
+    }
+}

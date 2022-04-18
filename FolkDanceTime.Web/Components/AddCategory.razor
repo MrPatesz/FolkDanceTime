@@ -1,0 +1,55 @@
+﻿@using Client
+@inject ICategoryClient CategoryClient
+
+<MudPaper Class="d-flex align-center">
+    <MudTextField
+        InputType="InputType.Text"
+        Placeholder="Name"
+        AutoFocus="true"
+        Variant="Variant.Outlined"
+        Margin="Margin.Dense"
+        @bind-Value="@newCategoryName"
+    />
+    <MudButtonGroup>
+        <MudIconButton
+            Color="Color.Success"
+            Icon="@Icons.Filled.CheckCircle"
+            @onclick="@Confirm"
+        />
+        <MudIconButton
+            Color="Color.Warning"
+            Icon="@Icons.Filled.Cancel"
+            @onclick="@OnClose"
+        />
+    </MudButtonGroup>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+    [Parameter]
+    public EventCallback<CategoryDto> OnAdd { get; set; }
+
+    private string newCategoryName = "";
+
+    protected async Task Confirm()
+    {
+        if (newCategoryName == "") return;
+
+        try
+        {
+            var createdCategory = await CategoryClient.AddCategoryAsync(
+                new CategoryDto{ Name = newCategoryName }
+            );
+            await OnAdd.InvokeAsync(createdCategory);
+        }
+        catch (Exception e)
+        {
+            // TODO toast message: name must be unique
+        }
+        finally
+        {
+            await OnClose.InvokeAsync();
+        }
+    }
+}
