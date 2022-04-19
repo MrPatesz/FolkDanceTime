@@ -27,7 +27,9 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<CategoryDto> GetCategoryAsync(int id)
         {
-            var category = await _dbContext.Categories.FindAsync(id);
+            var category = await _dbContext.Categories
+                .Include(c => c.Properties)
+                .FirstAsync(c => c.Id == id);
 
             // TODO: throw exception ha null, MVC action filter vagy middleware elkapja ezt
             // problem details nevű middleware, config: milyen kivételekre milyen hibakódot adjon
@@ -68,7 +70,7 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<CategoryDto> EditCategoryAsync(CategoryDto categoryDto)
         {
-            var category = await _dbContext.Categories.FindAsync(categoryDto.Id);
+            var category = await _dbContext.Categories.Include(c => c.Properties).FirstAsync(c => c.Id == categoryDto.Id);
 
             if (category == null)
             {
@@ -76,6 +78,24 @@ namespace FolkDanceTime.Bll.Services
             }
 
             category.Name = categoryDto.Name;
+            category.Properties.ForEach(property =>
+            {
+                if(categoryDto.Properties.Any(p => p.Id == property.Id))
+                {
+                    property.Name = categoryDto.Properties.First(p => p.Id == property.Id).Name;
+                }
+            });
+
+            var propertiesToAdd = categoryDto.Properties.Where(p => p.Id == 0).ToList();
+
+            propertiesToAdd.ForEach(p => _dbContext.Properties.Add(new Property{
+                Name = p.Name,
+                CategoryId = categoryDto.Id,
+            }));
+
+            var propertiesToDelete = category.Properties.Where(property => !categoryDto.Properties.Any(p => p.Id == property.Id));
+
+            _dbContext.Properties.RemoveRange(propertiesToDelete);
 
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<CategoryDto>(category);

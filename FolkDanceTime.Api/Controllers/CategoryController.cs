@@ -50,7 +50,6 @@ namespace FolkDanceTime.Api.Controllers
         public async Task<ActionResult<CategoryDto>> EditCategoryAsync([FromBody] CategoryDto category)
         {
             return Ok(await _categoryService.EditCategoryAsync(category));
-            // TODO rename to RenameCategory, use CategoryHeaderDto here
         }
 
         [HttpDelete("{id}")]

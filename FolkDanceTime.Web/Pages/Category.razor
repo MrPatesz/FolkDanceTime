@@ -1,0 +1,152 @@
+﻿@page "/categories/{Id:int}"
+@using Client
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject ICategoryClient CategoryClient
+
+<PageTitle>Category</PageTitle>
+
+<div class="d-flex flex-row justify-content-between">
+    <MudText Typo="Typo.h4">Category Details</MudText>
+    @if(editing)
+    {
+        <MudIconButton
+            Color="Color.Default"
+            Icon="@Icons.Filled.AddCircle"
+            @onclick="@AddProperty"
+        />
+    }
+    else
+    {
+        <MudIconButton
+            Color="Color.Default"
+            Icon="@Icons.Filled.Edit"
+            @onclick="@StartEditing"
+        />
+    }
+</div>
+
+@if (category == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if(editing)
+    {
+        <MudTextField
+            Label="Name"
+            InputType="InputType.Text"
+            AutoFocus="true"
+            Variant="Variant.Outlined"
+            @bind-Value="@category.Name"
+        />
+        @foreach(var property in category.Properties)
+        {
+            <div class="d-flex flex-row justify-content-between">
+                <MudTextField
+                    Label="@originalCategory.Properties.FirstOrDefault(p => p.Id == property.Id)?.Name"
+                    Variant="Variant.Outlined"
+                    InputType="InputType.Text"
+                    @bind-Value="@property.Name"
+                />
+                <MudIconButton
+                    Color="Color.Error"
+                    Icon="@Icons.Filled.RemoveCircle"
+                    @onclick="@(()=>DeleteProperty(property))"
+                />
+            </div>
+        }
+        <div class="d-flex flex-row">
+            <div class="flex-grow-1"/>
+            <MudButtonGroup>
+                <MudIconButton
+                    Color="Color.Success"
+                    Icon="@Icons.Filled.CheckCircle"
+                    @onclick="@Confirm"
+                />
+                <MudIconButton
+                    Color="Color.Warning"
+                    Icon="@Icons.Filled.Cancel"
+                    @onclick="@Cancel"
+                />
+            </MudButtonGroup>
+        </div>
+    }
+    else
+    {
+        <MudText>
+            @category.Name
+        </MudText>
+        @foreach(var property in category.Properties)
+        {
+            <MudText>
+                @property.Name
+            </MudText>
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private CategoryDto category;
+
+    private CategoryDto originalCategory;
+
+    private bool editing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        category = await CategoryClient.GetCategoryAsync(Id);
+    }
+
+    protected void DeleteProperty(PropertyDto property)
+    {
+        category.Properties = category.Properties
+            .Where(p => p.Id != property.Id || p.Name != property.Name)
+            .ToHashSet();
+
+        // TODO confirm dialog for property deletion: it will delete all values too
+    }
+
+    protected void AddProperty()
+    {
+        category.Properties.Add(new PropertyDto { Name = "" });
+    }
+
+    protected void StartEditing()
+    {
+        originalCategory = category;
+        editing = true;
+    }
+
+    protected void Cancel()
+    {
+        category = originalCategory;
+        editing = false;
+    }
+
+    protected async Task Confirm()
+    {
+        if (category.Name == "" || category.Properties.Any(p => p.Name == "")) return;
+
+        try
+        {
+            var editedCategory = await CategoryClient.EditCategoryAsync(category, Id.ToString());
+            category = editedCategory;
+            originalCategory = category;
+        }
+        catch (Exception e)
+        {
+            // TODO toast message: name must be unique
+            category = originalCategory;
+        }
+        finally
+        {
+            editing = false;
+        }
+    }
+}

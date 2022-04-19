@@ -1,7 +1,11 @@
 ﻿@using Client
+@inject NavigationManager NavigationManager
 @inject ICategoryClient CategoryClient
 
-<MudPaper Class="d-flex justify-content-between align-center">
+<MudPaper
+    Class="d-flex justify-content-between align-center cursor-pointer"
+    @onclick="@NavigateToDetails"
+>
     <MudText Class="py-3 px-4">
         @Category.Name
     </MudText>
@@ -21,7 +25,7 @@
     protected async Task DeleteCategory()
     {
         // TODO confirm dialog (will delete all items too)
-        
+
         try
         {
             await CategoryClient.DeleteCategoryAsync(Category.Id);
@@ -31,5 +35,10 @@
         {
             // TODO toast message: something went wrong
         }
+    }
+
+    protected void NavigateToDetails()
+    {
+         NavigationManager.NavigateTo($"categories/{Category.Id}");
     }
 }
