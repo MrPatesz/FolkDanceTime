@@ -21,7 +21,6 @@ namespace FolkDanceTime.Dal.DbContext
         public DbSet<ItemSetTransaction> ItemSetTransactions { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Property> Properties { get; set; }
-        public DbSet<PropertyToCategory> PropertyToCategories { get; set; }
         public DbSet<PropertyValue> PropertyValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -53,60 +52,73 @@ namespace FolkDanceTime.Dal.DbContext
                 .HasOne(i => i.OwnerUser)
                 .WithMany(u => u.Items)
                 .HasForeignKey(i => i.OwnerUserId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<Item>()
                 .HasOne(i => i.Category)
                 .WithMany(c => c.Items)
                 .HasForeignKey(i => i.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<Item>()
                 .HasOne(i => i.ItemSet)
                 .WithMany(set => set.Items)
-                .HasForeignKey(i => i.ItemSetId);
+                .HasForeignKey(i => i.ItemSetId)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Item>()
                 .HasMany(i => i.ItemTransactions)
-                .WithOne(it => it.Item);
+                .WithOne(it => it.Item)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<Item>()
                 .HasMany(i => i.PropertyValues)
-                .WithOne(pv => pv.Item);
+                .WithOne(pv => pv.Item)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<ItemSet>()
                 .HasMany(set => set.Items)
-                .WithOne(i => i.ItemSet);
+                .WithOne(i => i.ItemSet)
+                .OnDelete(DeleteBehavior.NoAction);
             builder.Entity<ItemSet>()
                 .HasMany(set => set.ItemSetTransactions)
-                .WithOne(ist => ist.ItemSet);
+                .WithOne(ist => ist.ItemSet)
+                .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.Item)
                 .WithMany(i => i.ItemTransactions)
                 .HasForeignKey(it => it.ItemId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.ReceiverUser)
                 .WithMany(u => u.IncomingItemTransactions)
                 .HasForeignKey(it => it.ReceiverUserId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.SenderUser)
                 .WithMany(u => u.OutgoingItemTransactions)
                 .HasForeignKey(it => it.SenderUserId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
 
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.ItemSet)
                 .WithMany(i => i.ItemSetTransactions)
                 .HasForeignKey(it => it.ItemSetId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.ReceiverUser)
                 .WithMany(u => u.IncomingItemSetTransactions)
                 .HasForeignKey(it => it.ReceiverUserId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.SenderUser)
                 .WithMany(u => u.OutgoingItemSetTransactions)
                 .HasForeignKey(it => it.SenderUserId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
 
             builder.Entity<Category>()
@@ -114,38 +126,35 @@ namespace FolkDanceTime.Dal.DbContext
                 .IsUnique();
             builder.Entity<Category>()
                 .HasMany(c => c.Items)
-                .WithOne(i => i.Category);
+                .WithOne(i => i.Category)
+                .OnDelete(DeleteBehavior.Cascade);
             builder.Entity<Category>()
-                .HasMany(c => c.CategoryToProperties)
-                .WithOne(ctp => ctp.Category);
+                .HasMany(c => c.Properties)
+                .WithOne(p => p.Category)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Property>()
-                .HasMany(p => p.PropertyToCategories)
-                .WithOne(ptc => ptc.Property);
+                .HasOne(p => p.Category)
+                .WithMany(c => c.Properties)
+                .HasForeignKey(p => p.CategoryId)
+                .OnDelete(DeleteBehavior.NoAction)
+                .IsRequired();
             builder.Entity<Property>()
                 .HasMany(p => p.PropertyValues)
-                .WithOne(pv => pv.Property);
-
-            builder.Entity<PropertyToCategory>()
-                .HasOne(it => it.Property)
-                .WithMany(u => u.PropertyToCategories)
-                .HasForeignKey(it => it.PropertyId)
-                .IsRequired();
-            builder.Entity<PropertyToCategory>()
-                .HasOne(it => it.Category)
-                .WithMany(u => u.CategoryToProperties)
-                .HasForeignKey(it => it.CategoryId)
-                .IsRequired();
+                .WithOne(pv => pv.Property)
+                .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<PropertyValue>()
                 .HasOne(it => it.Item)
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.ItemId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<PropertyValue>()
                 .HasOne(it => it.Property)
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.PropertyId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
 
             // TODO új regisztrációt hozzáadni a Dancer role-hoz
