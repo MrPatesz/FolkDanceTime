@@ -8,7 +8,7 @@
         AutoFocus="true"
         Variant="Variant.Outlined"
         Margin="Margin.Dense"
-        @bind-Value="@newCategoryName"
+        @bind-Value="@newCategory.Name"
     />
     <MudButtonGroup>
         <MudIconButton
@@ -30,17 +30,15 @@
     [Parameter]
     public EventCallback<CategoryDto> OnAdd { get; set; }
 
-    private string newCategoryName = "";
+    private CategoryDto newCategory = new CategoryDto{ Name = "" };
 
     protected async Task Confirm()
     {
-        if (newCategoryName == "") return;
+        if (newCategory.Name == "") return;
 
         try
         {
-            var createdCategory = await CategoryClient.AddCategoryAsync(
-                new CategoryDto{ Name = newCategoryName }
-            );
+            var createdCategory = await CategoryClient.AddCategoryAsync(newCategory);
             await OnAdd.InvokeAsync(createdCategory);
         }
         catch (Exception e)
