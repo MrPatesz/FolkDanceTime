@@ -46,7 +46,7 @@ else
         {
             <div class="d-flex flex-row justify-content-between">
                 <MudTextField
-                    Label="@originalCategory.Properties.FirstOrDefault(p => p.Id == property.Id)?.Name"
+                    Label="@currentProperties.FirstOrDefault(p => p.Id == property.Id)?.Name"
                     Variant="Variant.Outlined"
                     InputType="InputType.Text"
                     @bind-Value="@property.Name"
@@ -94,7 +94,7 @@ else
 
     private CategoryDto category;
 
-    private CategoryDto originalCategory;
+    private List<PropertyDto> currentProperties;
 
     private bool editing = false;
 
@@ -119,13 +119,14 @@ else
 
     protected void StartEditing()
     {
-        originalCategory = category;
+        currentProperties = new List<PropertyDto>();
+        category.Properties.ToList().ForEach(p => currentProperties.Add(new PropertyDto { Id = p.Id, Name = p.Name }));
         editing = true;
     }
 
     protected void Cancel()
     {
-        category = originalCategory;
+        category.Properties = currentProperties;
         editing = false;
     }
 
@@ -137,12 +138,11 @@ else
         {
             var editedCategory = await CategoryClient.EditCategoryAsync(category, Id.ToString());
             category = editedCategory;
-            originalCategory = category;
         }
         catch (Exception e)
         {
             // TODO toast message: name must be unique
-            category = originalCategory;
+            category.Properties = currentProperties;
         }
         finally
         {
