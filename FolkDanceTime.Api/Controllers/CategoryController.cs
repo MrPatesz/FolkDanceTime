@@ -59,6 +59,11 @@ namespace FolkDanceTime.Api.Controllers
         {
             await _categoryService.DeleteCategoryAsync(id);
             return Ok();
+            // TODO addig nem lehet törölni, amíg van hozzá tartozó elem
+            // vagy átállítja az item category-t vagy tölrli az item-et
+            // item-et csak soft delete-tel törölni
+            // egy bool flag jelzi: isDeleted
+            // onModelCreating-ben definiálni a property-hez: global query filter
         }
     }
 }
