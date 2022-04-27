@@ -25,9 +25,20 @@ namespace FolkDanceTime.Bll.Services
                 .ToListAsync();
         }
 
+        public async Task<List<ItemDto>> GetMyItemsAsync(string userId)
+        {
+            return await _dbContext.Items
+                .Where(i => i.OwnerUserId == userId)
+                .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
         public async Task<ItemDto> GetItemAsync(int id)
         {
-            var item = await _dbContext.Items.FindAsync(id); // TODO: maybe need to include some properties
+            var item = await _dbContext.Items
+                .Include(i => i.PropertyValues)
+                .ThenInclude(i => i.Property)
+                .FirstAsync(c => c.Id == id);
 
             if (item == null)
             {
@@ -77,7 +88,7 @@ namespace FolkDanceTime.Bll.Services
 
             item.Name = itemDto.Name;
             item.Description = itemDto.Description;
-            // TODO: maybe set ownerId too or create a new function for that
+            // TODO: also need to set property values
 
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<ItemDto>(item);
