@@ -24,7 +24,7 @@
 
     protected async Task DeleteCategory()
     {
-        // TODO confirm dialog (will delete all items too)
+        // TODO confirm dialog
 
         try
         {
@@ -34,6 +34,7 @@
         catch (Exception e)
         {
             // TODO toast message: something went wrong
+            // can't delete when there are items in the category
         }
     }
 

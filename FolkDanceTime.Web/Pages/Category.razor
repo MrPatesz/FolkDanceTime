@@ -11,16 +11,23 @@
     <MudText Typo="Typo.h4">Category Details</MudText>
     @if(editing)
     {
-        <MudIconButton
-            Color="Color.Default"
-            Icon="@Icons.Filled.AddCircle"
-            @onclick="@AddProperty"
-        />
+        <MudButtonGroup>
+            <MudIconButton
+                Color="Color.Primary"
+                Icon="@Icons.Filled.Save"
+                @onclick="@Confirm"
+            />
+            <MudIconButton
+                Color="Color.Default"
+                Icon="@Icons.Filled.Cancel"
+                @onclick="@Cancel"
+            />
+        </MudButtonGroup>
     }
     else
     {
         <MudIconButton
-            Color="Color.Default"
+            Color="Color.Primary"
             Icon="@Icons.Filled.Edit"
             @onclick="@StartEditing"
         />
@@ -60,18 +67,15 @@ else
         }
         <div class="d-flex flex-row">
             <div class="flex-grow-1"/>
-            <MudButtonGroup>
-                <MudIconButton
-                    Color="Color.Success"
-                    Icon="@Icons.Filled.CheckCircle"
-                    @onclick="@Confirm"
-                />
-                <MudIconButton
-                    Color="Color.Warning"
-                    Icon="@Icons.Filled.Cancel"
-                    @onclick="@Cancel"
-                />
-            </MudButtonGroup>
+            <MudButton
+                Class="mt-2"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Filled.AddCircle"
+                OnClick="@AddProperty"
+            >
+                Add Property
+            </MudButton>
         </div>
     }
     else
@@ -128,6 +132,7 @@ else
     {
         category.Properties = currentProperties;
         editing = false;
+        // TODO also save name
     }
 
     protected async Task Confirm()
