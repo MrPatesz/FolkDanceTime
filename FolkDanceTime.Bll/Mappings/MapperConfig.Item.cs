@@ -9,13 +9,7 @@ namespace FolkDanceTime.Bll.Mappings
         private static IMapperConfigurationExpression ConfigureItem(this IMapperConfigurationExpression cfg)
         {
             cfg.CreateMap<Item, ItemDto>()
-                .ForMember(dto => dto.Properties, opt => opt.MapFrom(
-                    entity => entity.PropertyValues.Select(pv => new PropertyValueDto
-                    {
-                        Value = pv.Value,
-                        Name = pv.Property.Name,
-                    })
-                    ));
+                .ForMember(dto => dto.Properties, opt => opt.MapFrom(entity => entity.PropertyValues));
 
             return cfg;
         }

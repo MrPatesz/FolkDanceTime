@@ -10,6 +10,8 @@ namespace FolkDanceTime.Bll.Mappings
             {
                 cfg.ConfigureCategory();
                 cfg.ConfigureProperty();
+                cfg.ConfigurePropertyValue();
+                cfg.ConfigureItem();
             });
 
             config.AssertConfigurationIsValid();
