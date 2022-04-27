@@ -1,0 +1,47 @@
+﻿@using Client
+@inject NavigationManager NavigationManager
+@inject IItemClient ItemClient
+
+<MudCard>
+    <MudCardMedia Image="@Item.PictureFilename" Height="200" />
+    <MudCardContent>
+        <MudText Typo="Typo.h5">@Item.Name</MudText>
+        <MudText Typo="Typo.body2">@Item.Description</MudText>
+    </MudCardContent>
+    <MudCardActions>
+        <MudButton
+            Variant="Variant.Text"
+            Color="Color.Primary"
+            OnClick="@NavigateToDetails"
+        >
+        Details
+        </MudButton>
+    </MudCardActions>
+</MudCard>
+
+@code {
+    [Parameter]
+    public ItemDto Item { get; set; }
+    [Parameter]
+    public EventCallback<int> OnDelete { get; set; }
+
+    protected async Task DeleteCategory()
+    {
+        // TODO confirm dialog
+
+        try
+        {
+            await ItemClient.DeleteItemAsync(Item.Id);
+            await OnDelete.InvokeAsync(Item.Id);
+        }
+        catch (Exception e)
+        {
+            // TODO toast message: something went wrong
+        }
+    }
+
+    protected void NavigateToDetails()
+    {
+         NavigationManager.NavigateTo($"items/{Item.Id}");
+    }
+}

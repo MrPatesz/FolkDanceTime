@@ -1,0 +1,61 @@
+﻿@page "/items"
+@using Client
+@using FolkDanceTime.Web.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject IItemClient ItemClient
+@inject IDialogService DialogService
+
+<PageTitle>Items</PageTitle>
+
+<div class="d-flex flex-row justify-content-between">
+    <MudText Typo="Typo.h4">Items</MudText>
+    <MudIconButton
+        Color="Color.Primary"
+        Icon="@Icons.Filled.AddCircle"
+        OnClick="@OpenDialog"
+    />
+</div>
+
+@if (items == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @foreach (var item in items)
+    {
+        <div class="pb-2">
+            <ItemCard
+                Item="@item"
+                OnDelete="@OnDelete"
+            />
+        </div>
+    }
+}
+
+@code {
+    private ICollection<ItemDto> items;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ItemClient.GetItemsAsync();
+    }
+
+    protected void OnAdd(ItemDto newItem)
+    {
+        items.Add(newItem);
+    }
+
+    protected void OnDelete(int id)
+    {
+        items = items.Where(c => c.Id != id).ToHashSet();
+    }
+
+    private void OpenDialog()
+    {
+		var options = new DialogOptions { CloseOnEscapeKey = true };
+        DialogService.Show<AddItemDialog>("Create Item", options);
+    }
+}

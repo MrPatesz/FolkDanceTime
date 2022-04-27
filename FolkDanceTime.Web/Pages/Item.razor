@@ -1,0 +1,146 @@
+﻿@page "/items/{Id:int}"
+@using Client
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject IItemClient ItemClient
+
+<PageTitle>Item</PageTitle>
+
+<div class="d-flex flex-row justify-content-between">
+    <MudText Typo="Typo.h4">Item Details</MudText>
+    @if(editing)
+    {
+        <div class="d-flex flex-row">
+            <div class="flex-grow-1"/>
+            <MudButtonGroup>
+                <MudIconButton
+                    Color="Color.Primary"
+                    Icon="@Icons.Filled.Save"
+                    @onclick="@Confirm"
+                />
+                <MudIconButton
+                    Color="Color.Default"
+                    Icon="@Icons.Filled.Cancel"
+                    @onclick="@Cancel"
+                />
+            </MudButtonGroup>
+        </div>
+    }
+    else
+    {
+        <MudIconButton
+            Color="Color.Primary"
+            Icon="@Icons.Filled.Edit"
+            @onclick="@StartEditing"
+        />
+    }
+</div>
+
+@if (item == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if(editing)
+    {
+        <MudTextField
+            Label="Name"
+            InputType="InputType.Text"
+            AutoFocus="true"
+            Variant="Variant.Outlined"
+            @bind-Value="@item.Name"
+        />
+        <MudTextField
+            Label="Description"
+            InputType="InputType.Text"
+            Variant="Variant.Outlined"
+            @bind-Value="@item.Description"
+        />
+        @*image*@
+        @foreach(var property in item.Properties)
+        {
+            <MudTextField
+                Label="@property.Name"
+                Variant="Variant.Outlined"
+                InputType="InputType.Text"
+                @bind-Value="@property.Value"
+            />
+        }
+    }
+    else
+    {
+        <MudText>
+            @item.Name
+        </MudText>
+        <MudText>
+            @item.Description
+        </MudText>
+        @*image*@
+        @foreach(var property in item.Properties)
+        {
+            <MudField Label="@property.Name">
+                @property.Value
+            </MudField>
+        }
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ItemDto item;
+
+    private List<PropertyValueDto> currentProperties;
+
+    private bool editing = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        item = await ItemClient.GetItemAsync(Id);
+    }
+
+    protected void StartEditing()
+    {
+        currentProperties = item.Properties.Select(p => 
+            new PropertyValueDto
+            {
+                PropertyId = p.PropertyId,
+                PropertyValueId = p.PropertyValueId,
+                Name = p.Name,
+                Value = p.Value,
+            }
+        ).ToList();
+
+        editing = true;
+    }
+
+    protected void Cancel()
+    {
+        item.Properties = currentProperties;
+        editing = false;
+        // TODO also save name and description
+    }
+
+    protected async Task Confirm()
+    {
+        if (item.Name == "") return;
+
+        try
+        {
+            var editedItem = await ItemClient.EditItemAsync(item, Id.ToString());
+            item = editedItem;
+        }
+        catch (Exception e)
+        {
+            // TODO toast message: name must be unique
+            item.Properties = currentProperties;
+        }
+        finally
+        {
+            editing = false;
+        }
+    }
+}
