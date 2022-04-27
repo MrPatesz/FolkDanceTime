@@ -49,6 +49,9 @@ namespace FolkDanceTime.Dal.DbContext
                 .OnDelete(DeleteBehavior.NoAction);
 
             builder.Entity<Item>()
+                .HasIndex(i => i.Name)
+                .IsUnique();
+            builder.Entity<Item>()
                 .HasOne(i => i.OwnerUser)
                 .WithMany(u => u.Items)
                 .HasForeignKey(i => i.OwnerUserId)
