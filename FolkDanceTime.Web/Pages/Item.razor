@@ -7,7 +7,7 @@
 
 <PageTitle>Item</PageTitle>
 
-<div class="d-flex flex-row justify-content-between">
+<MudStack Row Justify="Justify.SpaceBetween">
     <MudText Typo="Typo.h4">Item Details</MudText>
     @if(editing)
     {
@@ -17,12 +17,12 @@
                 <MudIconButton
                     Color="Color.Primary"
                     Icon="@Icons.Filled.Save"
-                    @onclick="@Confirm"
+                    OnClick="@Confirm"
                 />
                 <MudIconButton
                     Color="Color.Default"
                     Icon="@Icons.Filled.Cancel"
-                    @onclick="@Cancel"
+                    OnClick="@Cancel"
                 />
             </MudButtonGroup>
         </div>
@@ -32,10 +32,10 @@
         <MudIconButton
             Color="Color.Primary"
             Icon="@Icons.Filled.Edit"
-            @onclick="@StartEditing"
+            OnClick="@StartEditing"
         />
     }
-</div>
+</MudStack>
 
 @if (item == null)
 {
@@ -45,45 +45,69 @@ else
 {
     @if(editing)
     {
-        <MudTextField
-            Label="Name"
-            InputType="InputType.Text"
-            AutoFocus="true"
-            Variant="Variant.Outlined"
-            @bind-Value="@item.Name"
-        />
-        <MudTextField
-            Label="Description"
-            InputType="InputType.Text"
-            Variant="Variant.Outlined"
-            @bind-Value="@item.Description"
-        />
-        @*image*@
-        @foreach(var property in item.Properties)
-        {
+        <MudStack Spacing="2">
             <MudTextField
-                Label="@property.Name"
-                Variant="Variant.Outlined"
+                Label="Name"
                 InputType="InputType.Text"
-                @bind-Value="@property.Value"
+                AutoFocus="true"
+                Variant="Variant.Outlined"
+                @bind-Value="@item.Name"
             />
-        }
+            <MudTextField
+                Label="Description"
+                InputType="InputType.Text"
+                Variant="Variant.Outlined"
+                @bind-Value="@item.Description"
+            />
+            <InputFile id="fileInput" OnChange="SelectImage" hidden accept=".jpg, .jpeg, .png" />
+            <MudButton
+                HtmlTag="label"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Filled.Image"
+                for="fileInput"
+            >
+                Select Image
+            </MudButton>
+            @foreach(var property in item.Properties)
+            {
+                <MudTextField
+                    Label="@property.Name"
+                    Variant="Variant.Outlined"
+                    InputType="InputType.Text"
+                    @bind-Value="@property.Value"
+                />
+            }
+        </MudStack>
     }
     else
     {
-        <MudText>
-            @item.Name
-        </MudText>
-        <MudText>
-            @item.Description
-        </MudText>
-        @*image*@
-        @foreach(var property in item.Properties)
-        {
-            <MudField Label="@property.Name">
-                @property.Value
-            </MudField>
-        }
+        <MudStack Row Spacing="2">
+            <MudImage
+                ObjectFit="ObjectFit.Contain"
+                Height="200"
+                Width="200"
+                Src="@item.PictureFilename"
+                Elevation="25"
+                Class="rounded-lg"
+            />
+            <MudStack Spacing="2" Class="w-100">
+                <MudText>
+                    @item.Name
+                </MudText>
+                <MudText>
+                    @item.Description
+                </MudText>
+            </MudStack>
+        </MudStack>
+        <MudStack Spacing="2">
+            @foreach(var property in item.Properties)
+            {
+                <MudField Label="@property.Name">
+                    @property.Value
+                </MudField>
+            }
+        </MudStack>
     }
 }
 
@@ -96,6 +120,8 @@ else
     private List<PropertyValueDto> currentProperties;
 
     private bool editing = false;
+
+    private IBrowserFile selectedImage;
 
     protected override async Task OnInitializedAsync()
     {
@@ -115,6 +141,11 @@ else
         ).ToList();
 
         editing = true;
+    }
+
+    private void SelectImage(InputFileChangeEventArgs e)
+    {
+        selectedImage = e.File;
     }
 
     protected void Cancel()

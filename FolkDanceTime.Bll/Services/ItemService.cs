@@ -61,6 +61,37 @@ namespace FolkDanceTime.Bll.Services
             _dbContext.Items.Add(item);
             await _dbContext.SaveChangesAsync();
 
+            var propertyValues = itemDto.Properties.Select(p =>
+                new PropertyValue
+                {
+                    Value = p.Value,
+                    ItemId = item.Id,
+                    PropertyId = p.PropertyId,
+                }
+            );
+
+            var category = await _dbContext.Categories
+                .Include(c => c.Properties)
+                .FirstAsync(c => c.Id == categoryId);
+
+            category.Properties.ForEach(p =>
+            {
+                var isAlreadyThere = propertyValues.Any(pv => pv.PropertyId == p.Id);
+                if (!isAlreadyThere)
+                {
+                    propertyValues.Append(new PropertyValue
+                    {
+                        Value = "",
+                        ItemId = item.Id,
+                        PropertyId = p.Id,
+                    });
+                }
+            });
+
+            _dbContext.PropertyValues.AddRange(propertyValues);
+
+            await _dbContext.SaveChangesAsync();
+
             return _mapper.Map<ItemDto>(item);
         }
 

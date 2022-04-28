@@ -4,67 +4,69 @@
 
 <MudDialog>
     <DialogContent>
-        @if(categories == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <MudSelect
-                T="CategoryDto"
-                Label="Category"
-                Variant="Variant.Outlined"
-                Margin="Margin.Dense"
-                AutoFocus="true"
-                Value="@selectedCategory"
-                ValueChanged="@OnCategorySelect"
-            >
-                @foreach(var category in categories)
-                {
-                    <MudSelectItem Value="@category">
-                        @category.Name
-                    </MudSelectItem>
-                }
-            </MudSelect>
-        }
-        <MudTextField
-            InputType="InputType.Text"
-            Label="Name"
-            Variant="Variant.Outlined"
-            Margin="Margin.Dense"
-            @bind-Value="@newItem.Name"
-        />
-        <MudTextField
-            InputType="InputType.Text"
-            Label="Description"
-            Variant="Variant.Outlined"
-            Margin="Margin.Dense"
-            @bind-Value="@newItem.Description"
-        />
-        @if(selectedCategory != null)
-        {
-            @foreach(var property in selectedCategory.Properties)
+        <MudStack Spacing="2">
+            @if(categories == null)
             {
-                <MudTextField
-                    InputType="InputType.Text"
-                    Label="@property.Name"
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <MudSelect
+                    T="CategoryDto"
+                    Label="Category"
                     Variant="Variant.Outlined"
                     Margin="Margin.Dense"
-                    T="string"
-                    @bind-Value="@newItem.Properties.First(p => p.PropertyId == property.Id).Value"
-                />
+                    AutoFocus="true"
+                    Value="@selectedCategory"
+                    ValueChanged="@OnCategorySelect"
+                >
+                    @foreach(var category in categories)
+                    {
+                        <MudSelectItem Value="@category">
+                            @category.Name
+                        </MudSelectItem>
+                    }
+                </MudSelect>
             }
-        }
-        <InputFile id="fileInput" OnChange="SelectImage" hidden accept=".jpg, .jpeg, .png" />
-        <MudButton
-            HtmlTag="label"
-            Variant="Variant.Filled"
-            Color="Color.Primary"
-            StartIcon="@Icons.Filled.Image"
-            for="fileInput"
-        >
-            Select Image
-        </MudButton>
+            <MudTextField
+                InputType="InputType.Text"
+                Label="Name"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                @bind-Value="@newItem.Name"
+            />
+            <MudTextField
+                InputType="InputType.Text"
+                Label="Description"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                @bind-Value="@newItem.Description"
+            />
+            @if(selectedCategory != null)
+            {
+                @foreach(var property in selectedCategory.Properties)
+                {
+                    <MudTextField
+                        InputType="InputType.Text"
+                        Label="@property.Name"
+                        Variant="Variant.Outlined"
+                        Margin="Margin.Dense"
+                        T="string"
+                        @bind-Value="@newItem.Properties.First(p => p.PropertyId == property.Id).Value"
+                    />
+                }
+            }
+            <InputFile id="fileInput" OnChange="SelectImage" hidden accept=".jpg, .jpeg, .png" />
+            <MudButton
+                HtmlTag="label"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Filled.Image"
+                for="fileInput"
+            >
+                Select Image
+            </MudButton>
+        </MudStack>
     </DialogContent>
     <DialogActions>
         <MudButton OnClick="Cancel">Cancel</MudButton>
@@ -91,15 +93,14 @@
         {
             try
             {
-                await ItemClient.AddItemAsync(newItem, selectedCategory.Id);
+                // TODO upload image
+                var addedItem = await ItemClient.AddItemAsync(newItem, selectedCategory.Id);
+                MudDialog.Close(DialogResult.Ok(addedItem));
             }
             catch(Exception e)
             {
                 // TODO toast message
-            }
-            finally
-            {
-                MudDialog.Close(DialogResult.Ok(true));
+                MudDialog.Close(DialogResult.Ok(false));
             }
         }
     }
@@ -112,6 +113,7 @@
     private void SelectImage(InputFileChangeEventArgs e)
     {
         selectedImage = e.File;
+        // TODO newItem.PictureFilename = 
     }
 
     private void OnCategorySelect(CategoryDto newlySelected)

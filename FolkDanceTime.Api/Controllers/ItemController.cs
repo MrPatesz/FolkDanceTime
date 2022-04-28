@@ -49,7 +49,6 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ItemDto>> AddItemAsync([FromBody] ItemDto item, [FromQuery] int categoryId)
         {
-            // TODO add empty PropertyValue records upon creation
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
             return Ok(await _itemService.AddItemAsync(item, categoryId, userId));
         }

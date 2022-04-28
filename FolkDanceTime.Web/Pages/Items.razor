@@ -9,14 +9,14 @@
 
 <PageTitle>Items</PageTitle>
 
-<div class="d-flex flex-row justify-content-between">
+<MudStack Row Justify="Justify.SpaceBetween">
     <MudText Typo="Typo.h4">Items</MudText>
     <MudIconButton
         Color="Color.Primary"
         Icon="@Icons.Filled.AddCircle"
         OnClick="@OpenDialog"
     />
-</div>
+</MudStack>
 
 @if (items == null)
 {
@@ -24,15 +24,17 @@
 }
 else
 {
-    @foreach (var item in items)
-    {
-        <div class="pb-2">
-            <ItemCard
-                Item="@item"
-                OnDelete="@OnDelete"
-            />
-        </div>
-    }
+    <MudGrid Spacing="2">
+        @foreach (var item in items)
+        {
+            <MudItem>
+                <ItemCard
+                    Item="@item"
+                    OnDelete="@OnDelete"
+                />
+            </MudItem>
+        }
+    </MudGrid>
 }
 
 @code {
@@ -55,7 +57,10 @@ else
 
     private void OpenDialog()
     {
-		var options = new DialogOptions { CloseOnEscapeKey = true };
-        DialogService.Show<AddItemDialog>("Create Item", options);
+        var options = new DialogOptions { CloseOnEscapeKey = true };
+        var dialog = DialogService.Show<AddItemDialog>("Create Item", options);
+        var result = dialog.Result;
+
+        //OnAdd(result.Data);
     }
 }

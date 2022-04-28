@@ -8,14 +8,14 @@
 
 <PageTitle>Categories</PageTitle>
 
-<div class="d-flex flex-row justify-content-between">
+<MudStack Row Justify="Justify.SpaceBetween">
     <MudText Typo="Typo.h4">Categories</MudText>
     <MudIconButton
         Color="Color.Primary"
         Icon="@Icons.Filled.AddCircle"
         OnClick="@(() => showAdd = true)"
     />
-</div>
+</MudStack>
 
 @if (categories == null)
 {
@@ -23,22 +23,22 @@
 }
 else
 {
-    @foreach (var category in categories)
-    {
-        <div class="pb-2">
+    <MudStack>
+        @foreach (var category in categories)
+        {
             <CategoryListItem
                 Category="@category"
                 OnDelete="@OnDelete"
             />
-        </div>
-    }
-    @if (showAdd)
-    {
-        <AddCategory
-            OnClose="() => showAdd = false"
-            OnAdd="@OnAdd"
-        />
-    }
+        }
+        @if (showAdd)
+        {
+            <AddCategory
+                OnClose="() => showAdd = false"
+                OnAdd="@OnAdd"
+            />
+        }
+    </MudStack>
 }
 
 @code {

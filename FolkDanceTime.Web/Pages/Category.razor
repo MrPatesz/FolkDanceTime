@@ -42,53 +42,56 @@ else
 {
     @if(editing)
     {
-        <MudTextField
-            Label="Name"
-            InputType="InputType.Text"
-            AutoFocus="true"
-            Variant="Variant.Outlined"
-            @bind-Value="@category.Name"
-        />
-        @foreach(var property in category.Properties)
-        {
-            <div class="d-flex flex-row justify-content-between">
-                <MudTextField
-                    Label="@currentProperties.FirstOrDefault(p => p.Id == property.Id)?.Name"
-                    Variant="Variant.Outlined"
-                    InputType="InputType.Text"
-                    @bind-Value="@property.Name"
-                />
-                <MudIconButton
-                    Color="Color.Error"
-                    Icon="@Icons.Filled.RemoveCircle"
-                    @onclick="@(()=>DeleteProperty(property))"
-                />
+        <MudStack Spacing="2">
+            <MudTextField
+                Label="Name"
+                InputType="InputType.Text"
+                AutoFocus="true"
+                Variant="Variant.Outlined"
+                @bind-Value="@category.Name"
+            />
+            @foreach(var property in category.Properties)
+            {
+                <MudStack Row Spacing="1">
+                    <MudTextField
+                        Label="@currentProperties.FirstOrDefault(p => p.Id == property.Id)?.Name"
+                        Variant="Variant.Outlined"
+                        InputType="InputType.Text"
+                        @bind-Value="@property.Name"
+                    />
+                    <MudIconButton
+                        Color="Color.Error"
+                        Icon="@Icons.Filled.RemoveCircle"
+                        OnClick="@(()=>DeleteProperty(property))"
+                    />
+                </MudStack>
+            }
+            <div class="d-flex flex-row">
+                <div class="flex-grow-1"/>
+                <MudButton
+                    Variant="Variant.Filled"
+                    Color="Color.Primary"
+                    StartIcon="@Icons.Filled.AddCircle"
+                    OnClick="@AddProperty"
+                >
+                    Add Property
+                </MudButton>
             </div>
-        }
-        <div class="d-flex flex-row">
-            <div class="flex-grow-1"/>
-            <MudButton
-                Class="mt-2"
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                StartIcon="@Icons.Filled.AddCircle"
-                OnClick="@AddProperty"
-            >
-                Add Property
-            </MudButton>
-        </div>
+        </MudStack>
     }
     else
     {
-        <MudText>
-            @category.Name
-        </MudText>
-        @foreach(var property in category.Properties)
-        {
-            <MudText>
-                @property.Name
-            </MudText>
-        }
+        <MudStack Spacing="2">
+            <MudField>
+                @category.Name
+            </MudField>
+            @foreach(var property in category.Properties)
+            {
+                <MudField>
+                    @property.Name
+                </MudField>
+            }
+        </MudStack>
     }
 }
 

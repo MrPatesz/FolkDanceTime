@@ -3,7 +3,7 @@
 @inject IItemClient ItemClient
 
 <MudCard>
-    <MudCardMedia Image="@Item.PictureFilename" Height="200" />
+    <MudCardMedia Image="@Item.PictureFilename" Height="150"/>
     <MudCardContent>
         <MudText Typo="Typo.h5">@Item.Name</MudText>
         <MudText Typo="Typo.body2">@Item.Description</MudText>
@@ -14,7 +14,14 @@
             Color="Color.Primary"
             OnClick="@NavigateToDetails"
         >
-        Details
+            Details
+        </MudButton>
+        <MudButton
+            Variant="Variant.Text"
+            Color="Color.Error"
+            OnClick="@DeleteItem"
+        >
+            Delete
         </MudButton>
     </MudCardActions>
 </MudCard>
@@ -25,7 +32,7 @@
     [Parameter]
     public EventCallback<int> OnDelete { get; set; }
 
-    protected async Task DeleteCategory()
+    protected async Task DeleteItem()
     {
         // TODO confirm dialog
 
