@@ -59,7 +59,6 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ItemDto>> EditItemAsync([FromBody] ItemDto item)
         {
-            // TODO also edit all the property values
             return Ok(await _itemService.EditItemAsync(item));
         }
 

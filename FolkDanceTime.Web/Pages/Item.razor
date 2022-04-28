@@ -11,8 +11,7 @@
     <MudText Typo="Typo.h4">Item Details</MudText>
     @if(editing)
     {
-        <div class="d-flex flex-row">
-            <div class="flex-grow-1"/>
+        <MudStack Row Justify="Justify.FlexEnd">
             <MudButtonGroup>
                 <MudIconButton
                     Color="Color.Primary"
@@ -25,7 +24,7 @@
                     OnClick="@Cancel"
                 />
             </MudButtonGroup>
-        </div>
+        </MudStack>
     }
     else
     {
@@ -92,7 +91,7 @@ else
                 Class="rounded-lg"
             />
             <MudStack Spacing="2" Class="w-100">
-                <MudText>
+                <MudText Typo="Typo.h5">
                     @item.Name
                 </MudText>
                 <MudText>

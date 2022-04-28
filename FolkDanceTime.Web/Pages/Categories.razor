@@ -57,6 +57,6 @@ else
 
     protected void OnDelete(int id)
     {
-        categories = categories.Where(c => c.Id != id).ToHashSet();
+        categories = categories.Where(c => c.Id != id).ToList();
     }
 }

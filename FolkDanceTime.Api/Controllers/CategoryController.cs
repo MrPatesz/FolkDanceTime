@@ -49,6 +49,8 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<CategoryDto>> EditCategoryAsync([FromBody] CategoryDto category)
         {
+            // TODO deleting property: delete property values too
+            // TODO adding property: add empty PropertyValues to the items
             return Ok(await _categoryService.EditCategoryAsync(category));
         }
 

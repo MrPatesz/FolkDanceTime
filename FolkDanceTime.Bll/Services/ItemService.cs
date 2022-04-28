@@ -110,7 +110,10 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<ItemDto> EditItemAsync(ItemDto itemDto)
         {
-            var item = await _dbContext.Items.FindAsync(itemDto.Id);
+            var item = await _dbContext.Items
+                .Include(i => i.PropertyValues)
+                .ThenInclude(i => i.Property)
+                .FirstAsync(c => c.Id == itemDto.Id);
 
             if (item == null)
             {
@@ -119,7 +122,10 @@ namespace FolkDanceTime.Bll.Services
 
             item.Name = itemDto.Name;
             item.Description = itemDto.Description;
-            // TODO: also need to set property values
+            item.PropertyValues.ForEach(pv =>
+            {
+                pv.Value = itemDto.Properties.First(p => p.PropertyValueId == pv.Id).Value;
+            });
 
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<ItemDto>(item);

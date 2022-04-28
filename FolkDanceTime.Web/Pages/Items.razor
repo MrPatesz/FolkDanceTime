@@ -45,22 +45,21 @@ else
         items = await ItemClient.GetItemsAsync();
     }
 
-    protected void OnAdd(ItemDto newItem)
-    {
-        items.Add(newItem);
-    }
-
     protected void OnDelete(int id)
     {
-        items = items.Where(c => c.Id != id).ToHashSet();
+        items = items.Where(c => c.Id != id).ToList();
     }
 
-    private void OpenDialog()
+    private async void OpenDialog()
     {
         var options = new DialogOptions { CloseOnEscapeKey = true };
         var dialog = DialogService.Show<AddItemDialog>("Create Item", options);
-        var result = dialog.Result;
+        var result = await dialog.Result;
 
-        //OnAdd(result.Data);
+        if (!result.Cancelled)
+        {
+            items.Add((ItemDto)result.Data);
+            StateHasChanged();
+        }
     }
 }
