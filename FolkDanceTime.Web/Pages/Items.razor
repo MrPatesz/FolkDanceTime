@@ -52,8 +52,7 @@ else
 
     private async void OpenDialog()
     {
-        var options = new DialogOptions { CloseOnEscapeKey = true };
-        var dialog = DialogService.Show<AddItemDialog>("Create Item", options);
+        var dialog = DialogService.Show<AddItemDialog>("Create Item");
         var result = await dialog.Result;
 
         if (!result.Cancelled)

@@ -1,0 +1,93 @@
+﻿@page "/transactions"
+@using Client
+@using FolkDanceTime.Web.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject IItemClient ItemClient
+
+<PageTitle>My Items and Transactions</PageTitle>
+
+<MudText Typo="Typo.h4">My Items and Transactions</MudText>
+
+<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+    <MudTabPanel Text="My Items">
+        @if (items == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <MudStack Spacing="2">
+                @foreach (var item in items)
+                {
+                    <ItemListItem
+                        Item="item"
+                        OnHandOver="@OnHandOver"
+                    />
+                }
+            </MudStack>
+        }
+    </MudTabPanel>
+    @*<MudTabPanel Text="Outgoing Items">
+        @if (outgoingTransactions == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <MudStack Spacing="2">
+                @foreach (var transaction in outgoingTransactions)
+                {
+                    <TransactionListItem
+                        Transaction="transaction"
+                    />
+                }
+            </MudStack>
+        }
+    </MudTabPanel>
+    <MudTabPanel Text="Incoming Items">
+        @if (incomingTransactions == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <MudStack Spacing="2">
+                @foreach (var transaction in incomingTransactions)
+                {
+                    <TransactionListItem
+                        Transaction="transaction"
+                    />
+                }
+            </MudStack>
+        }
+    </MudTabPanel>*@
+</MudTabs>
+
+@code {
+    private ICollection<ItemDto> items;
+    // private ICollection<TransactionDto> incomingTransactions;
+    // private ICollection<TransactionDto> outgoingTransactions;
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ItemClient.GetMyItemsAsync();
+        // incomingTransactions = await TransactionClient.GetIncomingTransactions();
+        // outgoingTransactions = await TransactionClient.GetOutgoingTransactions();
+    }
+
+    private void OnHandOver(int id)
+    {
+        var toMove = items.First(c => c.Id == id);
+
+        items.Remove(toMove);
+        //outgoingTransactions.Add(toMove);
+    }
+
+    // OnRevoke
+
+    // OnDecline
+
+    // OnAccept
+}

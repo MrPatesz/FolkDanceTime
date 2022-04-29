@@ -3,17 +3,23 @@
 @inject ICategoryClient CategoryClient
 
 <MudPaper
-    Class="d-flex justify-content-between align-center cursor-pointer"
+    Class="cursor-pointer"
     @onclick="@NavigateToDetails"
 >
-    <MudText Class="py-3 px-4">
-        @Category.Name
-    </MudText>
-    <MudIconButton
-        Color="Color.Error"
-        Icon="@Icons.Filled.RemoveCircle"
-        OnClick="@DeleteCategory"
-    />
+    <MudStack
+        Row
+        Justify="Justify.SpaceBetween"
+        AlignItems="AlignItems.Center"
+    >
+        <MudText Class="px-4">
+            @Category.Name
+        </MudText>
+        <MudIconButton
+            Color="Color.Error"
+            Icon="@Icons.Filled.RemoveCircle"
+            OnClick="@DeleteCategory"
+        />
+    </MudStack>
 </MudPaper>
 
 @code {

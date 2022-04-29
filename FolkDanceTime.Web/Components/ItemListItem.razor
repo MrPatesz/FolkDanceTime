@@ -1,0 +1,49 @@
+﻿@using Client
+@inject NavigationManager NavigationManager
+@inject IItemClient ItemClient
+@inject IDialogService DialogService
+
+<MudPaper
+    Class="cursor-pointer"
+    @onclick="@NavigateToDetails"
+>
+    <MudStack
+        Row
+        Justify="Justify.SpaceBetween"
+        AlignItems="AlignItems.Center"
+    >
+        <MudText Class="px-4">
+            @Item.Name
+        </MudText>
+        <MudButton
+            Variant="Variant.Text"
+            Color="Color.Primary"
+            OnClick="@HandOver"
+        >
+            Hand Over
+        </MudButton>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ItemDto Item { get; set; }
+    [Parameter]
+    public EventCallback<int> OnHandOver { get; set; }
+
+    protected void NavigateToDetails()
+    {
+        NavigationManager.NavigateTo($"items/{Item.Id}");
+    }
+
+    protected async void HandOver()
+    {
+        var dialog = DialogService.Show<HandOverItemDialog>("Hand Over Item");
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await OnHandOver.InvokeAsync(Item.Id);
+        }
+    }
+}
