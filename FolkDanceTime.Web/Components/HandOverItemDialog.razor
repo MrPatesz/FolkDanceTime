@@ -1,0 +1,70 @@
+﻿@using Client
+@inject IItemTransactionClient ItemTransactionClient
+@inject IUserClient UserClient
+
+<MudDialog>
+    <DialogContent>
+        @if(users == null)
+        {
+            <p><em>Loading...</em></p>
+        }
+        else
+        {
+            <MudSelect
+                T="UserDto"
+                Label="Hand Over To"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                AutoFocus="true"
+                @bind-Value="@selectedUser"
+            >
+                    @foreach(var user in users)
+                    {
+                        <MudSelectItem Value="@user">
+                            @user.UserName
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public ItemDto Item { get; set; }
+
+    private ICollection<UserDto> users;
+    private UserDto selectedUser;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserClient.GetUsersAsync();
+    }
+
+    private async void Submit()
+    {
+        if(selectedUser != null)
+        {
+            try
+            {
+                var transaction = await ItemTransactionClient.CreateTransactionAsync(Item.Id, selectedUser.Id);
+                MudDialog.Close(DialogResult.Ok(transaction));
+            }
+            catch(Exception e)
+            {
+                // TODO toast message
+                MudDialog.Cancel();
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+}

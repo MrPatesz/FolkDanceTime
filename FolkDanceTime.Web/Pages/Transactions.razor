@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
 @inject IItemClient ItemClient
+@inject IItemTransactionClient ItemTransactionClient
 
 <PageTitle>My Items and Transactions</PageTitle>
 
@@ -29,65 +30,71 @@
             </MudStack>
         }
     </MudTabPanel>
-    @*<MudTabPanel Text="Outgoing Items">
-        @if (outgoingTransactions == null)
+    <MudTabPanel Text="Outgoing Items">
+        @if (outgoingItemTransactions == null)
         {
             <p><em>Loading...</em></p>
         }
         else
         {
             <MudStack Spacing="2">
-                @foreach (var transaction in outgoingTransactions)
+                @foreach (var transaction in outgoingItemTransactions)
                 {
-                    <TransactionListItem
+                    <MudField>
+                        @transaction.ItemName
+                    </MudField>
+                    @*<TransactionListItem
                         Transaction="transaction"
-                    />
+                    />*@
                 }
             </MudStack>
         }
     </MudTabPanel>
     <MudTabPanel Text="Incoming Items">
-        @if (incomingTransactions == null)
+        @if (incomingItemTransactions == null)
         {
             <p><em>Loading...</em></p>
         }
         else
         {
             <MudStack Spacing="2">
-                @foreach (var transaction in incomingTransactions)
+                @foreach (var transaction in incomingItemTransactions)
                 {
-                    <TransactionListItem
+                    <MudField>
+                        @transaction.ItemName
+                    </MudField>
+                    @*<TransactionListItem
                         Transaction="transaction"
-                    />
+                    />*@
                 }
             </MudStack>
         }
-    </MudTabPanel>*@
+    </MudTabPanel>
 </MudTabs>
 
 @code {
     private ICollection<ItemDto> items;
-    // private ICollection<TransactionDto> incomingTransactions;
-    // private ICollection<TransactionDto> outgoingTransactions;
+    private ICollection<ItemTransactionDto> incomingItemTransactions;
+    private ICollection<ItemTransactionDto> outgoingItemTransactions;
 
     protected override async Task OnInitializedAsync()
     {
         items = await ItemClient.GetMyItemsAsync();
-        // incomingTransactions = await TransactionClient.GetIncomingTransactions();
-        // outgoingTransactions = await TransactionClient.GetOutgoingTransactions();
+        incomingItemTransactions = await ItemTransactionClient.GetIncomingItemTransactionsAsync();
+        outgoingItemTransactions = await ItemTransactionClient.GetOutgoingItemTransactionsAsync();
     }
 
-    private void OnHandOver(int id)
+    private void OnHandOver(ItemTransactionDto newTransaction)
     {
-        var toMove = items.First(c => c.Id == id);
+        // var toMove = items.First(c => c.Id == id);
 
-        items.Remove(toMove);
-        //outgoingTransactions.Add(toMove);
+        // items.Remove(toMove); // TODO filter items that are in a transaction?
+        outgoingItemTransactions.Add(newTransaction);
     }
 
-    // OnRevoke
+    // OnRevoke outgoing
 
-    // OnDecline
+    // OnDecline incoming
 
-    // OnAccept
+    // OnAccept incoming
 }

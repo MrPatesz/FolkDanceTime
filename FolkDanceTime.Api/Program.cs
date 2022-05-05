@@ -3,7 +3,6 @@ using FolkDanceTime.Bll.Services;
 using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,6 +15,8 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddScoped<CategoryService, CategoryService>();
 builder.Services.AddScoped<ItemService, ItemService>();
+builder.Services.AddScoped<ItemTransactionService, ItemTransactionService>();
+builder.Services.AddScoped<UserService, UserService>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddEntityFrameworkStores<ApplicationDbContext>();

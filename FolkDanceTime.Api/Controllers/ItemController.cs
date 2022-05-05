@@ -72,14 +72,5 @@ namespace FolkDanceTime.Api.Controllers
             await _itemService.DeleteItemAsync(id);
             return Ok();
         }
-
-        // TODO
-        //[HttpPut("{id}")]
-        //[ProducesResponseType(StatusCodes.Status200OK)]
-        //[ProducesResponseType(StatusCodes.Status400BadRequest)]
-        //public async Task<ActionResult> HandOverItemAsync(int id, [FromQuery] int toUserId)
-        //{
-        //    return Ok(await _itemService.HandOverItemAsync(id, toUserId));
-        //}
     }
 }
