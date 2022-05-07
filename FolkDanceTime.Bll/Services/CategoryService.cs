@@ -58,12 +58,10 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<CategoryDto> EditCategoryAsync(CategoryDto categoryDto)
         {
-            var category = await _dbContext.Categories.Include(c => c.Properties).FirstAsync(c => c.Id == categoryDto.Id);
-
-            if (category == null)
-            {
-                throw new Exception();
-            }
+            var category = await _dbContext.Categories
+                .Include(c => c.Properties)
+                .ThenInclude(p => p.PropertyValues)
+                .SingleAsync(c => c.Id == categoryDto.Id);
 
             category.Name = categoryDto.Name;
             category.Properties.ForEach(property =>
@@ -76,14 +74,21 @@ namespace FolkDanceTime.Bll.Services
 
             var propertiesToAdd = categoryDto.Properties.Where(p => p.Id == 0).ToList();
 
-            propertiesToAdd.ForEach(p => _dbContext.Properties.Add(new Property{
+            await _dbContext.Properties.AddRangeAsync(propertiesToAdd.Select(p => new Property
+            {
                 Name = p.Name,
                 CategoryId = categoryDto.Id,
             }));
+
             // TODO create empty propertyValues for each item
 
             var propertiesToDelete = category.Properties.Where(property => !categoryDto.Properties.Any(p => p.Id == property.Id));
-            // TODO delete property values too, cascade
+
+            foreach (var property in propertiesToDelete)
+            {
+                _dbContext.PropertyValues.RemoveRange(property.PropertyValues);
+            }
+
             _dbContext.Properties.RemoveRange(propertiesToDelete);
 
             await _dbContext.SaveChangesAsync();

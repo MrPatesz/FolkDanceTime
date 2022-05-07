@@ -389,22 +389,22 @@ namespace FolkDanceTime.Dal.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "AdminRoleId", "5dc6a63e-6159-474e-9379-166268486ab6", "Admin", "ADMIN" });
+                values: new object[] { "AdminRoleId", "404b2136-0562-43f4-8928-9c6923208fd0", "Admin", "ADMIN" });
 
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-                values: new object[] { "DancerRoleId", "77b7169c-e0e0-45ab-9d38-32d79b2da3f0", "Dancer", "DANCER" });
+                values: new object[] { "DancerRoleId", "c6216479-6b17-4368-8694-95ec7e5fa80c", "Dancer", "DANCER" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "ad65df7b-1bcc-4cde-8d98-eed27e348f62", 0, "308e7e47-d737-46f7-b84b-725c0eda483d", "admin@folkdancetime.com", true, true, null, "ADMIN@FOLKDANCETIME.COM", "ADMIN@FOLKDANCETIME.COM", "AQAAAAEAACcQAAAAEDPqpyBbrMp0+u97DZovsF2HtzpU+ETQSMScd+gZXxAC6yQvdeqJHosSu5G5vRkmNw==", null, false, "565e3604-7039-485d-829b-319eeffdeaa1", false, "admin@folkdancetime.com" });
+                values: new object[] { "8338324c-3e70-4f1b-8582-d9a6103c58de", 0, "1b9f54ab-94b6-42e0-942c-be50cc3fb5c2", "admin@folkdancetime.com", true, true, null, "ADMIN@FOLKDANCETIME.COM", "ADMIN@FOLKDANCETIME.COM", "AQAAAAEAACcQAAAAEEsTk6JsWBo4Bv9OhwmLwcBWXcrfUor8pY2dmUfuQ/dnVFauqS+uD9ah5VyKiX+jhQ==", null, false, "f885625c-7214-44a3-a52e-550d946c1d88", false, "admin@folkdancetime.com" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "AdminRoleId", "ad65df7b-1bcc-4cde-8d98-eed27e348f62" });
+                values: new object[] { "AdminRoleId", "8338324c-3e70-4f1b-8582-d9a6103c58de" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
