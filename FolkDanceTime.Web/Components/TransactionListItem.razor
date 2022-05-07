@@ -58,7 +58,7 @@
     protected async void Accept()
     {
         var success = await ItemTransactionClient.AcceptTransactionAsync(Transaction.Id);
-        if(success)
+        if (success)
         {
             await OnAccept.InvokeAsync(Transaction);
         }
@@ -67,7 +67,7 @@
     protected async void Decline()
     {
         var success = await ItemTransactionClient.DeclineTransactionAsync(Transaction.Id);
-        if(success)
+        if (success)
         {
             await OnDecline.InvokeAsync(Transaction);
         }
@@ -76,7 +76,7 @@
     protected async void Revoke()
     {
         var success = await ItemTransactionClient.RevokeTransactionAsync(Transaction.Id);
-        if(success)
+        if (success)
         {
             await OnRevoke.InvokeAsync(Transaction);
         }
