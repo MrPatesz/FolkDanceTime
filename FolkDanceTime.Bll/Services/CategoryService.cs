@@ -27,19 +27,12 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<CategoryDto> GetCategoryAsync(int id)
         {
-            var category = await _dbContext.Categories
-                .Include(c => c.Properties)
-                .FirstAsync(c => c.Id == id);
-
             // TODO: throw exception ha null, MVC action filter vagy middleware elkapja ezt
             // problem details nevű middleware, config: milyen kivételekre milyen hibakódot adjon
 
-            if (category == null)
-            {
-                throw new Exception();
-            }
-
-            return _mapper.Map<CategoryDto>(category);
+            return await _dbContext.Categories
+                .ProjectTo<CategoryDto>(_mapper.ConfigurationProvider)
+                .SingleAsync(c => c.Id == id);
         }
 
         public async Task<CategoryDto> AddCategoryAsync(CategoryDto categoryDto)
@@ -49,7 +42,7 @@ namespace FolkDanceTime.Bll.Services
                 Name = categoryDto.Name,
             };
 
-            _dbContext.Categories.Add(category);
+            await _dbContext.Categories.AddAsync(category);
             await _dbContext.SaveChangesAsync();
 
             return _mapper.Map<CategoryDto>(category);
@@ -57,12 +50,7 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task DeleteCategoryAsync(int id)
         {
-            var category = await _dbContext.Categories.FindAsync(id);
-
-            if (category == null)
-            {
-                throw new Exception();
-            }
+            var category = await _dbContext.Categories.SingleAsync(c => c.Id == id);
 
             _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();
@@ -92,9 +80,10 @@ namespace FolkDanceTime.Bll.Services
                 Name = p.Name,
                 CategoryId = categoryDto.Id,
             }));
+            // TODO create empty propertyValues for each item
 
             var propertiesToDelete = category.Properties.Where(property => !categoryDto.Properties.Any(p => p.Id == property.Id));
-
+            // TODO delete property values too, cascade
             _dbContext.Properties.RemoveRange(propertiesToDelete);
 
             await _dbContext.SaveChangesAsync();

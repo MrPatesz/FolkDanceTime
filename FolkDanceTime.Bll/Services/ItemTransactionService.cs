@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
 using FolkDanceTime.Shared.Dtos;
+using FolkDanceTime.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FolkDanceTime.Bll.Services
@@ -29,18 +30,20 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<List<ItemTransactionDto>> GetIncomingItemTransactionsAsync(string userId)
         {
+            // TODO use User's IncomingItemTransactions property (still have to filter for Pending)
             return await _dbContext.ItemTransactions
                 .Include(t => t.Item)
-                .Where(i => i.ReceiverUserId == userId && i.Status == Shared.Enums.Status.Pending)
+                .Where(i => i.ReceiverUserId == userId && i.Status == Status.Pending)
                 .ProjectTo<ItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
         public async Task<List<ItemTransactionDto>> GetOutgoingItemTransactionsAsync(string userId)
         {
+            // TODO use User's OutgoingItemTransactions property (still have to filter for Pending)
             return await _dbContext.ItemTransactions
                 .Include(t => t.Item)
-                .Where(i => i.SenderUserId == userId && i.Status == Shared.Enums.Status.Pending)
+                .Where(i => i.SenderUserId == userId && i.Status == Status.Pending)
                 .ProjectTo<ItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -48,7 +51,7 @@ namespace FolkDanceTime.Bll.Services
         public async Task<ItemTransactionDto> CreateTransactionAsync(int itemId, string senderUserId, string receiverUserId)
         {
             var isItemInTransaction = await _dbContext.ItemTransactions
-                .AnyAsync(t => t.ItemId == itemId && t.Status == Shared.Enums.Status.Pending);
+                .AnyAsync(t => t.ItemId == itemId && t.Status == Status.Pending);
 
             if (isItemInTransaction)
             {
@@ -60,11 +63,13 @@ namespace FolkDanceTime.Bll.Services
                 throw new Exception();
             }
 
+            var item = _dbContext.Items.Find(itemId);
+
             var newTransaction = new ItemTransaction
             {
                 ItemId = itemId,
-                // maybe need to add Item here, or include it somehow for mapping to work
-                Status = Shared.Enums.Status.Pending,
+                Item = item,
+                Status = Status.Pending,
                 SenderUserId = senderUserId,
                 ReceiverUserId = receiverUserId,
                 CreatedAt = DateTime.UtcNow,
@@ -85,9 +90,9 @@ namespace FolkDanceTime.Bll.Services
                 throw new Exception();
             }
 
-            if (transaction.Status == Shared.Enums.Status.Pending && transaction.SenderUserId == userId)
+            if (transaction.Status == Status.Pending && transaction.SenderUserId == userId)
             {
-                transaction.Status = Shared.Enums.Status.Revoked;
+                transaction.Status = Status.Revoked;
                 transaction.CompletedAt = DateTime.UtcNow;
 
                 await _dbContext.SaveChangesAsync();
@@ -108,9 +113,9 @@ namespace FolkDanceTime.Bll.Services
                 throw new Exception();
             }
 
-            if(transaction.Status == Shared.Enums.Status.Pending && transaction.ReceiverUserId == userId)
+            if(transaction.Status == Status.Pending && transaction.ReceiverUserId == userId)
             {
-                transaction.Status = Shared.Enums.Status.Declined;
+                transaction.Status = Status.Declined;
                 transaction.CompletedAt = DateTime.UtcNow;
 
                 await _dbContext.SaveChangesAsync();

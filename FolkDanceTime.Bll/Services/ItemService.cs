@@ -35,17 +35,9 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<ItemDto> GetItemAsync(int id)
         {
-            var item = await _dbContext.Items
-                .Include(i => i.PropertyValues)
-                .ThenInclude(i => i.Property)
-                .FirstAsync(c => c.Id == id);
-
-            if (item == null)
-            {
-                throw new Exception();
-            }
-
-            return _mapper.Map<ItemDto>(item);
+            return await _dbContext.Items
+                .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
+                .SingleAsync(i => i.Id == id);
         }
 
         public async Task<ItemDto> AddItemAsync(ItemDto itemDto, int categoryId, string userId)
@@ -58,7 +50,7 @@ namespace FolkDanceTime.Bll.Services
                 OwnerUserId = userId,
             };
 
-            _dbContext.Items.Add(item);
+            await _dbContext.Items.AddAsync(item);
             await _dbContext.SaveChangesAsync();
 
             var propertyValues = itemDto.Properties.Select(p =>
@@ -97,12 +89,7 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task DeleteItemAsync(int id)
         {
-            var item = await _dbContext.Items.FindAsync(id);
-
-            if (item == null)
-            {
-                throw new Exception();
-            }
+            var item = await _dbContext.Items.SingleAsync(i => i.Id == id);
 
             _dbContext.Items.Remove(item);
             await _dbContext.SaveChangesAsync();
@@ -113,18 +100,13 @@ namespace FolkDanceTime.Bll.Services
             var item = await _dbContext.Items
                 .Include(i => i.PropertyValues)
                 .ThenInclude(i => i.Property)
-                .FirstAsync(c => c.Id == itemDto.Id);
-
-            if (item == null)
-            {
-                throw new Exception();
-            }
+                .SingleAsync(c => c.Id == itemDto.Id);
 
             item.Name = itemDto.Name;
             item.Description = itemDto.Description;
             item.PropertyValues.ForEach(pv =>
             {
-                pv.Value = itemDto.Properties.First(p => p.PropertyValueId == pv.Id).Value;
+                pv.Value = itemDto.Properties.Single(p => p.PropertyValueId == pv.Id).Value;
             });
 
             await _dbContext.SaveChangesAsync();
