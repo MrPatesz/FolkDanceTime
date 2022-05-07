@@ -64,7 +64,7 @@ namespace FolkDanceTime.Bll.Services
 
             var category = await _dbContext.Categories
                 .Include(c => c.Properties)
-                .FirstAsync(c => c.Id == categoryId);
+                .SingleAsync(c => c.Id == categoryId);
 
             category.Properties.ForEach(p =>
             {
@@ -80,8 +80,7 @@ namespace FolkDanceTime.Bll.Services
                 }
             });
 
-            _dbContext.PropertyValues.AddRange(propertyValues);
-
+            await _dbContext.PropertyValues.AddRangeAsync(propertyValues);
             await _dbContext.SaveChangesAsync();
 
             return _mapper.Map<ItemDto>(item);

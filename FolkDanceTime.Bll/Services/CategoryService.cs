@@ -66,13 +66,13 @@ namespace FolkDanceTime.Bll.Services
             category.Name = categoryDto.Name;
             category.Properties.ForEach(property =>
             {
-                if(categoryDto.Properties.Any(p => p.Id == property.Id))
+                if (categoryDto.Properties.Any(p => p.Id == property.Id))
                 {
-                    property.Name = categoryDto.Properties.First(p => p.Id == property.Id).Name;
+                    property.Name = categoryDto.Properties.Single(p => p.Id == property.Id).Name;
                 }
             });
 
-            var propertiesToAdd = categoryDto.Properties.Where(p => p.Id == 0).ToList();
+            var propertiesToAdd = categoryDto.Properties.Where(p => p.Id == 0);
 
             await _dbContext.Properties.AddRangeAsync(propertiesToAdd.Select(p => new Property
             {

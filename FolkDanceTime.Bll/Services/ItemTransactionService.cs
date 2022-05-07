@@ -23,7 +23,6 @@ namespace FolkDanceTime.Bll.Services
         {
             // TODO create DetailedItemTransactionDto and use it here for admin view
             return await _dbContext.ItemTransactions
-                .Include(t => t.Item)
                 .ProjectTo<ItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -32,7 +31,6 @@ namespace FolkDanceTime.Bll.Services
         {
             // TODO use User's IncomingItemTransactions property (still have to filter for Pending)
             return await _dbContext.ItemTransactions
-                .Include(t => t.Item)
                 .Where(i => i.ReceiverUserId == userId && i.Status == Status.Pending)
                 .ProjectTo<ItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -42,7 +40,6 @@ namespace FolkDanceTime.Bll.Services
         {
             // TODO use User's OutgoingItemTransactions property (still have to filter for Pending)
             return await _dbContext.ItemTransactions
-                .Include(t => t.Item)
                 .Where(i => i.SenderUserId == userId && i.Status == Status.Pending)
                 .ProjectTo<ItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
@@ -50,6 +47,11 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<ItemTransactionDto> CreateTransactionAsync(int itemId, string senderUserId, string receiverUserId)
         {
+            if (senderUserId == receiverUserId)
+            {
+                throw new Exception();
+            }
+
             var isItemInTransaction = await _dbContext.ItemTransactions
                 .AnyAsync(t => t.ItemId == itemId && t.Status == Status.Pending);
 
@@ -58,12 +60,7 @@ namespace FolkDanceTime.Bll.Services
                 throw new Exception();
             }
 
-            if (senderUserId == receiverUserId)
-            {
-                throw new Exception();
-            }
-
-            var item = _dbContext.Items.Find(itemId);
+            var item = await _dbContext.Items.SingleAsync(i => i.Id == itemId);
 
             var newTransaction = new ItemTransaction
             {
@@ -75,7 +72,7 @@ namespace FolkDanceTime.Bll.Services
                 CreatedAt = DateTime.UtcNow,
             };
 
-            _dbContext.ItemTransactions.Add(newTransaction);
+            await _dbContext.ItemTransactions.AddAsync(newTransaction);
             await _dbContext.SaveChangesAsync();
 
             return _mapper.Map<ItemTransactionDto>(newTransaction);
@@ -83,12 +80,7 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<bool> RevokeTransactionAsync(int id, string userId)
         {
-            var transaction = await _dbContext.ItemTransactions.FindAsync(id);
-
-            if (transaction == null)
-            {
-                throw new Exception();
-            }
+            var transaction = await _dbContext.ItemTransactions.SingleAsync(t => t.Id == id);
 
             if (transaction.Status == Status.Pending && transaction.SenderUserId == userId)
             {
@@ -106,12 +98,7 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<bool> DeclineTransactionAsync(int id, string userId)
         {
-            var transaction = await _dbContext.ItemTransactions.FindAsync(id);
-
-            if (transaction == null)
-            {
-                throw new Exception();
-            }
+            var transaction = await _dbContext.ItemTransactions.SingleAsync(t => t.Id == id);
 
             if(transaction.Status == Status.Pending && transaction.ReceiverUserId == userId)
             {
@@ -129,18 +116,14 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task<bool> AcceptTransactionAsync(int id, string userId)
         {
-            var transaction = await _dbContext.ItemTransactions.Include(t => t.Item).FirstOrDefaultAsync(t => t.Id == id);
+            var transaction = await _dbContext.ItemTransactions
+                .Include(t => t.Item)
+                .SingleAsync(t => t.Id == id);
 
-            if (transaction == null)
+            if (transaction.Status == Status.Pending && transaction.ReceiverUserId == userId)
             {
-                throw new Exception();
-            }
-
-            if (transaction.Status == Shared.Enums.Status.Pending && transaction.ReceiverUserId == userId)
-            {
-                transaction.Status = Shared.Enums.Status.Accepted;
+                transaction.Status = Status.Accepted;
                 transaction.CompletedAt = DateTime.UtcNow;
-
                 transaction.Item.OwnerUserId = userId;
 
                 await _dbContext.SaveChangesAsync();
