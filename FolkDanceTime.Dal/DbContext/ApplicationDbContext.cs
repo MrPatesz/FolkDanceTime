@@ -29,24 +29,19 @@ namespace FolkDanceTime.Dal.DbContext
 
             builder.Entity<User>()
                 .HasMany(u => u.Items)
-                .WithOne(i => i.OwnerUser)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(i => i.OwnerUser);
             builder.Entity<User>()
                 .HasMany(u => u.OutgoingItemTransactions)
-                .WithOne(it => it.SenderUser)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(it => it.SenderUser);
             builder.Entity<User>()
                 .HasMany(u => u.IncomingItemTransactions)
-                .WithOne(it => it.ReceiverUser)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(it => it.ReceiverUser);
             builder.Entity<User>()
                 .HasMany(u => u.OutgoingItemSetTransactions)
-                .WithOne(ist => ist.SenderUser)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(ist => ist.SenderUser);
             builder.Entity<User>()
                 .HasMany(u => u.IncomingItemSetTransactions)
-                .WithOne(ist => ist.ReceiverUser)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(ist => ist.ReceiverUser);
 
             builder.Entity<Item>()
                 .HasIndex(i => i.Name)
@@ -55,42 +50,34 @@ namespace FolkDanceTime.Dal.DbContext
                 .HasOne(i => i.OwnerUser)
                 .WithMany(u => u.Items)
                 .HasForeignKey(i => i.OwnerUserId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<Item>()
                 .HasOne(i => i.Category)
                 .WithMany(c => c.Items)
                 .HasForeignKey(i => i.CategoryId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<Item>()
                 .HasOne(i => i.ItemSet)
                 .WithMany(set => set.Items)
-                .HasForeignKey(i => i.ItemSetId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey(i => i.ItemSetId);
             builder.Entity<Item>()
                 .HasMany(i => i.ItemTransactions)
-                .WithOne(it => it.Item)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(it => it.Item);
             builder.Entity<Item>()
                 .HasMany(i => i.PropertyValues)
-                .WithOne(pv => pv.Item)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(pv => pv.Item);
 
             builder.Entity<ItemSet>()
                 .HasMany(set => set.Items)
-                .WithOne(i => i.ItemSet)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(i => i.ItemSet);
             builder.Entity<ItemSet>()
                 .HasMany(set => set.ItemSetTransactions)
-                .WithOne(ist => ist.ItemSet)
-                .OnDelete(DeleteBehavior.NoAction);
+                .WithOne(ist => ist.ItemSet);
 
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.Item)
                 .WithMany(i => i.ItemTransactions)
                 .HasForeignKey(it => it.ItemId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.ReceiverUser)
@@ -109,7 +96,6 @@ namespace FolkDanceTime.Dal.DbContext
                 .HasOne(it => it.ItemSet)
                 .WithMany(i => i.ItemSetTransactions)
                 .HasForeignKey(it => it.ItemSetId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.ReceiverUser)
@@ -129,29 +115,24 @@ namespace FolkDanceTime.Dal.DbContext
                 .IsUnique();
             builder.Entity<Category>()
                 .HasMany(c => c.Items)
-                .WithOne(i => i.Category)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(i => i.Category);
             builder.Entity<Category>()
                 .HasMany(c => c.Properties)
-                .WithOne(p => p.Category)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(p => p.Category);
 
             builder.Entity<Property>()
                 .HasOne(p => p.Category)
                 .WithMany(c => c.Properties)
                 .HasForeignKey(p => p.CategoryId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<Property>()
                 .HasMany(p => p.PropertyValues)
-                .WithOne(pv => pv.Property)
-                .OnDelete(DeleteBehavior.Cascade);
+                .WithOne(pv => pv.Property);
 
             builder.Entity<PropertyValue>()
                 .HasOne(it => it.Item)
                 .WithMany(u => u.PropertyValues)
                 .HasForeignKey(it => it.ItemId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<PropertyValue>()
                 .HasOne(it => it.Property)

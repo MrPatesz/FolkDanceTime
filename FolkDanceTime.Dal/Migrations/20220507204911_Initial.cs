@@ -132,19 +132,6 @@ namespace FolkDanceTime.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Properties",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Properties", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -251,12 +238,32 @@ namespace FolkDanceTime.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Items",
+                name: "Properties",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Properties", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Properties_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Items",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PictureFilename = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     OwnerUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -320,32 +327,6 @@ namespace FolkDanceTime.Dal.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PropertyToCategories",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    PropertyId = table.Column<int>(type: "int", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PropertyToCategories", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_PropertyToCategories_Categories_CategoryId",
-                        column: x => x.CategoryId,
-                        principalTable: "Categories",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_PropertyToCategories_Properties_PropertyId",
-                        column: x => x.PropertyId,
-                        principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "ItemTransactions",
                 columns: table => new
                 {
@@ -402,9 +383,28 @@ namespace FolkDanceTime.Dal.Migrations
                         name: "FK_PropertyValues_Properties_PropertyId",
                         column: x => x.PropertyId,
                         principalTable: "Properties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "AdminRoleId", "5dc6a63e-6159-474e-9379-166268486ab6", "Admin", "ADMIN" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "DancerRoleId", "77b7169c-e0e0-45ab-9d38-32d79b2da3f0", "Dancer", "DANCER" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "ad65df7b-1bcc-4cde-8d98-eed27e348f62", 0, "308e7e47-d737-46f7-b84b-725c0eda483d", "admin@folkdancetime.com", true, true, null, "ADMIN@FOLKDANCETIME.COM", "ADMIN@FOLKDANCETIME.COM", "AQAAAAEAACcQAAAAEDPqpyBbrMp0+u97DZovsF2HtzpU+ETQSMScd+gZXxAC6yQvdeqJHosSu5G5vRkmNw==", null, false, "565e3604-7039-485d-829b-319eeffdeaa1", false, "admin@folkdancetime.com" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "AdminRoleId", "ad65df7b-1bcc-4cde-8d98-eed27e348f62" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -473,6 +473,12 @@ namespace FolkDanceTime.Dal.Migrations
                 column: "ItemSetId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Items_Name",
+                table: "Items",
+                column: "Name",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_OwnerUserId",
                 table: "Items",
                 column: "OwnerUserId");
@@ -533,14 +539,9 @@ namespace FolkDanceTime.Dal.Migrations
                 columns: new[] { "SubjectId", "SessionId", "Type" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_PropertyToCategories_CategoryId",
-                table: "PropertyToCategories",
+                name: "IX_Properties_CategoryId",
+                table: "Properties",
                 column: "CategoryId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_PropertyToCategories_PropertyId",
-                table: "PropertyToCategories",
-                column: "PropertyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PropertyValues_ItemId",
@@ -586,9 +587,6 @@ namespace FolkDanceTime.Dal.Migrations
                 name: "PersistedGrants");
 
             migrationBuilder.DropTable(
-                name: "PropertyToCategories");
-
-            migrationBuilder.DropTable(
                 name: "PropertyValues");
 
             migrationBuilder.DropTable(
@@ -604,10 +602,10 @@ namespace FolkDanceTime.Dal.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "ItemsSets");
 
             migrationBuilder.DropTable(
-                name: "ItemsSets");
+                name: "Categories");
         }
     }
 }

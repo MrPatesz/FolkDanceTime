@@ -12,14 +12,14 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FolkDanceTime.Dal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220418132525_ChangeSeedData")]
-    partial class ChangeSeedData
+    [Migration("20220507204911_Initial")]
+    partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.3")
+                .HasAnnotation("ProductVersion", "6.0.4")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
@@ -204,7 +204,7 @@ namespace FolkDanceTime.Dal.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OwnerUserId")
                         .IsRequired()
@@ -218,6 +218,9 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasIndex("CategoryId");
 
                     b.HasIndex("ItemSetId");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("OwnerUserId");
 
@@ -327,36 +330,18 @@ namespace FolkDanceTime.Dal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Properties");
-                });
-
-            modelBuilder.Entity("FolkDanceTime.Dal.Entities.PropertyToCategory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("PropertyId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
                     b.HasIndex("CategoryId");
 
-                    b.HasIndex("PropertyId");
-
-                    b.ToTable("PropertyToCategories");
+                    b.ToTable("Properties");
                 });
 
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.PropertyValue", b =>
@@ -453,17 +438,17 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "00000000-0000-0000-0000-000000000000",
+                            Id = "ad65df7b-1bcc-4cde-8d98-eed27e348f62",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "23e5f5bd-09af-48ff-96cf-fcaf567618f8",
+                            ConcurrencyStamp = "308e7e47-d737-46f7-b84b-725c0eda483d",
                             Email = "admin@folkdancetime.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
                             NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEC22jPI9DWj3rrjWRKDQ6TfmtM9Su2atcYYtq2RL0UJecTTrRc1AbjqgdLgV04oJUQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDPqpyBbrMp0+u97DZovsF2HtzpU+ETQSMScd+gZXxAC6yQvdeqJHosSu5G5vRkmNw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "70bccd14-42c1-4280-8b4a-332e3e347800",
+                            SecurityStamp = "565e3604-7039-485d-829b-319eeffdeaa1",
                             TwoFactorEnabled = false,
                             UserName = "admin@folkdancetime.com"
                         });
@@ -499,14 +484,14 @@ namespace FolkDanceTime.Dal.Migrations
                         new
                         {
                             Id = "AdminRoleId",
-                            ConcurrencyStamp = "d5742994-15bf-41da-8583-e21a3a611881",
+                            ConcurrencyStamp = "5dc6a63e-6159-474e-9379-166268486ab6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "DancerRoleId",
-                            ConcurrencyStamp = "12a5c121-d9b2-4bd7-bd5c-3085d0c9d27d",
+                            ConcurrencyStamp = "77b7169c-e0e0-45ab-9d38-32d79b2da3f0",
                             Name = "Dancer",
                             NormalizedName = "DANCER"
                         });
@@ -603,7 +588,7 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "00000000-0000-0000-0000-000000000000",
+                            UserId = "ad65df7b-1bcc-4cde-8d98-eed27e348f62",
                             RoleId = "AdminRoleId"
                         });
                 });
@@ -708,23 +693,15 @@ namespace FolkDanceTime.Dal.Migrations
                     b.Navigation("SenderUser");
                 });
 
-            modelBuilder.Entity("FolkDanceTime.Dal.Entities.PropertyToCategory", b =>
+            modelBuilder.Entity("FolkDanceTime.Dal.Entities.Property", b =>
                 {
                     b.HasOne("FolkDanceTime.Dal.Entities.Category", "Category")
-                        .WithMany("CategoryToProperties")
+                        .WithMany("Properties")
                         .HasForeignKey("CategoryId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("FolkDanceTime.Dal.Entities.Property", "Property")
-                        .WithMany("PropertyToCategories")
-                        .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Category");
-
-                    b.Navigation("Property");
                 });
 
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.PropertyValue", b =>
@@ -738,7 +715,7 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasOne("FolkDanceTime.Dal.Entities.Property", "Property")
                         .WithMany("PropertyValues")
                         .HasForeignKey("PropertyId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Item");
@@ -799,9 +776,9 @@ namespace FolkDanceTime.Dal.Migrations
 
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.Category", b =>
                 {
-                    b.Navigation("CategoryToProperties");
-
                     b.Navigation("Items");
+
+                    b.Navigation("Properties");
                 });
 
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.Item", b =>
@@ -820,8 +797,6 @@ namespace FolkDanceTime.Dal.Migrations
 
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.Property", b =>
                 {
-                    b.Navigation("PropertyToCategories");
-
                     b.Navigation("PropertyValues");
                 });
 
