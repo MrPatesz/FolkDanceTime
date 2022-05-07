@@ -40,12 +40,13 @@
             <MudStack Spacing="2">
                 @foreach (var transaction in outgoingItemTransactions)
                 {
-                    <MudField>
-                        @transaction.ItemName
-                    </MudField>
-                    @*<TransactionListItem
-                        Transaction="transaction"
-                    />*@
+                    <TransactionListItem
+                        Transaction="@transaction"
+                        TransactionType="@Enums.TransactionType.Outgoing"
+                        OnAccept="@OnAccept"
+                        OnDecline="@OnDecline"
+                        OnRevoke="@OnRevoke"
+                    />
                 }
             </MudStack>
         }
@@ -60,12 +61,13 @@
             <MudStack Spacing="2">
                 @foreach (var transaction in incomingItemTransactions)
                 {
-                    <MudField>
-                        @transaction.ItemName
-                    </MudField>
-                    @*<TransactionListItem
-                        Transaction="transaction"
-                    />*@
+                    <TransactionListItem
+                        Transaction="@transaction"
+                        TransactionType="@Enums.TransactionType.Incoming"
+                        OnAccept="@OnAccept"
+                        OnDecline="@OnDecline"
+                        OnRevoke="@OnRevoke"
+                    />
                 }
             </MudStack>
         }
@@ -86,15 +88,24 @@
 
     private void OnHandOver(ItemTransactionDto newTransaction)
     {
-        // var toMove = items.First(c => c.Id == id);
-
-        // items.Remove(toMove); // TODO filter items that are in a transaction?
         outgoingItemTransactions.Add(newTransaction);
     }
 
-    // OnRevoke outgoing
+    private async Task OnAccept(ItemTransactionDto transaction)
+    {
+        incomingItemTransactions.Remove(transaction);
 
-    // OnDecline incoming
+        // TODO add item somehow without refetching
+        items = await ItemClient.GetMyItemsAsync();
+    }
 
-    // OnAccept incoming
+    private void OnDecline(ItemTransactionDto transaction)
+    {
+        incomingItemTransactions.Remove(transaction);
+    }
+
+    private void OnRevoke(ItemTransactionDto transaction)
+    {
+        outgoingItemTransactions.Remove(transaction);
+    }
 }

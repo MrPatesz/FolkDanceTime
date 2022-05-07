@@ -1,0 +1,84 @@
+﻿@using Client
+@using FolkDanceTime.Web.Enums
+@inject IItemTransactionClient ItemTransactionClient
+
+<MudPaper>
+    <MudStack
+        Row
+        Justify="Justify.SpaceBetween"
+        AlignItems="AlignItems.Center"
+    >
+        <MudText Class="px-2">
+            @Transaction.ItemName
+        </MudText>
+        @if(TransactionType == TransactionType.Incoming)
+        {
+            <MudButtonGroup
+                Color="Color.Primary"
+            >
+                <MudButton
+                    Variant="Variant.Text"
+                    OnClick="@Accept"
+                >
+                    Accept
+                </MudButton>
+                <MudButton
+                    Variant="Variant.Text"
+                    OnClick="@Decline"
+                >
+                    Decline
+                </MudButton>
+            </MudButtonGroup>
+        } 
+        else if(TransactionType == TransactionType.Outgoing)
+        {
+            <MudButton
+                Variant="Variant.Text"
+                Color="Color.Primary"
+                OnClick="@Revoke"
+            >
+                Revoke
+            </MudButton>
+        }
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ItemTransactionDto Transaction { get; set; }
+    [Parameter]
+    public TransactionType TransactionType { get; set; }
+    [Parameter]
+    public EventCallback<ItemTransactionDto> OnAccept { get; set; }
+    [Parameter]
+    public EventCallback<ItemTransactionDto> OnDecline { get; set; }
+    [Parameter]
+    public EventCallback<ItemTransactionDto> OnRevoke { get; set; }
+
+    protected async void Accept()
+    {
+        var success = await ItemTransactionClient.AcceptTransactionAsync(Transaction.Id);
+        if(success)
+        {
+            await OnAccept.InvokeAsync(Transaction);
+        }
+    }
+
+    protected async void Decline()
+    {
+        var success = await ItemTransactionClient.DeclineTransactionAsync(Transaction.Id);
+        if(success)
+        {
+            await OnDecline.InvokeAsync(Transaction);
+        }
+    }
+
+    protected async void Revoke()
+    {
+        var success = await ItemTransactionClient.RevokeTransactionAsync(Transaction.Id);
+        if(success)
+        {
+            await OnRevoke.InvokeAsync(Transaction);
+        }
+    }
+}
