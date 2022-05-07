@@ -30,7 +30,7 @@
     [Parameter]
     public ItemDto Item { get; set; }
     [Parameter]
-    public EventCallback<int> OnDelete { get; set; }
+    public EventCallback<ItemDto> OnDelete { get; set; }
 
     protected async Task DeleteItem()
     {
@@ -39,7 +39,7 @@
         try
         {
             await ItemClient.DeleteItemAsync(Item.Id);
-            await OnDelete.InvokeAsync(Item.Id);
+            await OnDelete.InvokeAsync(Item);
         }
         catch (Exception e)
         {

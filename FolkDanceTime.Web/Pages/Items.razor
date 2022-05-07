@@ -45,9 +45,9 @@ else
         items = await ItemClient.GetItemsAsync();
     }
 
-    protected void OnDelete(int id)
+    protected void OnDelete(ItemDto item)
     {
-        items = items.Where(c => c.Id != id).ToList();
+        items.Remove(item);
     }
 
     private async void OpenDialog()
