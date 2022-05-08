@@ -54,7 +54,7 @@ else
             {
                 <MudStack Row Spacing="1">
                     <MudTextField
-                        Label="@currentProperties.FirstOrDefault(p => p.Id == property.Id)?.Name"
+                        Label="@currentCategory.Properties.FirstOrDefault(p => p.Id == property.Id)?.Name"
                         Variant="Variant.Outlined"
                         InputType="InputType.Text"
                         @bind-Value="@property.Name"
