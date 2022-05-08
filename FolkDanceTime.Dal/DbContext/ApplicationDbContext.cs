@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.ApiAuthorization.IdentityServer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using System.Security.Claims;
 
 namespace FolkDanceTime.Dal.DbContext
 {
@@ -148,21 +149,31 @@ namespace FolkDanceTime.Dal.DbContext
 
             var adminId = Guid.NewGuid().ToString();
 
-            var admin =
-                new User
-                {
-                    Id = adminId,
-                    UserName = "admin@folkdancetime.com",
-                    Email = "admin@folkdancetime.com",
-                    NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                    NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
-                    LockoutEnabled = true,
-                    EmailConfirmed = true,
-                };
+            var admin = new User
+            {
+                Id = adminId,
+                UserName = "admin@folkdancetime.com",
+                Email = "admin@folkdancetime.com",
+                NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
+                NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
+                LockoutEnabled = true,
+                EmailConfirmed = true,
+            };
             admin.PasswordHash = passwordHasher.HashPassword(admin, "P@ssword1");
 
             builder.Entity<User>()
                 .HasData(admin);
+
+            builder.Entity<IdentityUserClaim<string>>()
+                .HasData(
+                    new IdentityUserClaim<string>
+                    {
+                        Id = 1,
+                        UserId = adminId,
+                        ClaimType = ClaimTypes.Role,
+                        ClaimValue = "Admin",
+                    }
+                );
 
             builder.Entity<IdentityRole>()
                 .HasData(new[]
@@ -187,6 +198,17 @@ namespace FolkDanceTime.Dal.DbContext
                     UserId = adminId,
                     RoleId = "AdminRoleId",
                 });
+
+            builder.Entity<IdentityRoleClaim<string>>()
+                .HasData(
+                    new IdentityRoleClaim<string>
+                    {
+                        Id = 1,
+                        RoleId = "AdminRoleId",
+                        ClaimType = ClaimTypes.Role,
+                        ClaimValue = "Admin",
+                    }
+                );
         }
     }
 }
