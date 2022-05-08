@@ -116,6 +116,7 @@ else
 
     private ItemDto item;
 
+    private ItemDto currentItem;
     private List<PropertyValueDto> currentProperties;
 
     private bool editing = false;
@@ -138,6 +139,10 @@ else
                 Value = p.Value,
             }
         ).ToList();
+        currentItem = new ItemDto();
+        currentItem.Name = item.Name;
+        currentItem.Description = item.Description;
+        currentItem.Properties = currentProperties;
 
         editing = true;
     }
@@ -149,9 +154,10 @@ else
 
     protected void Cancel()
     {
-        item.Properties = currentProperties;
+        item = currentItem;
+        //item.Properties = currentProperties;
+
         editing = false;
-        // TODO also save name and description
     }
 
     protected async Task Confirm()
