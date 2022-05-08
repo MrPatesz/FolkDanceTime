@@ -2,7 +2,6 @@
 using FolkDanceTime.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace FolkDanceTime.Api.Controllers
 {

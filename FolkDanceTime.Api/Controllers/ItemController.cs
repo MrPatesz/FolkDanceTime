@@ -31,7 +31,7 @@ namespace FolkDanceTime.Api.Controllers
         public async Task<ActionResult<List<ItemDto>>> GetMyItemsAsync()
         {
             // TODO create ItemHeaderDto and use that here
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemService.GetMyItemsAsync(userId));
         }
 
@@ -49,7 +49,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ItemDto>> AddItemAsync([FromBody] ItemDto item, [FromQuery] int categoryId)
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemService.AddItemAsync(item, categoryId, userId));
         }
 

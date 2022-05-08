@@ -29,7 +29,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemTransactionDto>>> GetIncomingItemTransactionsAsync()
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemTransactionService.GetIncomingItemTransactionsAsync(userId));
         }
 
@@ -37,7 +37,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemTransactionDto>>> GetOutgoingItemTransactionsAsync()
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemTransactionService.GetOutgoingItemTransactionsAsync(userId));
         }
 
@@ -46,7 +46,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<ItemTransactionDto>> CreateTransactionAsync([FromQuery] int itemId, [FromQuery] string receiverUserId)
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemTransactionService.CreateTransactionAsync(itemId, userId, receiverUserId));
         }
 
@@ -55,7 +55,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> RevokeTransactionAsync(int id)
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemTransactionService.RevokeTransactionAsync(id, userId));
         }
 
@@ -64,7 +64,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> DeclineTransactionAsync(int id)
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemTransactionService.DeclineTransactionAsync(id, userId));
         }
 
@@ -73,7 +73,7 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<ActionResult<bool>> AcceptTransactionAsync(int id)
         {
-            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier).Value;
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemTransactionService.AcceptTransactionAsync(id, userId));
         }
     }
