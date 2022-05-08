@@ -25,8 +25,16 @@ builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfi
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services.AddIdentityServer()
-    .AddApiAuthorization<User, ApplicationDbContext>();
-    //.AddProfileService<CustomProfileService>();
+    .AddApiAuthorization<User, ApplicationDbContext>()
+    .AddProfileService<CustomProfileService>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy => policy.RequireAssertion(context => context.User.HasClaim(c =>
+        c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" &&
+        c.Value == "Admin"
+        )));
+});
 
 builder.Services.AddAuthentication()
     .AddIdentityServerJwt();

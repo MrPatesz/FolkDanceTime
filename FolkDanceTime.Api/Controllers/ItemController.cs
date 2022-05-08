@@ -18,6 +18,7 @@ namespace FolkDanceTime.Api.Controllers
         }
 
         //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemDto>>> GetItemsAsync()
