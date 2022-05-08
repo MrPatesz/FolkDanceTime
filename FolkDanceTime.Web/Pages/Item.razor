@@ -115,9 +115,7 @@ else
     public int Id { get; set; }
 
     private ItemDto item;
-
     private ItemDto currentItem;
-    private List<PropertyValueDto> currentProperties;
 
     private bool editing = false;
 
@@ -171,7 +169,7 @@ else
         catch (Exception e)
         {
             // TODO toast message: name must be unique
-            item.Properties = currentProperties;
+            item = currentItem;
         }
         finally
         {

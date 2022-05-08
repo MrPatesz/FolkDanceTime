@@ -99,8 +99,7 @@ else
     public int Id { get; set; }
 
     private CategoryDto category;
-
-    private List<PropertyDto> currentProperties;
+    private CategoryDto currentCategory;
 
     private bool editing = false;
 
@@ -114,8 +113,6 @@ else
         category.Properties = category.Properties
             .Where(p => p.Id != property.Id || p.Name != property.Name)
             .ToHashSet();
-
-        // TODO confirm dialog for property deletion: it will delete all values too
     }
 
     protected void AddProperty()
@@ -125,16 +122,24 @@ else
 
     protected void StartEditing()
     {
-        currentProperties = new List<PropertyDto>();
-        category.Properties.ToList().ForEach(p => currentProperties.Add(new PropertyDto { Id = p.Id, Name = p.Name }));
+        currentCategory = new CategoryDto();
+        currentCategory.Id = category.Id;
+        currentCategory.Name = category.Name;
+        currentCategory.Properties = category.Properties.Select(p =>
+            new PropertyDto
+            {
+                Id = p.Id,
+                Name = p.Name,
+            }
+        ).ToList();
+
         editing = true;
     }
 
     protected void Cancel()
     {
-        category.Properties = currentProperties;
+        category = currentCategory;
         editing = false;
-        // TODO also save name
     }
 
     protected async Task Confirm()
@@ -149,7 +154,7 @@ else
         catch (Exception e)
         {
             // TODO toast message: name must be unique
-            category.Properties = currentProperties;
+            category = currentCategory;
         }
         finally
         {
