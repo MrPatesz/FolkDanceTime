@@ -13,5 +13,13 @@ namespace FolkDanceTime.Bll.Mappings
 
             return cfg;
         }
+
+        private static IMapperConfigurationExpression ConfigureDetailedItemTransaction(this IMapperConfigurationExpression cfg)
+        {
+            cfg.CreateMap<ItemTransaction, DetailedItemTransactionDto>()
+                .ForMember(dto => dto.ItemName, opt => opt.MapFrom(entity => entity.Item.Name));
+
+            return cfg;
+        }
     }
 }

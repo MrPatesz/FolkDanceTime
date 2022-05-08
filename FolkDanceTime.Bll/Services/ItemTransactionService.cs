@@ -19,11 +19,10 @@ namespace FolkDanceTime.Bll.Services
             _mapper = mapper;
         }
 
-        public async Task<List<ItemTransactionDto>> GetItemTransactionsAsync()
+        public async Task<List<DetailedItemTransactionDto>> GetItemTransactionsAsync()
         {
-            // TODO create DetailedItemTransactionDto and use it here for admin view
             return await _dbContext.ItemTransactions
-                .ProjectTo<ItemTransactionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<DetailedItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 

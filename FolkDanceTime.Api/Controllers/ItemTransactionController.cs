@@ -20,7 +20,7 @@ namespace FolkDanceTime.Api.Controllers
         //[Authorize(Roles = "Admin")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ItemTransactionDto>>> GetItemTransactionsAsync()
+        public async Task<ActionResult<List<DetailedItemTransactionDto>>> GetItemTransactionsAsync()
         {
             return Ok(await _itemTransactionService.GetItemTransactionsAsync());
         }
