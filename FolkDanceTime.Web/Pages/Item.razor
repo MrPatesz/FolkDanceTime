@@ -130,7 +130,12 @@ else
 
     protected void StartEditing()
     {
-        currentProperties = item.Properties.Select(p => 
+        currentItem = new ItemDto();
+        currentItem.Id = item.Id;
+        currentItem.Name = item.Name;
+        currentItem.Description = item.Description;
+        currentItem.PictureFilename = item.PictureFilename;
+        currentItem.Properties = item.Properties.Select(p => 
             new PropertyValueDto
             {
                 PropertyId = p.PropertyId,
@@ -139,10 +144,6 @@ else
                 Value = p.Value,
             }
         ).ToList();
-        currentItem = new ItemDto();
-        currentItem.Name = item.Name;
-        currentItem.Description = item.Description;
-        currentItem.Properties = currentProperties;
 
         editing = true;
     }
@@ -155,8 +156,6 @@ else
     protected void Cancel()
     {
         item = currentItem;
-        //item.Properties = currentProperties;
-
         editing = false;
     }
 
