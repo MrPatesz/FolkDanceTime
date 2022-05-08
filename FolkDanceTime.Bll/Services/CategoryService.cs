@@ -59,10 +59,12 @@ namespace FolkDanceTime.Bll.Services
         public async Task<CategoryDto> EditCategoryAsync(CategoryDto categoryDto)
         {
             var category = await _dbContext.Categories
+                .Include(c => c.Items)
                 .Include(c => c.Properties)
                 .ThenInclude(p => p.PropertyValues)
                 .SingleAsync(c => c.Id == categoryDto.Id);
 
+            // editing existing properties
             category.Name = categoryDto.Name;
             category.Properties.ForEach(property =>
             {
@@ -72,24 +74,32 @@ namespace FolkDanceTime.Bll.Services
                 }
             });
 
-            var propertiesToAdd = categoryDto.Properties.Where(p => p.Id == 0);
-
-            await _dbContext.Properties.AddRangeAsync(propertiesToAdd.Select(p => new Property
-            {
-                Name = p.Name,
-                CategoryId = categoryDto.Id,
-            }));
-
-            // TODO create empty propertyValues for each item
-
+            // deleting removed properties and their values
             var propertiesToDelete = category.Properties.Where(property => !categoryDto.Properties.Any(p => p.Id == property.Id));
-
             foreach (var property in propertiesToDelete)
             {
                 _dbContext.PropertyValues.RemoveRange(property.PropertyValues);
             }
-
             _dbContext.Properties.RemoveRange(propertiesToDelete);
+
+            // adding new properties with empty property values
+            var propertiesToAdd = categoryDto.Properties
+                .Where(p => p.Id == 0)
+                .Select(p =>
+                    new Property
+                    {
+                        Name = p.Name,
+                        CategoryId = categoryDto.Id,
+                        PropertyValues = category.Items
+                            .Select(i => new PropertyValue
+                            {
+                                Value = "",
+                                ItemId = i.Id,
+                            })
+                            .ToList(),
+                    }
+                );
+            await _dbContext.Properties.AddRangeAsync(propertiesToAdd);
 
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<CategoryDto>(category);
