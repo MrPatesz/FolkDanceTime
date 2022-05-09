@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [Authorize]//(Roles = "Admin")]
+    [Authorize(Policy = "AdminOnly")]
     public class CategoryController : ControllerBase
     {
         private readonly CategoryService _categoryService;
@@ -20,7 +20,6 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<CategoryDto>>> GetCategoriesAsync()
         {
-            // TODO create CategoryHeaderDto and use that here
             return Ok(await _categoryService.GetCategoriesAsync());
         }
 
@@ -38,7 +37,6 @@ namespace FolkDanceTime.Api.Controllers
         public async Task<ActionResult<CategoryDto>> AddCategoryAsync([FromBody] CategoryDto category)
         {
             return Ok(await _categoryService.AddCategoryAsync(category));
-            // TODO use CategoryHeaderDto here
         }
 
         [HttpPut("{id}")]

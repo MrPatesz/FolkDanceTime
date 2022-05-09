@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [Authorize]//(Roles = "Admin,Dancer")]
+    [Authorize]
     public class ItemController : ControllerBase
     {
         private readonly ItemService _itemService;
@@ -17,13 +17,11 @@ namespace FolkDanceTime.Api.Controllers
             _itemService = itemService;
         }
 
-        //[Authorize(Roles = "Admin")]
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemDto>>> GetItemsAsync()
         {
-            // TODO create ItemHeaderDto and use that here
             return Ok(await _itemService.GetItemsAsync());
         }
 
@@ -31,7 +29,6 @@ namespace FolkDanceTime.Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemDto>>> GetMyItemsAsync()
         {
-            // TODO create ItemHeaderDto and use that here
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
             return Ok(await _itemService.GetMyItemsAsync(userId));
         }
@@ -44,7 +41,7 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.GetItemAsync(id));
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -54,7 +51,7 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.AddItemAsync(item, categoryId, userId));
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -63,7 +60,7 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.EditItemAsync(item));
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpDelete("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

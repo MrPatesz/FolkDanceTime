@@ -7,7 +7,7 @@ using System.Security.Claims;
 namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [Authorize]//(Roles = "Admin,Dancer")]
+    [Authorize]
     public class ItemTransactionController : ControllerBase
     {
         private readonly ItemTransactionService _itemTransactionService;
@@ -17,7 +17,7 @@ namespace FolkDanceTime.Api.Controllers
             _itemTransactionService = itemTransactionService;
         }
 
-        //[Authorize(Roles = "Admin")]
+        [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<DetailedItemTransactionDto>>> GetItemTransactionsAsync()

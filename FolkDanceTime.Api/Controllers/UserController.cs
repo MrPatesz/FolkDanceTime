@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
-    [Authorize]//(Roles = "Admin,Dancer")]
+    [Authorize]
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
