@@ -1,0 +1,63 @@
+﻿@page "/item-sets"
+@using Client
+@using FolkDanceTime.Web.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject IItemSetClient ItemSetClient
+
+<PageTitle>Item Sets</PageTitle>
+
+<MudStack Row Justify="Justify.SpaceBetween">
+    <MudText Typo="Typo.h4">Item Sets</MudText>
+    <MudIconButton
+        Color="Color.Primary"
+        Icon="@Icons.Filled.AddCircle"
+        OnClick="@(() => showAdd = true)"
+    />
+</MudStack>
+
+@if (itemSets == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MudStack>
+        @foreach (var itemSet in itemSets)
+        {
+            <MudPaper>
+                <div>@itemSet.Name</div>
+                @foreach (var item in itemSet.Items)
+                {
+                    <div>@item.Name</div>
+                }
+            </MudPaper>
+        }
+        @if (showAdd)
+        {
+            <div>add item set</div>
+        }
+    </MudStack>
+}
+
+@code {
+    private ICollection<ItemSetDto> itemSets;
+    
+    private bool showAdd = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        itemSets = await ItemSetClient.GetItemSetsAsync();
+    }
+
+    protected void OnAdd(ItemSetDto newItemSet)
+    {
+        itemSets.Add(newItemSet);
+    }
+
+    protected void OnDelete(ItemSetDto itemSet)
+    {
+        itemSets.Remove(itemSet);
+    }
+}

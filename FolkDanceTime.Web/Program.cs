@@ -22,6 +22,7 @@ builder.Services.AddScoped<ICategoryClient, CategoryClient>();
 builder.Services.AddScoped<IItemClient, ItemClient>();
 builder.Services.AddScoped<IItemTransactionClient, ItemTransactionClient>();
 builder.Services.AddScoped<IUserClient, UserClient>();
+builder.Services.AddScoped<IItemSetClient, ItemSetClient>();
 
 builder.Services.AddMudServices();
 

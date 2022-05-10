@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FolkDanceTime.Dal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220507220542_Initial")]
+    [Migration("20220510212230_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -239,9 +239,15 @@ namespace FolkDanceTime.Dal.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("OwnerUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Id");
 
-                    b.ToTable("ItemsSets");
+                    b.HasIndex("OwnerUserId");
+
+                    b.ToTable("ItemSets");
                 });
 
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.ItemSetTransaction", b =>
@@ -438,17 +444,17 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8338324c-3e70-4f1b-8582-d9a6103c58de",
+                            Id = "57d14638-f106-41ac-9598-69098d743d0e",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "1b9f54ab-94b6-42e0-942c-be50cc3fb5c2",
+                            ConcurrencyStamp = "b16f601f-8537-4d59-af01-61b428329586",
                             Email = "admin@folkdancetime.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
                             NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEsTk6JsWBo4Bv9OhwmLwcBWXcrfUor8pY2dmUfuQ/dnVFauqS+uD9ah5VyKiX+jhQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPSWlq6DT8Hy3fbbIzjxVbnu2llzaAMAvvicIc69fmptKB2Js66QYfOgKjk0HqWWtg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f885625c-7214-44a3-a52e-550d946c1d88",
+                            SecurityStamp = "340bdf4e-32bf-4097-9e79-cf8172bda1e1",
                             TwoFactorEnabled = false,
                             UserName = "admin@folkdancetime.com"
                         });
@@ -484,14 +490,14 @@ namespace FolkDanceTime.Dal.Migrations
                         new
                         {
                             Id = "AdminRoleId",
-                            ConcurrencyStamp = "404b2136-0562-43f4-8928-9c6923208fd0",
+                            ConcurrencyStamp = "62c56f26-52bf-4110-872f-2b6bbe79c0b8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "DancerRoleId",
-                            ConcurrencyStamp = "c6216479-6b17-4368-8694-95ec7e5fa80c",
+                            ConcurrencyStamp = "503cddd3-431a-4953-839b-0146b433a243",
                             Name = "Dancer",
                             NormalizedName = "DANCER"
                         });
@@ -520,6 +526,15 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetRoleClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                            ClaimValue = "Admin",
+                            RoleId = "AdminRoleId"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
@@ -545,6 +560,15 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserClaims", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+                            ClaimValue = "Admin",
+                            UserId = "57d14638-f106-41ac-9598-69098d743d0e"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
@@ -588,7 +612,7 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "8338324c-3e70-4f1b-8582-d9a6103c58de",
+                            UserId = "57d14638-f106-41ac-9598-69098d743d0e",
                             RoleId = "AdminRoleId"
                         });
                 });
@@ -639,18 +663,29 @@ namespace FolkDanceTime.Dal.Migrations
                     b.Navigation("OwnerUser");
                 });
 
+            modelBuilder.Entity("FolkDanceTime.Dal.Entities.ItemSet", b =>
+                {
+                    b.HasOne("FolkDanceTime.Dal.Entities.User", "OwnerUser")
+                        .WithMany("ItemSets")
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("OwnerUser");
+                });
+
             modelBuilder.Entity("FolkDanceTime.Dal.Entities.ItemSetTransaction", b =>
                 {
                     b.HasOne("FolkDanceTime.Dal.Entities.ItemSet", "ItemSet")
                         .WithMany("ItemSetTransactions")
                         .HasForeignKey("ItemSetId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("FolkDanceTime.Dal.Entities.User", "ReceiverUser")
                         .WithMany("IncomingItemSetTransactions")
                         .HasForeignKey("ReceiverUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FolkDanceTime.Dal.Entities.User", "SenderUser")
@@ -671,13 +706,13 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasOne("FolkDanceTime.Dal.Entities.Item", "Item")
                         .WithMany("ItemTransactions")
                         .HasForeignKey("ItemId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("FolkDanceTime.Dal.Entities.User", "ReceiverUser")
                         .WithMany("IncomingItemTransactions")
                         .HasForeignKey("ReceiverUserId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("FolkDanceTime.Dal.Entities.User", "SenderUser")
@@ -805,6 +840,8 @@ namespace FolkDanceTime.Dal.Migrations
                     b.Navigation("IncomingItemSetTransactions");
 
                     b.Navigation("IncomingItemTransactions");
+
+                    b.Navigation("ItemSets");
 
                     b.Navigation("Items");
 

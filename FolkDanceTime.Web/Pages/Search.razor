@@ -1,0 +1,70 @@
+﻿@page "/search-items"
+@using Client
+@using FolkDanceTime.Web.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject IItemClient ItemClient
+@inject IDialogService DialogService
+
+<PageTitle>Search Items</PageTitle>
+
+<MudText Typo="Typo.h4">Search Items</MudText>
+
+<MudStack Row>
+    <MudTextField
+        InputType="InputType.Text"
+        AutoFocus="true"
+        Variant="Variant.Outlined"
+        Margin="Margin.Dense"
+        @bind-Value="@searchTerm"
+    />
+
+    <MudSelect
+        T="string"
+        Label="Search for"
+        Variant="Variant.Outlined"
+        Margin="Margin.Dense"
+        @bind-Value="@searchTerm"
+    >
+        <MudSelectItem T="string">
+            All
+        </MudSelectItem>
+        <MudSelectItem T="string">
+            User
+        </MudSelectItem>
+        <MudSelectItem T="string">
+            Category
+        </MudSelectItem>
+    </MudSelect>
+</MudStack>
+
+@if (allItems == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <MudStack Spacing="2">
+        @foreach (var item in results)
+        {
+            <ItemListItem
+                Item="item"
+                OnHandOver="@(()=>{})"
+            />
+        }
+    </MudStack>
+}
+
+@code {
+    private ICollection<ItemDto> allItems;
+    private ICollection<ItemDto> results;
+
+    private string searchTerm = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        allItems = await ItemClient.GetItemsAsync();
+        results = allItems.Select(i => i).ToList();
+    }
+}

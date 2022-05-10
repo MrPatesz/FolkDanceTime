@@ -17,7 +17,7 @@ namespace FolkDanceTime.Dal.DbContext
         }
 
         public DbSet<Item> Items { get; set; }
-        public DbSet<ItemSet> ItemsSets { get; set; }
+        public DbSet<ItemSet> ItemSets { get; set; }
         public DbSet<ItemTransaction> ItemTransactions { get; set; }
         public DbSet<ItemSetTransaction> ItemSetTransactions { get; set; }
         public DbSet<Category> Categories { get; set; }
@@ -30,6 +30,9 @@ namespace FolkDanceTime.Dal.DbContext
 
             builder.Entity<User>()
                 .HasMany(u => u.Items)
+                .WithOne(i => i.OwnerUser);
+            builder.Entity<User>()
+                .HasMany(u => u.ItemSets)
                 .WithOne(i => i.OwnerUser);
             builder.Entity<User>()
                 .HasMany(u => u.OutgoingItemTransactions)
@@ -69,6 +72,11 @@ namespace FolkDanceTime.Dal.DbContext
                 .WithOne(pv => pv.Item);
 
             builder.Entity<ItemSet>()
+                .HasOne(i => i.OwnerUser)
+                .WithMany(u => u.ItemSets)
+                .HasForeignKey(i => i.OwnerUserId)
+                .IsRequired();
+            builder.Entity<ItemSet>()
                 .HasMany(set => set.Items)
                 .WithOne(i => i.ItemSet);
             builder.Entity<ItemSet>()
@@ -79,12 +87,12 @@ namespace FolkDanceTime.Dal.DbContext
                 .HasOne(it => it.Item)
                 .WithMany(i => i.ItemTransactions)
                 .HasForeignKey(it => it.ItemId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.ReceiverUser)
                 .WithMany(u => u.IncomingItemTransactions)
                 .HasForeignKey(it => it.ReceiverUserId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemTransaction>()
                 .HasOne(it => it.SenderUser)
@@ -97,12 +105,12 @@ namespace FolkDanceTime.Dal.DbContext
                 .HasOne(it => it.ItemSet)
                 .WithMany(i => i.ItemSetTransactions)
                 .HasForeignKey(it => it.ItemSetId)
+                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.ReceiverUser)
                 .WithMany(u => u.IncomingItemSetTransactions)
                 .HasForeignKey(it => it.ReceiverUserId)
-                .OnDelete(DeleteBehavior.NoAction)
                 .IsRequired();
             builder.Entity<ItemSetTransaction>()
                 .HasOne(it => it.SenderUser)
