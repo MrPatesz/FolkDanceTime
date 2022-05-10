@@ -19,6 +19,7 @@ builder.Services.AddScoped<CategoryService, CategoryService>();
 builder.Services.AddScoped<ItemService, ItemService>();
 builder.Services.AddScoped<ItemTransactionService, ItemTransactionService>();
 builder.Services.AddScoped<UserService, UserService>();
+builder.Services.AddScoped<PictureService, PictureService>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
@@ -30,10 +31,10 @@ builder.Services.AddIdentityServer()
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminOnly", policy => policy.RequireAssertion(context => context.User.HasClaim(c =>
-        c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role" &&
-        c.Value == "Admin"
-        )));
+    options.AddPolicy("AdminOnly", policy => policy.RequireClaim(
+        "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+        "Admin"
+    ));
 });
 
 builder.Services.AddAuthentication()

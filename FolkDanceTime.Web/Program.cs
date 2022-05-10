@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using MudBlazor.Services;
+using Tewr.Blazor.FileReader;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -23,5 +24,9 @@ builder.Services.AddScoped<IItemTransactionClient, ItemTransactionClient>();
 builder.Services.AddScoped<IUserClient, UserClient>();
 
 builder.Services.AddMudServices();
+
+builder.Services.AddFileReaderService(options => {
+    options.UseWasmSharedBuffer = true;
+});
 
 await builder.Build().RunAsync();

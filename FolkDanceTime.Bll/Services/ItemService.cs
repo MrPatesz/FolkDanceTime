@@ -11,11 +11,13 @@ namespace FolkDanceTime.Bll.Services
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        private readonly PictureService _pictureService;
 
-        public ItemService(ApplicationDbContext dbContext, IMapper mapper)
+        public ItemService(ApplicationDbContext dbContext, IMapper mapper, PictureService pictureService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
+            _pictureService = pictureService;
         }
 
         public async Task<List<ItemDto>> GetItemsAsync()
@@ -107,6 +109,12 @@ namespace FolkDanceTime.Bll.Services
             {
                 pv.Value = itemDto.Properties.Single(p => p.PropertyValueId == pv.Id).Value;
             });
+
+            if (item.PictureFilename != null && item.PictureFilename != itemDto.PictureFilename)
+            {
+                _pictureService.DeletePicture(item.PictureFilename);
+            }
+            item.PictureFilename = itemDto.PictureFilename;
 
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<ItemDto>(item);

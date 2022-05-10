@@ -2,7 +2,11 @@
 @using Client
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.IO
+@using Tewr.Blazor.FileReader
 @attribute [Authorize]
+@inject HttpClient client;
+@inject IFileReaderService FileReader
 @inject IItemClient ItemClient
 
 <PageTitle>Item</PageTitle>
@@ -58,7 +62,14 @@ else
                 Variant="Variant.Outlined"
                 @bind-Value="@item.Description"
             />
-            <InputFile id="fileInput" OnChange="SelectImage" hidden accept=".jpg, .jpeg, .png" />
+            <input
+                id="fileInput"
+                type="file"
+                hidden
+                accept=".jpg, .jpeg, .png"
+                @ref="inputReference"
+                @onchange="@UploadPicture"
+            />
             <MudButton
                 HtmlTag="label"
                 Variant="Variant.Filled"
@@ -116,10 +127,31 @@ else
 
     private ItemDto item;
     private ItemDto currentItem;
-
     private bool editing = false;
 
-    private IBrowserFile selectedImage;
+    private ElementReference inputReference;
+
+    private async Task UploadPicture()
+    {
+        var file = (await FileReader.CreateReference(inputReference).EnumerateFilesAsync()).FirstOrDefault();
+        if (file == null) {
+            return;
+        }
+        var fileInfo=await file.ReadFileInfoAsync();
+        Stream fileStream;
+
+        using (var ms = await file.CreateMemoryStreamAsync((int)fileInfo.Size)) {
+            fileStream = new MemoryStream(ms.ToArray());
+        }
+
+        var content = new MultipartFormDataContent();
+        content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
+        var sc = new StreamContent(fileStream, (int)fileStream.Length);
+        content.Add(sc, "image", fileInfo.Name);
+
+        var response = await client.PostAsync("api/Item/PostPicture", content);
+        item.PictureFilename = await response.Content.ReadAsStringAsync();
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -146,13 +178,12 @@ else
         editing = true;
     }
 
-    private void SelectImage(InputFileChangeEventArgs e)
+    protected async Task Cancel()
     {
-        selectedImage = e.File;
-    }
-
-    protected void Cancel()
-    {
+        if(item.PictureFilename != currentItem.PictureFilename)
+        {
+            await client.DeleteAsync($"api/Item/DeletePicture?fileName={item.PictureFilename}");
+        }
         item = currentItem;
         editing = false;
     }

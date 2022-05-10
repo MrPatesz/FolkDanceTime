@@ -11,10 +11,12 @@ namespace FolkDanceTime.Api.Controllers
     public class ItemController : ControllerBase
     {
         private readonly ItemService _itemService;
+        private readonly PictureService _pictureService;
 
-        public ItemController(ItemService itemService)
+        public ItemController(ItemService itemService, PictureService pictureService)
         {
             _itemService = itemService;
+            _pictureService = pictureService;
         }
 
         [Authorize(Policy = "AdminOnly")]
@@ -68,6 +70,24 @@ namespace FolkDanceTime.Api.Controllers
         {
             // TODO only soft delete!
             await _itemService.DeleteItemAsync(id);
+            return Ok();
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<ActionResult<string>> PostPicture([FromForm(Name = "image")] IFormFile file)
+        {
+            return Ok(await _pictureService.SavePicture(file));
+        }
+
+        [Authorize(Policy = "AdminOnly")]
+        [HttpDelete]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public ActionResult DeletePicture([FromQuery] string fileName)
+        {
+            _pictureService.DeletePicture(fileName);
             return Ok();
         }
     }
