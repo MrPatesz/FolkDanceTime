@@ -16,6 +16,7 @@ namespace FolkDanceTime.Bll.Mappings
                 cfg.ConfigureUser();
                 cfg.ConfigureDetailedItemTransaction();
                 cfg.ConfigureItemSet();
+                cfg.ConfigureItemSetTransaction();
             });
 
             config.AssertConfigurationIsValid();
