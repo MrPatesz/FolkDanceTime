@@ -1,0 +1,95 @@
+﻿@using Client
+@inject IItemClient ItemClient
+@inject IItemSetClient ItemSetClient
+
+<MudDialog>
+    <DialogContent>
+        <MudStack Spacing="2">
+            <MudTextField
+                InputType="InputType.Text"
+                Label="Name"
+                AutoFocus="true"
+                Variant="Variant.Outlined"
+                Margin="Margin.Dense"
+                @bind-Value="@newItemSet.Name"
+            />
+            @if(items == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <MudSelect
+                    Label="Items"
+                    Variant="Variant.Outlined"
+                    Margin="Margin.Dense"
+                    MultiSelection="true"
+                    MultiSelectionTextFunc="@GetSelectText"
+                    @bind-SelectedValues="@selectedItems"
+                >
+                    @foreach(var item in items)
+                    {
+                        <MudSelectItem
+                            Value="@item"
+                            Disabled="@IsDisabled(item)"
+                        >
+                            @item.Name
+                        </MudSelectItem>
+                    }
+                </MudSelect>
+            }
+        </MudStack>
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="Cancel">Cancel</MudButton>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public IEnumerable<ItemDto> ItemsInSets { get; set; }
+
+    private ItemSetDto newItemSet = new ItemSetDto{ Name = "" };
+    private IEnumerable<ItemDto> items;
+    private IEnumerable<ItemDto> selectedItems = new HashSet<ItemDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        items = await ItemClient.GetMyItemsAsync();
+    }
+
+    private async void Submit()
+    {
+        if(newItemSet.Name != "")
+        {
+            try
+            {
+                newItemSet.Items = selectedItems.ToList();
+                var addedItemSet = await ItemSetClient.AddItemSetAsync(newItemSet);
+                MudDialog.Close(DialogResult.Ok(addedItemSet));
+            }
+            catch(Exception e)
+            {
+                // TODO toast message
+                MudDialog.Cancel();
+            }
+        }
+    }
+
+    private void Cancel()
+    {
+        MudDialog.Cancel();
+    }
+
+    private bool IsDisabled(ItemDto item)
+    {
+        return ItemsInSets.Any(iis => iis.Id == item.Id);
+    }
+
+    private string GetSelectText(List<string> strings)
+    {
+        return String.Join(", ", selectedItems.Select(i => i.Name).ToArray());
+    }
+}

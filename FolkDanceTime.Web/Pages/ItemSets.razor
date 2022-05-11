@@ -5,6 +5,7 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
 @inject IItemSetClient ItemSetClient
+@inject IDialogService DialogService
 
 <PageTitle>Item Sets</PageTitle>
 
@@ -13,7 +14,7 @@
     <MudIconButton
         Color="Color.Primary"
         Icon="@Icons.Filled.AddCircle"
-        OnClick="@(() => showAdd = true)"
+        OnClick="@OpenDialog"
     />
 </MudStack>
 
@@ -26,38 +27,41 @@ else
     <MudStack>
         @foreach (var itemSet in itemSets)
         {
-            <MudPaper>
-                <div>@itemSet.Name</div>
-                @foreach (var item in itemSet.Items)
-                {
-                    <div>@item.Name</div>
-                }
-            </MudPaper>
-        }
-        @if (showAdd)
-        {
-            <div>add item set</div>
+            <ItemSetListView
+                ItemSet="itemSet"
+                OnDelete="@OnDelete"
+            />
         }
     </MudStack>
 }
 
 @code {
     private ICollection<ItemSetDto> itemSets;
-    
-    private bool showAdd = false;
 
     protected override async Task OnInitializedAsync()
     {
         itemSets = await ItemSetClient.GetItemSetsAsync();
     }
 
-    protected void OnAdd(ItemSetDto newItemSet)
-    {
-        itemSets.Add(newItemSet);
-    }
-
     protected void OnDelete(ItemSetDto itemSet)
     {
         itemSets.Remove(itemSet);
+    }
+
+    private async void OpenDialog()
+    {
+        var itemsInSets = itemSets.SelectMany(set => set.Items).ToList();
+
+        var parameters = new DialogParameters();
+        parameters.Add("ItemsInSets", itemsInSets);
+
+        var dialog = DialogService.Show<AddItemSetDialog>("Create Item Set", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            itemSets.Add((ItemSetDto)result.Data);
+            StateHasChanged();
+        }
     }
 }

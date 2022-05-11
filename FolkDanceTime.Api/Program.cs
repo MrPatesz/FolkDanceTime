@@ -20,6 +20,7 @@ builder.Services.AddScoped<ItemService, ItemService>();
 builder.Services.AddScoped<ItemTransactionService, ItemTransactionService>();
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<PictureService, PictureService>();
+builder.Services.AddScoped<ItemSetService, ItemSetService>();
 
 builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<IdentityRole>()
