@@ -11,7 +11,12 @@
 
 <MudText Typo="Typo.h4">My Items and Transactions</MudText>
 
-<MudTabs Elevation="2" Rounded="true" ApplyEffectsToContainer="true">
+<MudTabs
+    Elevation="2"
+    Rounded="true"
+    ApplyEffectsToContainer="true"
+    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+>
     <MudTabPanel Text="My Items">
         @if (items == null)
         {
@@ -19,7 +24,7 @@
         }
         else
         {
-            <MudStack Spacing="2">
+            <MudStack Spacing="2" Class="pa-1">
                 @foreach (var item in items)
                 {
                     <ItemListItem
@@ -37,7 +42,7 @@
         }
         else
         {
-            <MudStack Spacing="2">
+            <MudStack Spacing="2" Class="pa-1">
                 @foreach (var transaction in outgoingItemTransactions)
                 {
                     <TransactionListItem
@@ -58,7 +63,7 @@
         }
         else
         {
-            <MudStack Spacing="2">
+            <MudStack Spacing="2" Class="pa-1">
                 @foreach (var transaction in incomingItemTransactions)
                 {
                     <TransactionListItem

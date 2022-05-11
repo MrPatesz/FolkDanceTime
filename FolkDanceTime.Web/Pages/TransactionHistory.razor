@@ -9,7 +9,14 @@
 
 <MudText Typo="Typo.h4">Transaction History</MudText>
 
-<MudTable Items="@itemTransactions" Hover="true" Breakpoint="Breakpoint.Sm" Loading="@(itemTransactions == null)" LoadingProgressColor="Color.Primary">
+<MudTable
+    Items="@itemTransactions" 
+    Hover="true" 
+    Breakpoint="Breakpoint.Sm"
+    Loading="@(itemTransactions == null)"
+    LoadingProgressColor="Color.Primary"
+    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+>
     <HeaderContent>
         <MudTh>Item</MudTh>
         <MudTh>Status</MudTh>

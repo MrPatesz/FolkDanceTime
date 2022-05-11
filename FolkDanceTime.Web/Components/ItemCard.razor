@@ -2,7 +2,9 @@
 @inject NavigationManager NavigationManager
 @inject IItemClient ItemClient
 
-<MudCard>
+<MudCard
+    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+>
     <MudCardMedia Image="@Item.PictureFilename" Height="150"/>
     <MudCardContent>
         <MudText Typo="Typo.h5">@Item.Name</MudText>
