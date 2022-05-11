@@ -1463,18 +1463,18 @@ namespace Client
         System.Threading.Tasks.Task<System.Collections.Generic.ICollection<ItemSetDto>> GetMyItemSetsAsync(System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto item);
+        System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto itemSet);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto item, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto itemSet, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto item, string id);
+        System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto itemSet, string id);
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto item, string id, System.Threading.CancellationToken cancellationToken);
+        System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto itemSet, string id, System.Threading.CancellationToken cancellationToken);
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
         System.Threading.Tasks.Task DeleteItemSetAsync(int id);
@@ -1657,17 +1657,17 @@ namespace Client
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto item)
+        public virtual System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto itemSet)
         {
-            return AddItemSetAsync(item, System.Threading.CancellationToken.None);
+            return AddItemSetAsync(itemSet, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto item, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ItemSetDto> AddItemSetAsync(ItemSetDto itemSet, System.Threading.CancellationToken cancellationToken)
         {
-            if (item == null)
-                throw new System.ArgumentNullException("item");
+            if (itemSet == null)
+                throw new System.ArgumentNullException("itemSet");
 
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("api/ItemSet/AddItemSet");
@@ -1678,7 +1678,7 @@ namespace Client
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(item, _settings.Value));
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(itemSet, _settings.Value));
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("POST");
@@ -1741,20 +1741,20 @@ namespace Client
         }
 
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto item, string id)
+        public virtual System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto itemSet, string id)
         {
-            return EditItemSetAsync(item, id, System.Threading.CancellationToken.None);
+            return EditItemSetAsync(itemSet, id, System.Threading.CancellationToken.None);
         }
 
         /// <param name="cancellationToken">A cancellation token that can be used by other objects or threads to receive notice of cancellation.</param>
         /// <exception cref="ApiException">A server side error occurred.</exception>
-        public virtual async System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto item, string id, System.Threading.CancellationToken cancellationToken)
+        public virtual async System.Threading.Tasks.Task<ItemSetDto> EditItemSetAsync(ItemSetDto itemSet, string id, System.Threading.CancellationToken cancellationToken)
         {
             if (id == null)
                 throw new System.ArgumentNullException("id");
 
-            if (item == null)
-                throw new System.ArgumentNullException("item");
+            if (itemSet == null)
+                throw new System.ArgumentNullException("itemSet");
 
             var urlBuilder_ = new System.Text.StringBuilder();
             urlBuilder_.Append("api/ItemSet/EditItemSet/{id}");
@@ -1766,7 +1766,7 @@ namespace Client
             {
                 using (var request_ = new System.Net.Http.HttpRequestMessage())
                 {
-                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(item, _settings.Value));
+                    var content_ = new System.Net.Http.StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(itemSet, _settings.Value));
                     content_.Headers.ContentType = System.Net.Http.Headers.MediaTypeHeaderValue.Parse("application/json");
                     request_.Content = content_;
                     request_.Method = new System.Net.Http.HttpMethod("PUT");
