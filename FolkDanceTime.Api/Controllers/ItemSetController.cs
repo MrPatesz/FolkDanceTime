@@ -37,19 +37,19 @@ namespace FolkDanceTime.Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ItemSetDto>> AddItemSetAsync([FromBody] ItemSetDto item)
+        public async Task<ActionResult<ItemSetDto>> AddItemSetAsync([FromBody] ItemSetDto itemSet)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemSetService.AddItemSetAsync(item, userId));
+            return Ok(await _itemSetService.AddItemSetAsync(itemSet, userId));
         }
 
         [Authorize(Policy = "AdminOnly")]
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ItemSetDto>> EditItemSetAsync([FromBody] ItemSetDto item)
+        public async Task<ActionResult<ItemSetDto>> EditItemSetAsync([FromBody] ItemSetDto itemSet)
         {
-            return Ok(await _itemSetService.EditItemSetAsync(item));
+            return Ok(await _itemSetService.EditItemSetAsync(itemSet));
         }
 
         [HttpDelete("{id}")]
