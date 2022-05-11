@@ -12,7 +12,7 @@ namespace FolkDanceTime.Bll.Services
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public ItemSetService(ApplicationDbContext dbContext, IMapper mapper, PictureService pictureService)
+        public ItemSetService(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -39,14 +39,22 @@ namespace FolkDanceTime.Bll.Services
             {
                 Name = itemSetDto.Name,
                 OwnerUserId = userId,
-                Items = itemSetDto.Items
-                        .Select(i => new Item { Id = i.Id })
-                        .ToList(), // TODO maybe this won't work
             };
-
             await _dbContext.ItemSets.AddAsync(itemSet);
             await _dbContext.SaveChangesAsync();
 
+            var allItems = await _dbContext.Items.ToListAsync();
+            var results = allItems.Where(item => itemSetDto.Items.Any(i => i.Id == item.Id)).ToList();
+
+            foreach(var item in results)
+            {
+                if(item.ItemSetId == null)
+                {
+                    item.ItemSetId = itemSet.Id;
+                }
+            }
+
+            await _dbContext.SaveChangesAsync();
             return _mapper.Map<ItemSetDto>(itemSet);
         }
 
@@ -67,7 +75,12 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task DeleteItemSetAsync(int id)
         {
-            var itemSet = await _dbContext.ItemSets.SingleAsync(i => i.Id == id);
+            var itemSet = await _dbContext.ItemSets
+                .Include(set => set.Items)
+                .SingleAsync(i => i.Id == id);
+
+            itemSet.Items.ForEach(item => item.ItemSetId = null);
+            await _dbContext.SaveChangesAsync();
 
             _dbContext.ItemSets.Remove(itemSet);
             await _dbContext.SaveChangesAsync();
