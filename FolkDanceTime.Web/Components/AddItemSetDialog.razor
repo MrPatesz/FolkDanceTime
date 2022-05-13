@@ -24,7 +24,7 @@
                     Variant="Variant.Outlined"
                     Margin="Margin.Dense"
                     MultiSelection="true"
-                    MultiSelectionTextFunc="@GetSelectText"
+                    ToStringFunc="@converter"
                     @bind-SelectedValues="@selectedItems"
                 >
                     @foreach(var item in items)
@@ -88,8 +88,5 @@
         return ItemsInSets.Any(iis => iis.Id == item.Id);
     }
 
-    private string GetSelectText(List<string> strings)
-    {
-        return String.Join(", ", selectedItems.Select(i => i.Name).ToArray());
-    }
+    Func<ItemDto, string> converter = i => i?.Name;
 }

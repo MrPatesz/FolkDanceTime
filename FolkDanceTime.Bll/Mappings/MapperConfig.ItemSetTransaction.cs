@@ -8,8 +8,9 @@ namespace FolkDanceTime.Bll.Mappings
     {
         private static IMapperConfigurationExpression ConfigureItemSetTransaction(this IMapperConfigurationExpression cfg)
         {
-            cfg.CreateMap<ItemSetTransaction, DetailedItemSetTransactionDto>()
-                .ForMember(dto => dto.ItemSetName, opt => opt.MapFrom(entity => entity.ItemSet.Name));
+            cfg.CreateMap<ItemSetTransaction, ItemSetTransactionDto>()
+                .ForMember(dto => dto.ItemSetName, opt => opt.MapFrom(entity => entity.ItemSet.Name))
+                .ForMember(dto => dto.Items, opt => opt.MapFrom(entity => entity.ItemSet.Items));
 
             return cfg;
         }

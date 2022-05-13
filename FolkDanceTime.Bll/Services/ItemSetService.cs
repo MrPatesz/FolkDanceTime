@@ -33,6 +33,13 @@ namespace FolkDanceTime.Bll.Services
                 .ToListAsync();
         }
 
+        public async Task<ItemSetDto> GetItemSetAsync(int id)
+        {
+            return await _dbContext.ItemSets
+                .ProjectTo<ItemSetDto>(_mapper.ConfigurationProvider)
+                .SingleAsync(i => i.Id == id);
+        }
+
         public async Task<ItemSetDto> AddItemSetAsync(ItemSetDto itemSetDto, string userId)
         {
             var itemSet = new ItemSet
@@ -65,13 +72,24 @@ namespace FolkDanceTime.Bll.Services
                 .SingleAsync(c => c.Id == itemSetDto.Id);
 
             itemSet.Name = itemSetDto.Name;
-            itemSet.Items = itemSetDto.Items.Select(i => new Item { Id = i.Id }).ToList();
+
+            var itemsToAdd = itemSetDto.Items
+                .Where(i => !itemSet.Items.Any(item => item.Id == i.Id))
+                .ToList();
+
+            await _dbContext.Items.ForEachAsync(i =>
+            {
+                if(itemsToAdd.Any(item => item.Id == i.Id))
+                {
+                    i.ItemSetId = itemSet.Id;
+                }
+            });
+
+            itemSet.Items.RemoveAll(i => !itemSetDto.Items.Any(item => item.Id == i.Id));
 
             await _dbContext.SaveChangesAsync();
             return _mapper.Map<ItemSetDto>(itemSet);
         }
-        // add items to it (not in other itemSet and user has the item?)
-        // remove items from it
 
         public async Task DeleteItemSetAsync(int id)
         {
@@ -85,7 +103,5 @@ namespace FolkDanceTime.Bll.Services
             _dbContext.ItemSets.Remove(itemSet);
             await _dbContext.SaveChangesAsync();
         }
-
-        // TODO itemSetService: hand over, revoke, accept, decline
     }
 }

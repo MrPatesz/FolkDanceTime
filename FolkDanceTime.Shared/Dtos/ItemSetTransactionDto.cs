@@ -2,7 +2,7 @@
 
 namespace FolkDanceTime.Shared.Dtos
 {
-    public class DetailedItemSetTransactionDto
+    public class ItemSetTransactionDto
     {
         public int Id { get; set; }
         public string ItemSetName { get; set; }

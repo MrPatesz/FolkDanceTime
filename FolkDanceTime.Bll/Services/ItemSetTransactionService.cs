@@ -19,33 +19,33 @@ namespace FolkDanceTime.Bll.Services
             _mapper = mapper;
         }
 
-        public async Task<List<DetailedItemSetTransactionDto>> GetItemSetTransactionsAsync()
+        public async Task<List<ItemSetTransactionDto>> GetItemSetTransactionsAsync()
         {
             // TODO DetailedItemSetTransacitonDto and ItemSetTransactionDto
             return await _dbContext.ItemSetTransactions
-                .ProjectTo<DetailedItemSetTransactionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<ItemSetTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
-        public async Task<List<DetailedItemSetTransactionDto>> GetIncomingItemSetTransactionsAsync(string userId)
+        public async Task<List<ItemSetTransactionDto>> GetIncomingItemSetTransactionsAsync(string userId)
         {
             // TODO use User's IncomingItemSetTransactions property (still have to filter for Pending)
             return await _dbContext.ItemSetTransactions
                 .Where(i => i.ReceiverUserId == userId && i.Status == Status.Pending)
-                .ProjectTo<DetailedItemSetTransactionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<ItemSetTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
-        public async Task<List<DetailedItemSetTransactionDto>> GetOutgoingItemSetTransactionsAsync(string userId)
+        public async Task<List<ItemSetTransactionDto>> GetOutgoingItemSetTransactionsAsync(string userId)
         {
             // TODO use User's OutgoingItemTransactions property (still have to filter for Pending)
             return await _dbContext.ItemSetTransactions
                 .Where(i => i.SenderUserId == userId && i.Status == Status.Pending)
-                .ProjectTo<DetailedItemSetTransactionDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<ItemSetTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
-        public async Task<DetailedItemSetTransactionDto> CreateItemSetTransactionAsync(int itemSetId, string senderUserId, string receiverUserId)
+        public async Task<ItemSetTransactionDto> CreateItemSetTransactionAsync(int itemSetId, string senderUserId, string receiverUserId)
         {
             if (senderUserId == receiverUserId)
             {
@@ -75,7 +75,7 @@ namespace FolkDanceTime.Bll.Services
             await _dbContext.ItemSetTransactions.AddAsync(newItemSetTransaction);
             await _dbContext.SaveChangesAsync();
 
-            return _mapper.Map<DetailedItemSetTransactionDto>(newItemSetTransaction);
+            return _mapper.Map<ItemSetTransactionDto>(newItemSetTransaction);
         }
 
         public async Task<bool> RevokeItemSetTransactionAsync(int id, string userId)

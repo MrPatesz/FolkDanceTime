@@ -1,0 +1,163 @@
+﻿@page "/item-sets/{Id:int}"
+@using Client
+@using FolkDanceTime.Web.Components
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@attribute [Authorize]
+@inject IItemClient ItemClient
+@inject IItemSetClient ItemSetClient
+
+<PageTitle>Item Set</PageTitle>
+
+<MudStack Row Justify="Justify.SpaceBetween">
+    <MudText Typo="Typo.h4">Item Set Details</MudText>
+    @if(editing)
+    {
+        <MudStack Row Justify="Justify.FlexEnd">
+            <MudButtonGroup>
+                <MudIconButton
+                    Color="Color.Primary"
+                    Icon="@Icons.Filled.Save"
+                    OnClick="@Confirm"
+                />
+                <MudIconButton
+                    Color="Color.Default"
+                    Icon="@Icons.Filled.Cancel"
+                    OnClick="@Cancel"
+                />
+            </MudButtonGroup>
+        </MudStack>
+    }
+    else
+    {
+        <MudIconButton
+            Color="Color.Primary"
+            Icon="@Icons.Filled.Edit"
+            OnClick="@StartEditing"
+        />
+    }
+</MudStack>
+
+@if (itemSet == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    @if(editing)
+    {
+        <MudStack Spacing="2">
+            <MudTextField
+                Label="Name"
+                InputType="InputType.Text"
+                AutoFocus="true"
+                Variant="Variant.Outlined"
+                @bind-Value="@itemSet.Name"
+            />
+            @if(myItems == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                @foreach(var item in myItems)
+                {
+                    <ItemInItemSet
+                        Item="item"
+                        Checked="@IsChecked(item)"
+                        OnCheckChange="@((args)=> OnCheckChange(args.Item1, args.Item2))"
+                    />
+                }
+            }
+        </MudStack>
+    }
+    else
+    {
+        <MudStack Spacing="2">
+            <MudField>
+                @itemSet.Name
+            </MudField>
+            @foreach(var item in itemSet.Items)
+            {
+                <ItemListItem
+                    Item="item"
+                    OnHandOver="@(()=>{})"
+                />
+            }
+        </MudStack>
+    }
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private ItemSetDto itemSet;
+    private ItemSetDto currentItemSet;
+    private bool editing = false;
+    private IEnumerable<ItemDto> myItems;
+    private IEnumerable<ItemDto> itemsInSets;
+
+    protected override async Task OnInitializedAsync()
+    {
+        myItems = await ItemClient.GetMyItemsAsync();
+        var itemSets = await ItemSetClient.GetItemSetsAsync();
+        itemsInSets = itemSets.SelectMany(set => set.Items).ToList();
+        itemSet = await ItemSetClient.GetItemSetAsync(Id);
+    }
+
+    protected void StartEditing()
+    {
+        currentItemSet = new ItemSetDto();
+        currentItemSet.Id = itemSet.Id;
+        currentItemSet.Name = itemSet.Name;
+        currentItemSet.Items = itemSet.Items;
+
+        editing = true;
+    }
+
+    protected async Task Cancel()
+    {
+        itemSet = currentItemSet;
+        editing = false;
+    }
+
+    protected async Task Confirm()
+    {
+        if (itemSet.Name == "") return;
+
+        try
+        {
+            var editedItemSet = await ItemSetClient.EditItemSetAsync(itemSet, Id.ToString());
+            itemSet = editedItemSet;
+        }
+        catch (Exception e)
+        {
+            // TODO toast message: name must be unique
+            itemSet = currentItemSet;
+        }
+        finally
+        {
+            editing = false;
+        }
+    }
+
+    private bool IsChecked(ItemDto item)
+    {
+        return itemSet.Items.Any(iis => iis.Id == item.Id);
+    }
+
+    private void OnCheckChange(bool checkedValue, ItemDto item)
+    {
+        if(checkedValue)
+        {
+            itemSet.Items.Add(item);
+        }
+        else
+        {
+            itemSet.Items = itemSet.Items.Where(i => i.Id != item.Id).ToList();
+        }
+    }
+
+    Func<ItemDto, string> converter = i => i?.Name;
+}

@@ -33,6 +33,14 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemSetService.GetMyItemSetsAsync(userId));
         }
 
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<ItemSetDto>> GetItemSetAsync(int id)
+        {
+            return Ok(await _itemSetService.GetItemSetAsync(id));
+        }
+
         [Authorize(Policy = "AdminOnly")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]

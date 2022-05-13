@@ -1,0 +1,42 @@
+﻿@using Client
+@inject NavigationManager NavigationManager
+@inject IItemClient ItemClient
+@inject IDialogService DialogService
+
+<MudPaper
+    Class="cursor-pointer"
+    @onclick="@NavigateToDetails"
+    Style="@($"background:{Colors.DeepPurple.Lighten4};")"
+>
+    <MudStack
+        Row
+        Justify="Justify.SpaceBetween"
+        AlignItems="AlignItems.Center"
+    >
+        <MudText Class="px-2">
+            @Item.Name
+        </MudText>
+        <MudCheckBox
+            T="bool"
+            Color="Color.Primary"
+            CheckedChanged="@CheckChanged"
+            Checked="@Checked"
+        />
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public ItemDto Item { get; set; }
+    [Parameter] public bool Checked { get; set; }
+    [Parameter] public EventCallback<(bool, ItemDto)> OnCheckChange { get; set; }
+
+    protected void NavigateToDetails()
+    {
+        NavigationManager.NavigateTo($"items/{Item.Id}");
+    }
+
+    private async Task CheckChanged(bool checkedValue)
+    {
+        await OnCheckChange.InvokeAsync((checkedValue, Item));
+    }
+}
