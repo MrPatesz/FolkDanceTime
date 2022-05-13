@@ -23,5 +23,13 @@ namespace FolkDanceTime.Bll.Services
                 .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
+
+        public async Task<List<UserDto>> GetOtherUsersAsync(string userId)
+        {
+            return await _dbContext.Users
+                .Where(u => u.Id != userId)
+                .ProjectTo<UserDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
     }
 }

@@ -43,7 +43,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        users = await UserClient.GetUsersAsync();
+        users = await UserClient.GetOtherUsersAsync();
     }
 
     private async void Submit()

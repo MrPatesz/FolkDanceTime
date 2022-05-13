@@ -1,7 +1,10 @@
 ﻿@using Client
 @inject ICategoryClient CategoryClient
 
-<MudPaper Class="d-flex align-center">
+<MudPaper
+    Class="d-flex align-center"
+    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+>
     <MudTextField
         InputType="InputType.Text"
         Placeholder="Name"

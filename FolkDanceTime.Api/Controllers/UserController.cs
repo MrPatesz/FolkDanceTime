@@ -2,6 +2,7 @@
 using FolkDanceTime.Shared.Dtos;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FolkDanceTime.Api.Controllers
 {
@@ -21,6 +22,14 @@ namespace FolkDanceTime.Api.Controllers
         public async Task<ActionResult<List<UserDto>>> GetUsersAsync()
         {
             return Ok(await _userService.GetUsersAsync());
+        }
+
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<UserDto>>> GetOtherUsersAsync()
+        {
+            var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
+            return Ok(await _userService.GetOtherUsersAsync(userId));
         }
     }
 }

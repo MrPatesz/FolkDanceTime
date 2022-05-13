@@ -3,12 +3,21 @@
 @inject IItemClient ItemClient
 
 <MudCard
-    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+    Style="@($"background:{Colors.DeepPurple.Lighten5}; max-width:150px")"
 >
-    <MudCardMedia Image="@Item.PictureFilename" Height="150"/>
-    <MudCardContent>
+    <MudCardMedia Image="@Item.PictureFilename" Height="150" />
+    <MudCardContent
+        Style="padding: 8px"
+    >
         <MudText Typo="Typo.h5">@Item.Name</MudText>
-        <MudText Typo="Typo.body2">@Item.Description</MudText>
+        <MudText
+            Style="overflow: hidden;
+                   max-height: 42px;
+                   text-overflow: ellipsis;"
+            Typo="Typo.body2"
+        >
+            @Item.Description
+        </MudText>
     </MudCardContent>
     <MudCardActions>
         <MudButton

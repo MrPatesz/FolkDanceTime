@@ -1,4 +1,7 @@
 ﻿@using Client
+@using Tewr.Blazor.FileReader
+@inject HttpClient client
+@inject IFileReaderService FileReader
 @inject IItemClient ItemClient
 @inject ICategoryClient CategoryClient
 
@@ -42,6 +45,23 @@
                 Margin="Margin.Dense"
                 @bind-Value="@newItem.Description"
             />
+            <input
+                id="fileInput"
+                type="file"
+                hidden
+                accept=".jpg, .jpeg, .png"
+                @ref="inputReference"
+                @onchange="@UploadPicture"
+            />
+            <MudButton
+                HtmlTag="label"
+                Variant="Variant.Filled"
+                Color="Color.Primary"
+                StartIcon="@Icons.Filled.Image"
+                for="fileInput"
+            >
+                Select Image
+            </MudButton>
             @if(selectedCategory != null)
             {
                 @foreach(var property in selectedCategory.Properties)
@@ -56,16 +76,6 @@
                     />
                 }
             }
-            <InputFile id="fileInput" OnChange="SelectImage" hidden accept=".jpg, .jpeg, .png" />
-            <MudButton
-                HtmlTag="label"
-                Variant="Variant.Filled"
-                Color="Color.Primary"
-                StartIcon="@Icons.Filled.Image"
-                for="fileInput"
-            >
-                Select Image
-            </MudButton>
         </MudStack>
     </DialogContent>
     <DialogActions>
@@ -80,7 +90,42 @@
     private ICollection<CategoryDto> categories;
     private ItemDto newItem = new ItemDto{ Name = "" };
     private CategoryDto selectedCategory;
-    private IBrowserFile selectedImage;
+
+    private ElementReference inputReference;
+
+    private async Task UploadPicture()
+    {
+        try
+        {
+            var file = (await FileReader.CreateReference(inputReference).EnumerateFilesAsync()).FirstOrDefault();
+            if (file == null) {
+                return;
+            }
+            var fileInfo=await file.ReadFileInfoAsync();
+            Stream fileStream;
+
+            using (var ms = await file.CreateMemoryStreamAsync((int)fileInfo.Size)) {
+                fileStream = new MemoryStream(ms.ToArray());
+            }
+
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
+            var sc = new StreamContent(fileStream, (int)fileStream.Length);
+            content.Add(sc, "image", fileInfo.Name);
+
+            if(newItem.PictureFilename != "")
+            {
+                await client.DeleteAsync($"api/Item/DeletePicture?fileName={newItem.PictureFilename}");
+            }
+
+            var response = await client.PostAsync("api/Item/PostPicture", content);
+            newItem.PictureFilename = await response.Content.ReadAsStringAsync();
+        } 
+        catch(Exception e)
+        {
+            // TODO picture is too large!
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
@@ -105,15 +150,13 @@
         }
     }
 
-    private void Cancel()
+    private async Task Cancel()
     {
+        if(newItem.PictureFilename != null)
+        {
+            await client.DeleteAsync($"api/Item/DeletePicture?fileName={newItem.PictureFilename}");
+        }
         MudDialog.Cancel();
-    }
-
-    private void SelectImage(InputFileChangeEventArgs e)
-    {
-        selectedImage = e.File;
-        // TODO newItem.PictureFilename = 
     }
 
     private void OnCategorySelect(CategoryDto newlySelected)

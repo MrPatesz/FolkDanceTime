@@ -5,7 +5,7 @@
 @using System.IO
 @using Tewr.Blazor.FileReader
 @attribute [Authorize]
-@inject HttpClient client;
+@inject HttpClient client
 @inject IFileReaderService FileReader
 @inject IItemClient ItemClient
 
@@ -92,31 +92,33 @@ else
     }
     else
     {
-        <MudStack Row Spacing="2">
-            <MudImage
-                ObjectFit="ObjectFit.Contain"
-                Height="200"
-                Width="200"
-                Src="@item.PictureFilename"
-                Elevation="25"
-                Class="rounded-lg"
-            />
-            <MudStack Spacing="2" Class="w-100">
-                <MudText Typo="Typo.h5">
-                    @item.Name
-                </MudText>
-                <MudText>
-                    @item.Description
-                </MudText>
+        <MudStack>
+            <MudStack Row>
+                <MudImage
+                    ObjectFit="ObjectFit.Contain"
+                    Height="200"
+                    Width="200"
+                    Src="@item.PictureFilename"
+                    Elevation="25"
+                    Class="rounded-lg"
+                />
+                <MudStack Spacing="2" Class="w-100">
+                    <MudText Typo="Typo.h5">
+                        @item.Name
+                    </MudText>
+                    <MudText>
+                        @item.Description
+                    </MudText>
+                </MudStack>
             </MudStack>
-        </MudStack>
-        <MudStack Spacing="2">
-            @foreach(var property in item.Properties)
-            {
-                <MudField Label="@property.Name">
-                    @property.Value
-                </MudField>
-            }
+            <MudStack Spacing="2">
+                @foreach(var property in item.Properties)
+                {
+                    <MudField Label="@property.Name">
+                        @property.Value
+                    </MudField>
+                }
+            </MudStack>
         </MudStack>
     }
 }
@@ -133,24 +135,36 @@ else
 
     private async Task UploadPicture()
     {
-        var file = (await FileReader.CreateReference(inputReference).EnumerateFilesAsync()).FirstOrDefault();
-        if (file == null) {
-            return;
+        try
+        {
+            var file = (await FileReader.CreateReference(inputReference).EnumerateFilesAsync()).FirstOrDefault();
+            if (file == null) {
+                return;
+            }
+            var fileInfo=await file.ReadFileInfoAsync();
+            Stream fileStream;
+
+            using (var ms = await file.CreateMemoryStreamAsync((int)fileInfo.Size)) {
+                fileStream = new MemoryStream(ms.ToArray());
+            }
+
+            var content = new MultipartFormDataContent();
+            content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
+            var sc = new StreamContent(fileStream, (int)fileStream.Length);
+            content.Add(sc, "image", fileInfo.Name);
+
+            if(item.PictureFilename != currentItem.PictureFilename)
+            {
+                await client.DeleteAsync($"api/Item/DeletePicture?fileName={item.PictureFilename}");
+            }
+
+            var response = await client.PostAsync("api/Item/PostPicture", content);
+            item.PictureFilename = await response.Content.ReadAsStringAsync();
         }
-        var fileInfo=await file.ReadFileInfoAsync();
-        Stream fileStream;
-
-        using (var ms = await file.CreateMemoryStreamAsync((int)fileInfo.Size)) {
-            fileStream = new MemoryStream(ms.ToArray());
+        catch(Exception e)
+        {
+            // TODO picture is too large!
         }
-
-        var content = new MultipartFormDataContent();
-        content.Headers.ContentDisposition = new System.Net.Http.Headers.ContentDispositionHeaderValue("form-data");
-        var sc = new StreamContent(fileStream, (int)fileStream.Length);
-        content.Add(sc, "image", fileInfo.Name);
-
-        var response = await client.PostAsync("api/Item/PostPicture", content);
-        item.PictureFilename = await response.Content.ReadAsStringAsync();
     }
 
     protected override async Task OnInitializedAsync()
