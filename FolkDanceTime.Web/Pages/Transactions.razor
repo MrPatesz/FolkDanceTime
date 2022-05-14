@@ -9,75 +9,77 @@
 
 <PageTitle>My Items and Transactions</PageTitle>
 
-<MudText Typo="Typo.h4">My Items and Transactions</MudText>
-
-<MudTabs
-    Elevation="2"
-    Rounded="true"
-    ApplyEffectsToContainer="true"
-    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
->
-    <MudTabPanel Text="My Items">
-        @if (items == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <MudStack Spacing="2" Class="pa-1">
-                @foreach (var item in items)
-                {
-                    <ItemListItem
-                        Item="item"
-                        OnHandOver="@OnHandOver"
-                    />
-                }
-            </MudStack>
-        }
-    </MudTabPanel>
-    <MudTabPanel Text="Outgoing Items">
-        @if (outgoingItemTransactions == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <MudStack Spacing="2" Class="pa-1">
-                @foreach (var transaction in outgoingItemTransactions)
-                {
-                    <TransactionListItem
-                        Transaction="@transaction"
-                        TransactionType="@Enums.TransactionType.Outgoing"
-                        OnAccept="@OnAccept"
-                        OnDecline="@OnDecline"
-                        OnRevoke="@OnRevoke"
-                    />
-                }
-            </MudStack>
-        }
-    </MudTabPanel>
-    <MudTabPanel Text="Incoming Items">
-        @if (incomingItemTransactions == null)
-        {
-            <p><em>Loading...</em></p>
-        }
-        else
-        {
-            <MudStack Spacing="2" Class="pa-1">
-                @foreach (var transaction in incomingItemTransactions)
-                {
-                    <TransactionListItem
-                        Transaction="@transaction"
-                        TransactionType="@Enums.TransactionType.Incoming"
-                        OnAccept="@OnAccept"
-                        OnDecline="@OnDecline"
-                        OnRevoke="@OnRevoke"
-                    />
-                }
-            </MudStack>
-        }
-    </MudTabPanel>
-</MudTabs>
+<MudStack>
+    <MudText Typo="Typo.h4">My Items and Transactions</MudText>
+    <MudTabs
+        Elevation="2"
+        Rounded="true"
+        ApplyEffectsToContainer="true"
+        Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+    >
+        <MudTabPanel Text="My Items">
+            @if (items == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <MudStack Spacing="2" Class="pa-1">
+                    @foreach (var item in items)
+                    {
+                        <ItemListItem
+                            Item="item"
+                            OnHandOver="@OnHandOver"
+                            DisableHandover="@DisableHandover(item)"
+                        />
+                    }
+                </MudStack>
+            }
+        </MudTabPanel>
+        <MudTabPanel Text="Outgoing Items">
+            @if (outgoingItemTransactions == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <MudStack Spacing="2" Class="pa-1">
+                    @foreach (var transaction in outgoingItemTransactions)
+                    {
+                        <TransactionListItem
+                            Transaction="@transaction"
+                            TransactionType="@Enums.TransactionType.Outgoing"
+                            OnAccept="@OnAccept"
+                            OnDecline="@OnDecline"
+                            OnRevoke="@OnRevoke"
+                        />
+                    }
+                </MudStack>
+            }
+        </MudTabPanel>
+        <MudTabPanel Text="Incoming Items">
+            @if (incomingItemTransactions == null)
+            {
+                <p><em>Loading...</em></p>
+            }
+            else
+            {
+                <MudStack Spacing="2" Class="pa-1">
+                    @foreach (var transaction in incomingItemTransactions)
+                    {
+                        <TransactionListItem
+                            Transaction="@transaction"
+                            TransactionType="@Enums.TransactionType.Incoming"
+                            OnAccept="@OnAccept"
+                            OnDecline="@OnDecline"
+                            OnRevoke="@OnRevoke"
+                        />
+                    }
+                </MudStack>
+            }
+        </MudTabPanel>
+    </MudTabs>
+</MudStack>
 
 @code {
     private ICollection<ItemDto> items;
@@ -112,5 +114,10 @@
     private void OnRevoke(ItemTransactionDto transaction)
     {
         outgoingItemTransactions.Remove(transaction);
+    }
+
+    private bool DisableHandover(ItemDto item)
+    {
+        return outgoingItemTransactions.Any(t => t.ItemName == item.Name);
     }
 }

@@ -9,33 +9,35 @@
 
 <PageTitle>Items</PageTitle>
 
-<MudStack Row Justify="Justify.SpaceBetween">
-    <MudText Typo="Typo.h4">Items</MudText>
-    <MudIconButton
-        Color="Color.Primary"
-        Icon="@Icons.Filled.AddCircle"
-        OnClick="@OpenDialog"
-    />
-</MudStack>
+<MudStack>
+    <MudStack Row Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.h4">Items</MudText>
+        <MudIconButton
+            Color="Color.Primary"
+            Icon="@Icons.Filled.AddCircle"
+            OnClick="@OpenDialog"
+        />
+    </MudStack>
 
-@if (items == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <MudGrid Spacing="2">
-        @foreach (var item in items)
-        {
-            <MudItem>
-                <ItemCard
-                    Item="@item"
-                    OnDelete="@OnDelete"
-                />
-            </MudItem>
-        }
-    </MudGrid>
-}
+    @if (items == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <MudGrid Spacing="2">
+            @foreach (var item in items)
+            {
+                <MudItem>
+                    <ItemCard
+                        Item="@item"
+                        OnDelete="@OnDelete"
+                    />
+                </MudItem>
+            }
+        </MudGrid>
+    }
+</MudStack>
 
 @code {
     private ICollection<ItemDto> items;

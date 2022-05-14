@@ -20,6 +20,7 @@
             Variant="Variant.Text"
             Color="Color.Primary"
             OnClick="@HandOver"
+            Disabled="@DisableHandover"
         >
             Hand Over
         </MudButton>
@@ -29,6 +30,8 @@
 @code {
     [Parameter]
     public ItemDto Item { get; set; }
+    [Parameter]
+    public bool DisableHandover { get; set; }
     [Parameter]
     public EventCallback<ItemTransactionDto> OnHandOver { get; set; }
 

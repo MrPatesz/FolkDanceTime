@@ -8,38 +8,40 @@
 
 <PageTitle>Categories</PageTitle>
 
-<MudStack Row Justify="Justify.SpaceBetween">
-    <MudText Typo="Typo.h4">Categories</MudText>
-    <MudIconButton
-        Color="Color.Primary"
-        Icon="@Icons.Filled.AddCircle"
-        OnClick="@(() => showAdd = true)"
-    />
-</MudStack>
-
-@if (categories == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <MudStack Spacing="2">
-        @foreach (var category in categories)
-        {
-            <CategoryListItem
-                Category="@category"
-                OnDelete="@OnDelete"
-            />
-        }
-        @if (showAdd)
-        {
-            <AddCategory
-                OnClose="() => showAdd = false"
-                OnAdd="@OnAdd"
-            />
-        }
+<MudStack>
+    <MudStack Row Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.h4">Categories</MudText>
+        <MudIconButton
+            Color="Color.Primary"
+            Icon="@Icons.Filled.AddCircle"
+            OnClick="@(() => showAdd = true)"
+        />
     </MudStack>
-}
+
+    @if (categories == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <MudStack Spacing="2">
+            @foreach (var category in categories)
+            {
+                <CategoryListItem
+                    Category="@category"
+                    OnDelete="@OnDelete"
+                />
+            }
+            @if (showAdd)
+            {
+                <AddCategory
+                    OnClose="() => showAdd = false"
+                    OnAdd="@OnAdd"
+                />
+            }
+        </MudStack>
+    }
+</MudStack>
 
 @code {
     private ICollection<CategoryDto> categories;

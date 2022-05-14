@@ -7,7 +7,7 @@
 >
     <MudCardMedia Image="@Item.PictureFilename" Height="150" />
     <MudCardContent
-        Style="padding: 8px"
+        Style="padding: 8px; padding-bottom: 0px;"
     >
         <MudText Typo="Typo.h5">@Item.Name</MudText>
         <MudText
@@ -19,7 +19,9 @@
             @Item.Description
         </MudText>
     </MudCardContent>
-    <MudCardActions>
+    <MudCardActions
+        Style="padding: 8px;"
+    >
         <MudButton
             Variant="Variant.Text"
             Color="Color.Primary"

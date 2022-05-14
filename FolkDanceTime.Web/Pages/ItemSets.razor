@@ -9,31 +9,33 @@
 
 <PageTitle>Item Sets</PageTitle>
 
-<MudStack Row Justify="Justify.SpaceBetween">
-    <MudText Typo="Typo.h4">Item Sets</MudText>
-    <MudIconButton
-        Color="Color.Primary"
-        Icon="@Icons.Filled.AddCircle"
-        OnClick="@OpenDialog"
-    />
-</MudStack>
-
-@if (itemSets == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <MudStack>
-        @foreach (var itemSet in itemSets)
-        {
-            <ItemSetListView
-                ItemSet="itemSet"
-                OnDelete="@OnDelete"
-            />
-        }
+<MudStack>
+    <MudStack Row Justify="Justify.SpaceBetween">
+        <MudText Typo="Typo.h4">Item Sets</MudText>
+        <MudIconButton
+            Color="Color.Primary"
+            Icon="@Icons.Filled.AddCircle"
+            OnClick="@OpenDialog"
+        />
     </MudStack>
-}
+
+    @if (itemSets == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <MudStack>
+            @foreach (var itemSet in itemSets)
+            {
+                <ItemSetListView
+                    ItemSet="itemSet"
+                    OnDelete="@OnDelete"
+                />
+            }
+        </MudStack>
+    }
+</MudStack>
 
 @code {
     private ICollection<ItemSetDto> itemSets;

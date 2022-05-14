@@ -7,33 +7,34 @@
 
 <PageTitle>Transaction History</PageTitle>
 
-<MudText Typo="Typo.h4">Transaction History</MudText>
-
-<MudTable
-    Items="@itemTransactions" 
-    Hover="true" 
-    Breakpoint="Breakpoint.Sm"
-    Loading="@(itemTransactions == null)"
-    LoadingProgressColor="Color.Primary"
-    Style="@($"background:{Colors.DeepPurple.Lighten5};")"
->
-    <HeaderContent>
-        <MudTh>Item</MudTh>
-        <MudTh>Status</MudTh>
-        <MudTh>From</MudTh>
-        <MudTh>To</MudTh>
-        <MudTh>Created At</MudTh>
-        <MudTh>Completed At</MudTh>
-    </HeaderContent>
-    <RowTemplate>
-        <MudTd DataLabel="Item">@context.ItemName</MudTd>
-        <MudTd DataLabel="Status">@context.Status</MudTd>
-        <MudTd DataLabel="From">@context.SenderUser.UserName</MudTd>
-        <MudTd DataLabel="To">@context.ReceiverUser.UserName</MudTd>
-        <MudTd DataLabel="Created At">@context.CreatedAt.Add(context.CreatedAt.Offset).DateTime</MudTd>
-        <MudTd DataLabel="Completed At">@context.CompletedAt?.Add(context.CreatedAt.Offset).DateTime</MudTd>
-    </RowTemplate>
-</MudTable>
+<MudStack>
+    <MudText Typo="Typo.h4">Transaction History</MudText>
+    <MudTable
+        Items="@itemTransactions" 
+        Hover="true" 
+        Breakpoint="Breakpoint.Sm"
+        Loading="@(itemTransactions == null)"
+        LoadingProgressColor="Color.Primary"
+        Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+    >
+        <HeaderContent>
+            <MudTh>Item</MudTh>
+            <MudTh>Status</MudTh>
+            <MudTh>From</MudTh>
+            <MudTh>To</MudTh>
+            <MudTh>Created At</MudTh>
+            <MudTh>Completed At</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Item">@context.ItemName</MudTd>
+            <MudTd DataLabel="Status">@context.Status</MudTd>
+            <MudTd DataLabel="From">@context.SenderUser.UserName</MudTd>
+            <MudTd DataLabel="To">@context.ReceiverUser.UserName</MudTd>
+            <MudTd DataLabel="Created At">@context.CreatedAt.Add(context.CreatedAt.Offset).DateTime</MudTd>
+            <MudTd DataLabel="Completed At">@context.CompletedAt?.Add(context.CreatedAt.Offset).DateTime</MudTd>
+        </RowTemplate>
+    </MudTable>
+</MudStack>
 
 @code {
     private ICollection<DetailedItemTransactionDto> itemTransactions;

@@ -66,6 +66,7 @@ else
                         Item="item"
                         Checked="@IsChecked(item)"
                         OnCheckChange="@((args)=> OnCheckChange(args.Item1, args.Item2))"
+                        Disabled="@Disabled(item)"
                     />
                 }
             }
@@ -79,9 +80,8 @@ else
             </MudField>
             @foreach(var item in itemSet.Items)
             {
-                <ItemListItem
+                <BasicItemListView
                     Item="item"
-                    OnHandOver="@(()=>{})"
                 />
             }
         </MudStack>
@@ -111,7 +111,7 @@ else
         currentItemSet = new ItemSetDto();
         currentItemSet.Id = itemSet.Id;
         currentItemSet.Name = itemSet.Name;
-        currentItemSet.Items = itemSet.Items;
+        currentItemSet.Items = itemSet.Items.Select(i => i).ToList();
 
         editing = true;
     }
@@ -145,6 +145,12 @@ else
     private bool IsChecked(ItemDto item)
     {
         return itemSet.Items.Any(iis => iis.Id == item.Id);
+    }
+
+    private bool Disabled(ItemDto item)
+    {
+        return itemsInSets.Any(i => i.Id == item.Id) && 
+               !currentItemSet.Items.Any(iis => iis.Id == item.Id);
     }
 
     private void OnCheckChange(bool checkedValue, ItemDto item)

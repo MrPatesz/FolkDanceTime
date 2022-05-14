@@ -26,9 +26,8 @@
         <MudStack Spacing="1" Class="px-1 pb-1">
             @foreach(var item in ItemSet.Items)
             {
-                <ItemListItem
+                <BasicItemListView
                     Item="item"
-                    OnHandOver="@OnItemHandover"
                 />
             }
         </MudStack>
@@ -60,10 +59,5 @@
     protected void NavigateToDetails()
     {
         NavigationManager.NavigateTo($"item-sets/{ItemSet.Id}");
-    }
-
-    private async void OnItemHandover(ItemTransactionDto transaction)
-    {
-        await DeleteItemSet();
     }
 }
