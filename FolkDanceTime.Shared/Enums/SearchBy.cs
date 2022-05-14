@@ -3,7 +3,7 @@
     public enum SearchBy
     {
         All,
-        Name,
+        Item,
         Category,
         User,
     }

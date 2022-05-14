@@ -21,6 +21,7 @@ builder.Services.AddApiAuthorization();
 builder.Services.AddScoped<ICategoryClient, CategoryClient>();
 builder.Services.AddScoped<IItemClient, ItemClient>();
 builder.Services.AddScoped<IItemTransactionClient, ItemTransactionClient>();
+builder.Services.AddScoped<IItemSetTransactionClient, ItemSetTransactionClient>();
 builder.Services.AddScoped<IUserClient, UserClient>();
 builder.Services.AddScoped<IItemSetClient, ItemSetClient>();
 builder.Services.AddScoped<ISearchClient, SearchClient>();

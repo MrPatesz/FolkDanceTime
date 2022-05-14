@@ -1,0 +1,96 @@
+﻿@using Client
+@using FolkDanceTime.Web.Enums
+@inject IItemSetTransactionClient ItemSetTransactionClient
+
+<MudPaper
+    Style="@($"background:{Colors.DeepPurple.Lighten4};")"
+>
+    <MudStack Spacing="0" Justify="Justify.SpaceBetween">
+        <MudStack
+            Row
+            Justify="Justify.SpaceBetween"
+            AlignItems="AlignItems.Center"
+        >
+            <MudText Class="px-3">
+                @Transaction.ItemSetName
+            </MudText>
+            @if(TransactionType == TransactionType.Incoming)
+            {
+                <MudButtonGroup
+                    Color="Color.Primary"
+                >
+                    <MudButton
+                        Variant="Variant.Text"
+                        OnClick="@Accept"
+                    >
+                        Accept
+                    </MudButton>
+                    <MudButton
+                        Variant="Variant.Text"
+                        OnClick="@Decline"
+                    >
+                        Decline
+                    </MudButton>
+                </MudButtonGroup>
+            } 
+            else if(TransactionType == TransactionType.Outgoing)
+            {
+                <MudButton
+                    Variant="Variant.Text"
+                    Color="Color.Primary"
+                    OnClick="@Revoke"
+                >
+                    Revoke
+                </MudButton>
+            }
+        </MudStack>
+        <MudStack Spacing="1" Class="px-1 pb-1">
+            @foreach(var item in Transaction.Items)
+            {
+                <BasicItemListView
+                    Item="item"
+                />
+            }
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ItemSetTransactionDto Transaction { get; set; }
+    [Parameter]
+    public TransactionType TransactionType { get; set; }
+    [Parameter]
+    public EventCallback<ItemSetTransactionDto> OnAccept { get; set; }
+    [Parameter]
+    public EventCallback<ItemSetTransactionDto> OnDecline { get; set; }
+    [Parameter]
+    public EventCallback<ItemSetTransactionDto> OnRevoke { get; set; }
+
+    protected async void Accept()
+    {
+        var success = await ItemSetTransactionClient.AcceptItemSetTransactionAsync(Transaction.Id);
+        if (success)
+        {
+            await OnAccept.InvokeAsync(Transaction);
+        }
+    }
+
+    protected async void Decline()
+    {
+        var success = await ItemSetTransactionClient.DeclineItemSetTransactionAsync(Transaction.Id);
+        if (success)
+        {
+            await OnDecline.InvokeAsync(Transaction);
+        }
+    }
+
+    protected async void Revoke()
+    {
+        var success = await ItemSetTransactionClient.RevokeItemSetTransactionAsync(Transaction.Id);
+        if (success)
+        {
+            await OnRevoke.InvokeAsync(Transaction);
+        }
+    }
+}

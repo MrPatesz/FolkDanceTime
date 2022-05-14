@@ -5,7 +5,9 @@
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
 @inject IItemClient ItemClient
+@inject IItemSetClient ItemSetClient
 @inject IItemTransactionClient ItemTransactionClient
+@inject IItemSetTransactionClient ItemSetTransactionClient
 
 <PageTitle>My Items and Transactions</PageTitle>
 
@@ -18,106 +20,208 @@
         Style="@($"background:{Colors.DeepPurple.Lighten5};")"
     >
         <MudTabPanel Text="My Items">
-            @if (items == null)
-            {
-                <p><em>Loading...</em></p>
-            }
-            else
-            {
-                <MudStack Spacing="2" Class="pa-1">
-                    @foreach (var item in items)
-                    {
-                        <ItemListItem
-                            Item="item"
-                            OnHandOver="@OnHandOver"
-                            DisableHandover="@DisableHandover(item)"
-                        />
-                    }
-                </MudStack>
-            }
+            <MudStack Spacing="2" Class="pa-1">
+                @if (items == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var item in items)
+                        {
+                            <ItemListItem
+                                Item="item"
+                                OnHandOver="@OnItemHandOver"
+                                DisableHandover="@DisableItemHandover(item)"
+                            />
+                        }
+                    </MudStack>
+                }
+                @if (itemSets == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var itemSet in itemSets)
+                        {
+                            <ItemSetOnTransactionsPage
+                                ItemSet="itemSet"
+                                OnItemHandOver="@OnItemInSetHandOver"
+                                OnSetHandOver="@OnItemSetHandOver"
+                                DisableHandover="@DisableItemSetHandover(itemSet)"
+                            />
+                        }
+                    </MudStack>
+                }
+            </MudStack>
         </MudTabPanel>
         <MudTabPanel Text="Outgoing Items">
-            @if (outgoingItemTransactions == null)
-            {
-                <p><em>Loading...</em></p>
-            }
-            else
-            {
-                <MudStack Spacing="2" Class="pa-1">
-                    @foreach (var transaction in outgoingItemTransactions)
-                    {
-                        <TransactionListItem
-                            Transaction="@transaction"
-                            TransactionType="@Enums.TransactionType.Outgoing"
-                            OnAccept="@OnAccept"
-                            OnDecline="@OnDecline"
-                            OnRevoke="@OnRevoke"
-                        />
-                    }
-                </MudStack>
-            }
+            <MudStack Spacing="2" Class="pa-1">
+                @if (outgoingItemTransactions == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var transaction in outgoingItemTransactions)
+                        {
+                            <ItemTransaction
+                                Transaction="@transaction"
+                                TransactionType="@Enums.TransactionType.Outgoing"
+                                OnAccept="@OnItemAccept"
+                                OnDecline="@OnItemDecline"
+                                OnRevoke="@OnItemRevoke"
+                            />
+                        }
+                    </MudStack>
+                }
+                @if (outgoingItemSetTransactions == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var transaction in outgoingItemSetTransactions)
+                        {
+                            <ItemSetTransaction
+                                Transaction="@transaction"
+                                TransactionType="@Enums.TransactionType.Outgoing"
+                                OnAccept="@OnItemSetAccept"
+                                OnDecline="@OnItemSetDecline"
+                                OnRevoke="@OnItemSetRevoke"
+                            />
+                        }
+                    </MudStack>
+                }
+            </MudStack>
         </MudTabPanel>
         <MudTabPanel Text="Incoming Items">
-            @if (incomingItemTransactions == null)
-            {
-                <p><em>Loading...</em></p>
-            }
-            else
-            {
-                <MudStack Spacing="2" Class="pa-1">
-                    @foreach (var transaction in incomingItemTransactions)
-                    {
-                        <TransactionListItem
-                            Transaction="@transaction"
-                            TransactionType="@Enums.TransactionType.Incoming"
-                            OnAccept="@OnAccept"
-                            OnDecline="@OnDecline"
-                            OnRevoke="@OnRevoke"
-                        />
-                    }
-                </MudStack>
-            }
+            <MudStack Spacing="2" Class="pa-1">
+                @if (incomingItemTransactions == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var transaction in incomingItemTransactions)
+                        {
+                            <ItemTransaction
+                                Transaction="@transaction"
+                                TransactionType="@Enums.TransactionType.Incoming"
+                                OnAccept="@OnItemAccept"
+                                OnDecline="@OnItemDecline"
+                                OnRevoke="@OnItemRevoke"
+                            />
+                        }
+                    </MudStack>
+                }
+                @if (incomingItemSetTransactions == null)
+                {
+                    <p><em>Loading...</em></p>
+                }
+                else
+                {
+                    <MudStack Spacing="2">
+                        @foreach (var transaction in incomingItemSetTransactions)
+                        {
+                            <ItemSetTransaction
+                                Transaction="@transaction"
+                                TransactionType="@Enums.TransactionType.Incoming"
+                                OnAccept="@OnItemSetAccept"
+                                OnDecline="@OnItemSetDecline"
+                                OnRevoke="@OnItemSetRevoke"
+                            />
+                        }
+                    </MudStack>
+                }
+            </MudStack>
         </MudTabPanel>
     </MudTabs>
 </MudStack>
 
 @code {
     private ICollection<ItemDto> items;
+    private ICollection<ItemSetDto> itemSets;
     private ICollection<ItemTransactionDto> incomingItemTransactions;
     private ICollection<ItemTransactionDto> outgoingItemTransactions;
+    private ICollection<ItemSetTransactionDto> incomingItemSetTransactions;
+    private ICollection<ItemSetTransactionDto> outgoingItemSetTransactions;
 
     protected override async Task OnInitializedAsync()
     {
+        itemSets = await ItemSetClient.GetMyItemSetsAsync();
+        var itemsInSets = itemSets.SelectMany(set => set.Items).ToList();
         items = await ItemClient.GetMyItemsAsync();
+        items = items.Where(item => !itemsInSets.Any(i => i.Id == item.Id)).ToList();
         incomingItemTransactions = await ItemTransactionClient.GetIncomingItemTransactionsAsync();
         outgoingItemTransactions = await ItemTransactionClient.GetOutgoingItemTransactionsAsync();
+        incomingItemSetTransactions = await ItemSetTransactionClient.GetIncomingItemSetTransactionsAsync();
+        outgoingItemSetTransactions = await ItemSetTransactionClient.GetOutgoingItemSetTransactionsAsync();
     }
 
-    private void OnHandOver(ItemTransactionDto newTransaction)
+    private void OnItemHandOver(ItemTransactionDto newTransaction)
     {
         outgoingItemTransactions.Add(newTransaction);
     }
 
-    private async Task OnAccept(ItemTransactionDto transaction)
+    private async Task OnItemInSetHandOver(ItemTransactionDto newTransaction)
+    {
+        outgoingItemTransactions.Add(newTransaction);
+        var setToDelete = itemSets.Single(set => set.Items.Any(i => i.Name == newTransaction.ItemName));
+        await ItemSetClient.DeleteItemSetAsync(setToDelete.Id);
+    }
+
+    private async Task OnItemAccept(ItemTransactionDto transaction)
     {
         incomingItemTransactions.Remove(transaction);
-
-        // TODO add item somehow without refetching
         items = await ItemClient.GetMyItemsAsync();
     }
 
-    private void OnDecline(ItemTransactionDto transaction)
+    private void OnItemDecline(ItemTransactionDto transaction)
     {
         incomingItemTransactions.Remove(transaction);
     }
 
-    private void OnRevoke(ItemTransactionDto transaction)
+    private void OnItemRevoke(ItemTransactionDto transaction)
     {
         outgoingItemTransactions.Remove(transaction);
     }
 
-    private bool DisableHandover(ItemDto item)
+    private bool DisableItemHandover(ItemDto item)
     {
         return outgoingItemTransactions.Any(t => t.ItemName == item.Name);
+    }
+
+    private void OnItemSetHandOver(ItemSetTransactionDto newTransaction)
+    {
+        outgoingItemSetTransactions.Add(newTransaction);
+        StateHasChanged();
+    }
+
+    private async Task OnItemSetAccept(ItemSetTransactionDto transaction)
+    {
+        incomingItemSetTransactions.Remove(transaction);
+        itemSets = await ItemSetClient.GetMyItemSetsAsync();
+    }
+
+    private void OnItemSetDecline(ItemSetTransactionDto transaction)
+    {
+        incomingItemSetTransactions.Remove(transaction);
+    }
+
+    private void OnItemSetRevoke(ItemSetTransactionDto transaction)
+    {
+        outgoingItemSetTransactions.Remove(transaction);
+    }
+
+    private bool DisableItemSetHandover(ItemSetDto itemSet)
+    {
+        return outgoingItemSetTransactions.Any(t => t.ItemSetName == itemSet.Name);
     }
 }

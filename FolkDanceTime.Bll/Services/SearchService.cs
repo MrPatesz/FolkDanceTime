@@ -23,7 +23,7 @@ namespace FolkDanceTime.Bll.Services
             return searchBy switch
             {
                 SearchBy.All => await SearchItemsByAllAsync(term),
-                SearchBy.Name => await SearchItemsByNameAsync(term),
+                SearchBy.Item => await SearchItemsByNameAsync(term),
                 SearchBy.Category => await SearchItemsByCategoryAsync(term),
                 SearchBy.User => await SearchItemsByUserAsync(term),
                 _ => await SearchItemsByAllAsync(""),

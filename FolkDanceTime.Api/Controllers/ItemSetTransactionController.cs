@@ -8,73 +8,73 @@ namespace FolkDanceTime.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [Authorize]
-    public class ItemTransactionController : ControllerBase
+    public class ItemSetTransactionController : ControllerBase
     {
-        private readonly ItemTransactionService _itemTransactionService;
+        private readonly ItemSetTransactionService _itemSetTransactionService;
 
-        public ItemTransactionController(ItemTransactionService itemTransactionService)
+        public ItemSetTransactionController(ItemSetTransactionService itemSetTransactionService)
         {
-            _itemTransactionService = itemTransactionService;
+            _itemSetTransactionService = itemSetTransactionService;
         }
 
         [Authorize(Policy = "AdminOnly")]
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<DetailedItemTransactionDto>>> GetItemTransactionsAsync()
+        public async Task<ActionResult<List<ItemSetTransactionDto>>> GetItemSetTransactionsAsync()
         {
-            return Ok(await _itemTransactionService.GetItemTransactionsAsync());
+            return Ok(await _itemSetTransactionService.GetItemSetTransactionsAsync());
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ItemTransactionDto>>> GetIncomingItemTransactionsAsync()
+        public async Task<ActionResult<List<ItemSetTransactionDto>>> GetIncomingItemSetTransactionsAsync()
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemTransactionService.GetIncomingItemTransactionsAsync(userId));
+            return Ok(await _itemSetTransactionService.GetIncomingItemSetTransactionsAsync(userId));
         }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
-        public async Task<ActionResult<List<ItemTransactionDto>>> GetOutgoingItemTransactionsAsync()
+        public async Task<ActionResult<List<ItemSetTransactionDto>>> GetOutgoingItemSetTransactionsAsync()
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemTransactionService.GetOutgoingItemTransactionsAsync(userId));
+            return Ok(await _itemSetTransactionService.GetOutgoingItemSetTransactionsAsync(userId));
         }
 
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<ItemTransactionDto>> CreateItemTransactionAsync([FromQuery] int itemId, [FromQuery] string receiverUserId)
+        public async Task<ActionResult<ItemSetTransactionDto>> CreateItemSetTransactionAsync([FromQuery] int itemId, [FromQuery] string receiverUserId)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemTransactionService.CreateTransactionAsync(itemId, userId, receiverUserId));
+            return Ok(await _itemSetTransactionService.CreateItemSetTransactionAsync(itemId, userId, receiverUserId));
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> RevokeItemTransactionAsync(int id)
+        public async Task<ActionResult<bool>> RevokeItemSetTransactionAsync(int id)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemTransactionService.RevokeTransactionAsync(id, userId));
+            return Ok(await _itemSetTransactionService.RevokeItemSetTransactionAsync(id, userId));
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> DeclineItemTransactionAsync(int id)
+        public async Task<ActionResult<bool>> DeclineItemSetTransactionAsync(int id)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemTransactionService.DeclineTransactionAsync(id, userId));
+            return Ok(await _itemSetTransactionService.DeclineItemSetTransactionAsync(id, userId));
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<ActionResult<bool>> AcceptItemTransactionAsync(int id)
+        public async Task<ActionResult<bool>> AcceptItemSetTransactionAsync(int id)
         {
             var userId = HttpContext.User.Claims.FirstOrDefault(o => o.Type == ClaimTypes.NameIdentifier)?.Value;
-            return Ok(await _itemTransactionService.AcceptTransactionAsync(id, userId));
+            return Ok(await _itemSetTransactionService.AcceptItemSetTransactionAsync(id, userId));
         }
     }
 }

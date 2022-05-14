@@ -1,5 +1,6 @@
 ﻿@using Client
 @inject IItemTransactionClient ItemTransactionClient
+@inject IItemSetTransactionClient ItemSetTransactionClient
 @inject IUserClient UserClient
 
 <MudDialog>
@@ -37,12 +38,17 @@
     [CascadingParameter] MudDialogInstance MudDialog { get; set; }
 
     [Parameter] public ItemDto Item { get; set; }
+    [Parameter] public ItemSetDto ItemSet { get; set; }
 
     private ICollection<UserDto> users;
     private UserDto selectedUser;
 
     protected override async Task OnInitializedAsync()
     {
+        if(Item == null && ItemSet == null)
+        {
+            MudDialog.Cancel();
+        }
         users = await UserClient.GetOtherUsersAsync();
     }
 
@@ -52,8 +58,17 @@
         {
             try
             {
-                var transaction = await ItemTransactionClient.CreateTransactionAsync(Item.Id, selectedUser.Id);
-                MudDialog.Close(DialogResult.Ok(transaction));
+                if(ItemSet == null && Item != null)
+                {
+                    var itemTransaction = await ItemTransactionClient.CreateItemTransactionAsync(Item.Id, selectedUser.Id);
+                    MudDialog.Close(DialogResult.Ok(itemTransaction));
+                }
+                else if(Item == null && ItemSet != null)
+                {
+                    var itemSetTransaction = await ItemSetTransactionClient.CreateItemSetTransactionAsync(ItemSet.Id, selectedUser.Id);
+                    MudDialog.Close(DialogResult.Ok(itemSetTransaction));
+                    throw new Exception();
+                }
             }
             catch(Exception e)
             {

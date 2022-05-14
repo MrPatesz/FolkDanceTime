@@ -30,18 +30,10 @@
             Value="@searchBy"
             ValueChanged="@OnSearchByChange"
         >
-            <MudSelectItem T="SearchBy" Value="SearchBy.All">
-                All
-            </MudSelectItem>
-           <MudSelectItem T="SearchBy" Value="SearchBy.Name">
-                Name
-            </MudSelectItem>
-            <MudSelectItem T="SearchBy" Value="SearchBy.Category">
-                Category
-            </MudSelectItem>
-            <MudSelectItem T="SearchBy" Value="SearchBy.User">
-                User
-            </MudSelectItem>
+            @foreach (SearchBy item in Enum.GetValues(typeof(SearchBy)))
+            {
+                <MudSelectItem Value="@item">@item</MudSelectItem>
+            }
         </MudSelect>
     </MudStack>
 

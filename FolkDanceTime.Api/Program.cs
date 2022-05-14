@@ -18,6 +18,7 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddScoped<CategoryService, CategoryService>();
 builder.Services.AddScoped<ItemService, ItemService>();
 builder.Services.AddScoped<ItemTransactionService, ItemTransactionService>();
+builder.Services.AddScoped<ItemSetTransactionService, ItemSetTransactionService>();
 builder.Services.AddScoped<UserService, UserService>();
 builder.Services.AddScoped<PictureService, PictureService>();
 builder.Services.AddScoped<ItemSetService, ItemSetService>();

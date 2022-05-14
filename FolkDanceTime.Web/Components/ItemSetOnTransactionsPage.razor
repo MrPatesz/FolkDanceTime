@@ -1,0 +1,69 @@
+﻿@using Client
+@inject NavigationManager NavigationManager
+@inject IItemSetClient ItemSetClient
+@inject IDialogService DialogService
+
+<MudPaper
+    Class="cursor-pointer"
+    @onclick="@NavigateToDetails"
+    Style="@($"background:{Colors.DeepPurple.Lighten4};")"
+>
+    <MudStack Spacing="0" Justify="Justify.SpaceBetween">
+        <MudStack
+            Row
+            Justify="Justify.SpaceBetween"
+            AlignItems="AlignItems.Center"
+        >
+            <MudText Class="px-3">
+                @ItemSet.Name
+            </MudText>
+            <MudButton
+                Variant="Variant.Text"
+                Color="Color.Primary"
+                OnClick="@HandOverSet"
+                Disabled="@DisableHandover"
+            >
+                Hand Over
+            </MudButton>
+        </MudStack>
+        <MudStack Spacing="1" Class="px-1 pb-1">
+            @foreach(var item in ItemSet.Items)
+            {
+                <ItemListItem
+                    Item="item"
+                    OnHandOver="@OnItemHandOver"
+                />
+            }
+        </MudStack>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ItemSetDto ItemSet { get; set; }
+    [Parameter]
+    public bool DisableHandover { get; set; }
+    [Parameter]
+    public EventCallback<ItemSetTransactionDto> OnSetHandOver { get; set; }
+    [Parameter]
+    public EventCallback<ItemTransactionDto> OnItemHandOver { get; set; }
+
+    protected void NavigateToDetails()
+    {
+        NavigationManager.NavigateTo($"item-sets/{ItemSet.Id}");
+    }
+
+    protected async void HandOverSet()
+    {
+        var parameters = new DialogParameters();
+        parameters.Add("ItemSet", ItemSet);
+
+        var dialog = DialogService.Show<HandOverItemDialog>("Hand Over Item Set", parameters);
+        var result = await dialog.Result;
+
+        if (!result.Cancelled)
+        {
+            await OnSetHandOver.InvokeAsync((ItemSetTransactionDto)result.Data);
+        }
+    }
+}

@@ -3,7 +3,7 @@
 @inject IItemTransactionClient ItemTransactionClient
 
 <MudPaper
-    Style="@($"background:{Colors.DeepPurple.Lighten4};")"
+    Style="@($"background:{Colors.DeepPurple.Lighten3};")"
 >
     <MudStack
         Row
@@ -59,7 +59,7 @@
 
     protected async void Accept()
     {
-        var success = await ItemTransactionClient.AcceptTransactionAsync(Transaction.Id);
+        var success = await ItemTransactionClient.AcceptItemTransactionAsync(Transaction.Id);
         if (success)
         {
             await OnAccept.InvokeAsync(Transaction);
@@ -68,7 +68,7 @@
 
     protected async void Decline()
     {
-        var success = await ItemTransactionClient.DeclineTransactionAsync(Transaction.Id);
+        var success = await ItemTransactionClient.DeclineItemTransactionAsync(Transaction.Id);
         if (success)
         {
             await OnDecline.InvokeAsync(Transaction);
@@ -77,7 +77,7 @@
 
     protected async void Revoke()
     {
-        var success = await ItemTransactionClient.RevokeTransactionAsync(Transaction.Id);
+        var success = await ItemTransactionClient.RevokeItemTransactionAsync(Transaction.Id);
         if (success)
         {
             await OnRevoke.InvokeAsync(Transaction);
