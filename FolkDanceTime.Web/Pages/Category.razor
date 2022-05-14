@@ -1,5 +1,6 @@
 ﻿@page "/categories/{Id:int}"
 @using Client
+@using FolkDanceTime.Web.Components
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
@@ -90,6 +91,18 @@ else
                     @property.Name
                 </MudField>
             }
+            <MudText Typo="Typo.h5">Items</MudText>
+            <MudGrid Spacing="2">
+                @foreach (var item in category.Items)
+                {
+                    <MudItem>
+                        <ItemCard
+                            Item="@item"
+                            OnDelete="@OnDelete"
+                        />
+                    </MudItem>
+                }
+            </MudGrid>
         </MudStack>
     }
 }
@@ -160,5 +173,10 @@ else
         {
             editing = false;
         }
+    }
+
+    protected void OnDelete(ItemDto item)
+    {
+        category.Items.Remove(item);
     }
 }

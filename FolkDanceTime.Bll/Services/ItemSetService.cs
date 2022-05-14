@@ -55,10 +55,7 @@ namespace FolkDanceTime.Bll.Services
 
             foreach(var item in results)
             {
-                if(item.ItemSetId == null)
-                {
-                    item.ItemSetId = itemSet.Id;
-                }
+                item.ItemSetId = itemSet.Id;
             }
 
             await _dbContext.SaveChangesAsync();
@@ -94,11 +91,7 @@ namespace FolkDanceTime.Bll.Services
         public async Task DeleteItemSetAsync(int id)
         {
             var itemSet = await _dbContext.ItemSets
-                .Include(set => set.Items)
                 .SingleAsync(i => i.Id == id);
-
-            itemSet.Items.ForEach(item => item.ItemSetId = null);
-            await _dbContext.SaveChangesAsync();
 
             _dbContext.ItemSets.Remove(itemSet);
             await _dbContext.SaveChangesAsync();

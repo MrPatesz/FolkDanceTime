@@ -6,5 +6,6 @@
         public string Name { get; set; }
 
         public List<PropertyDto> Properties { get; set; }
+        public List<ItemDto> Items { get; set; }
     }
 }

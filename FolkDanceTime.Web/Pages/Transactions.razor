@@ -175,6 +175,7 @@
         outgoingItemTransactions.Add(newTransaction);
         var setToDelete = itemSets.Single(set => set.Items.Any(i => i.Name == newTransaction.ItemName));
         await ItemSetClient.DeleteItemSetAsync(setToDelete.Id);
+        itemSets = itemSets.Where(set => set.Id != setToDelete.Id).ToList();
     }
 
     private async Task OnItemAccept(ItemTransactionDto transaction)

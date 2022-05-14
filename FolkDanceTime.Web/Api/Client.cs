@@ -4313,6 +4313,10 @@ namespace Client
         [System.ComponentModel.DataAnnotations.Required]
         public System.Collections.Generic.ICollection<PropertyDto> Properties { get; set; } = new System.Collections.ObjectModel.Collection<PropertyDto>();
 
+        [Newtonsoft.Json.JsonProperty("items", Required = Newtonsoft.Json.Required.Always)]
+        [System.ComponentModel.DataAnnotations.Required]
+        public System.Collections.Generic.ICollection<ItemDto> Items { get; set; } = new System.Collections.ObjectModel.Collection<ItemDto>();
+
     }
 
     [System.CodeDom.Compiler.GeneratedCode("NJsonSchema", "13.15.10.0 (NJsonSchema v10.6.10.0 (Newtonsoft.Json v13.0.0.0))")]
