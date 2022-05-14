@@ -4,67 +4,88 @@
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
-@inject IItemClient ItemClient
+@inject ISearchClient SearchClient
 @inject IDialogService DialogService
 
 <PageTitle>Search Items</PageTitle>
 
-<MudText Typo="Typo.h4">Search Items</MudText>
+<MudStack>
+    <MudText Typo="Typo.h4">Search Items</MudText>
+    <MudStack Row Spacing="2">
+        <MudTextField
+            T="string"
+            Label="Search for"
+            InputType="InputType.Text"
+            AutoFocus="true"
+            Variant="Variant.Outlined"
+            Margin="Margin.Dense"
+            Value="@SearchTerm"
+            ValueChanged="@OnTermChange"
+        />
+        <MudSelect
+            T="SearchBy"
+            Label="Search by"
+            Variant="Variant.Outlined"
+            Margin="Margin.Dense"
+            Value="@searchBy"
+            ValueChanged="@OnSearchByChange"
+        >
+            <MudSelectItem T="SearchBy" Value="SearchBy.All">
+                All
+            </MudSelectItem>
+           <MudSelectItem T="SearchBy" Value="SearchBy.Name">
+                Name
+            </MudSelectItem>
+            <MudSelectItem T="SearchBy" Value="SearchBy.Category">
+                Category
+            </MudSelectItem>
+            <MudSelectItem T="SearchBy" Value="SearchBy.User">
+                User
+            </MudSelectItem>
+        </MudSelect>
+    </MudStack>
 
-<MudStack Row>
-    <MudTextField
-        InputType="InputType.Text"
-        AutoFocus="true"
-        Variant="Variant.Outlined"
-        Margin="Margin.Dense"
-        @bind-Value="@searchTerm"
-    />
-
-    <MudSelect
-        T="string"
-        Label="Search for"
-        Variant="Variant.Outlined"
-        Margin="Margin.Dense"
-        @bind-Value="@searchTerm"
+    <MudTable
+        Items="@results" 
+        Hover="true" 
+        Breakpoint="Breakpoint.Sm"
+        Loading="@(results == null)"
+        LoadingProgressColor="Color.Primary"
+        Style="@($"background:{Colors.DeepPurple.Lighten5};")"
     >
-        <MudSelectItem T="string">
-            All
-        </MudSelectItem>
-        <MudSelectItem T="string">
-            User
-        </MudSelectItem>
-        <MudSelectItem T="string">
-            Category
-        </MudSelectItem>
-    </MudSelect>
+        <HeaderContent>
+            <MudTh>Item</MudTh>
+            <MudTh>Category</MudTh>
+            <MudTh>Owner</MudTh>
+        </HeaderContent>
+        <RowTemplate>
+            <MudTd DataLabel="Item">@context.ItemName</MudTd>
+            <MudTd DataLabel="Category">@context.Category.Name</MudTd>
+            <MudTd DataLabel="Owner">@context.OwnerUser.UserName</MudTd>
+        </RowTemplate>
+    </MudTable>
 </MudStack>
 
-@if (allItems == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <MudStack Spacing="2">
-        @foreach (var item in results)
-        {
-            <ItemListItem
-                Item="item"
-                OnHandOver="@(()=>{})"
-            />
-        }
-    </MudStack>
-}
-
 @code {
-    private ICollection<ItemDto> allItems;
-    private ICollection<ItemDto> results;
+    private ICollection<SearchResultDto> results;
 
-    private string searchTerm = "";
+    private string SearchTerm { get; set; }
+    private SearchBy searchBy = SearchBy.All;
 
     protected override async Task OnInitializedAsync()
     {
-        allItems = await ItemClient.GetItemsAsync();
-        results = allItems.Select(i => i).ToList();
+        results = await SearchClient.SearchItemsAsync(SearchTerm, searchBy);
+    }
+
+    private async Task OnTermChange(string newTerm)
+    {
+        SearchTerm = newTerm;
+        results = await SearchClient.SearchItemsAsync(SearchTerm, searchBy);
+    }
+
+    private async Task OnSearchByChange(SearchBy newSearchBy)
+    {
+        searchBy = newSearchBy;
+        results = await SearchClient.SearchItemsAsync(SearchTerm, searchBy);
     }
 }

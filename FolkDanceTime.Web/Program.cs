@@ -23,6 +23,7 @@ builder.Services.AddScoped<IItemClient, ItemClient>();
 builder.Services.AddScoped<IItemTransactionClient, ItemTransactionClient>();
 builder.Services.AddScoped<IUserClient, UserClient>();
 builder.Services.AddScoped<IItemSetClient, ItemSetClient>();
+builder.Services.AddScoped<ISearchClient, SearchClient>();
 
 builder.Services.AddMudServices();
 

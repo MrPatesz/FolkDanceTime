@@ -1,0 +1,31 @@
+﻿@using Client
+@inject NavigationManager NavigationManager
+@inject IItemClient ItemClient
+@inject IDialogService DialogService
+
+<MudPaper
+    Class="cursor-pointer"
+    @onclick="@NavigateToDetails"
+    Style="@($"background:{Colors.DeepPurple.Lighten4}; height: 36.5px")"
+>
+    <MudStack
+        Row
+        Justify="Justify.SpaceBetween"
+        AlignItems="AlignItems.Center"
+        Style="height: 100%"
+    >
+        <MudText Class="px-2">
+            @Item.Name
+        </MudText>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter]
+    public ItemDto Item { get; set; }
+
+    protected void NavigateToDetails()
+    {
+        NavigationManager.NavigateTo($"items/{Item.Id}");
+    }
+}
