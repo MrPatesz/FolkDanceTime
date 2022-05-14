@@ -24,9 +24,38 @@ namespace FolkDanceTime.Dal.DbContext
         public DbSet<Property> Properties { get; set; }
         public DbSet<PropertyValue> PropertyValues { get; set; }
 
+        public override int SaveChanges()
+        {
+            UpdateSoftDeleteStatuses();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(bool acceptAllChangesOnSuccess, CancellationToken cancellationToken = default(CancellationToken))
+        {
+            UpdateSoftDeleteStatuses();
+            return base.SaveChangesAsync(acceptAllChangesOnSuccess, cancellationToken);
+        }
+
+        private void UpdateSoftDeleteStatuses()
+        {
+            foreach (var entry in ChangeTracker.Entries().Where(e => e.Entity is ISoftDeletable))
+            {
+                var entity = (ISoftDeletable)entry.Entity;
+
+                if (entry.State == EntityState.Deleted)
+                {
+                    entity.IsDeleted = true;
+                    entry.State = EntityState.Modified;
+                }
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Item>().HasQueryFilter(m => !EF.Property<bool>(m, "IsDeleted"));
+            builder.Entity<ItemSet>().HasQueryFilter(m => !EF.Property<bool>(m, "IsDeleted"));
 
             builder.Entity<User>()
                 .HasMany(u => u.Items)
@@ -58,8 +87,7 @@ namespace FolkDanceTime.Dal.DbContext
             builder.Entity<Item>()
                 .HasOne(i => i.Category)
                 .WithMany(c => c.Items)
-                .HasForeignKey(i => i.CategoryId)
-                .IsRequired();
+                .HasForeignKey(i => i.CategoryId);
             builder.Entity<Item>()
                 .HasOne(i => i.ItemSet)
                 .WithMany(set => set.Items)

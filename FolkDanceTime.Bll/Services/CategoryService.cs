@@ -52,6 +52,20 @@ namespace FolkDanceTime.Bll.Services
         {
             var category = await _dbContext.Categories.SingleAsync(c => c.Id == id);
 
+            var anyItemsInCategory = await _dbContext.Items.AnyAsync(i => i.CategoryId == category.Id);
+
+            if (anyItemsInCategory)
+            {
+                throw new Exception();
+            }
+
+            var softDeletedItemsInCategory = await _dbContext.Items
+                .IgnoreQueryFilters()
+                .Where(i => i.CategoryId == category.Id)
+                .ToListAsync();
+            softDeletedItemsInCategory.ForEach(i => i.CategoryId = null);
+            await _dbContext.SaveChangesAsync();
+
             _dbContext.Categories.Remove(category);
             await _dbContext.SaveChangesAsync();
         }

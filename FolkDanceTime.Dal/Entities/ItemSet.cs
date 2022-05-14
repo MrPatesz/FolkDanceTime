@@ -1,7 +1,8 @@
 ﻿namespace FolkDanceTime.Dal.Entities
 {
-    public class ItemSet
+    public class ItemSet : ISoftDeletable
     {
+        public bool IsDeleted { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
         public string OwnerUserId { get; set; }

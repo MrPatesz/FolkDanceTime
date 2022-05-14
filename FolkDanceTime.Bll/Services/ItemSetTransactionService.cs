@@ -23,6 +23,7 @@ namespace FolkDanceTime.Bll.Services
         {
             // TODO DetailedItemSetTransacitonDto and ItemSetTransactionDto
             return await _dbContext.ItemSetTransactions
+                .IgnoreQueryFilters()
                 .ProjectTo<ItemSetTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }

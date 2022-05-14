@@ -22,6 +22,7 @@ namespace FolkDanceTime.Bll.Services
         public async Task<List<DetailedItemTransactionDto>> GetItemTransactionsAsync()
         {
             return await _dbContext.ItemTransactions
+                .IgnoreQueryFilters()
                 .ProjectTo<DetailedItemTransactionDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
