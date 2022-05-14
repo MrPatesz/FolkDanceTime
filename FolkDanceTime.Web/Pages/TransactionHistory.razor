@@ -1,48 +1,116 @@
 ﻿@page "/transaction-history"
 @using Client
+@using FolkDanceTime.Web.Components
 @using Microsoft.AspNetCore.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @attribute [Authorize]
 @inject IItemTransactionClient ItemTransactionClient
+@inject IItemSetTransactionClient ItemSetTransactionClient
 
 <PageTitle>Transaction History</PageTitle>
 
 <MudStack>
     <MudText Typo="Typo.h4">Transaction History</MudText>
-    <MudTable
-        Items="@itemTransactions" 
-        Hover="true" 
-        Breakpoint="Breakpoint.Sm"
-        Loading="@(itemTransactions == null)"
-        LoadingProgressColor="Color.Primary"
+    <MudTabs
+        Elevation="2"
+        Rounded="true"
+        ApplyEffectsToContainer="true"
         Style="@($"background:{Colors.DeepPurple.Lighten5};")"
     >
-        <HeaderContent>
-            <MudTh>Item</MudTh>
-            <MudTh>Status</MudTh>
-            <MudTh>From</MudTh>
-            <MudTh>To</MudTh>
-            <MudTh>Created At</MudTh>
-            <MudTh>Completed At</MudTh>
-        </HeaderContent>
-        <RowTemplate>
-            <MudTd DataLabel="Item">@context.ItemName</MudTd>
-            <MudTd DataLabel="Status">@context.Status</MudTd>
-            <MudTd DataLabel="From">@context.SenderUser.UserName</MudTd>
-            <MudTd DataLabel="To">@context.ReceiverUser.UserName</MudTd>
-            <MudTd DataLabel="Created At">@context.CreatedAt.Add(context.CreatedAt.Offset).DateTime</MudTd>
-            <MudTd DataLabel="Completed At">@context.CompletedAt?.Add(context.CreatedAt.Offset).DateTime</MudTd>
-        </RowTemplate>
-    </MudTable>
+        <MudTabPanel Text="Item Transactions">
+            <MudTable
+                Striped="true"
+                Items="@itemTransactions" 
+                Hover="true" 
+                Breakpoint="Breakpoint.Sm"
+                Loading="@(itemTransactions == null)"
+                LoadingProgressColor="Color.Primary"
+                Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+            >
+                <HeaderContent>
+                    <MudTh>Item</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh>From</MudTh>
+                    <MudTh>To</MudTh>
+                    <MudTh>Created At</MudTh>
+                    <MudTh>Completed At</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd DataLabel="Item">@context.ItemName</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="From">@context.SenderUser.UserName</MudTd>
+                    <MudTd DataLabel="To">@context.ReceiverUser.UserName</MudTd>
+                    <MudTd DataLabel="Created At">@context.CreatedAt.Add(context.CreatedAt.Offset).DateTime</MudTd>
+                    <MudTd DataLabel="Completed At">@context.CompletedAt?.Add(context.CreatedAt.Offset).DateTime</MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudTabPanel>
+        <MudTabPanel Text="Item Set Transactions">
+            <MudTable
+                Striped="true"
+                Dense="true"
+                Items="@itemSetTransactions" 
+                Hover="true" 
+                Breakpoint="Breakpoint.Sm"
+                Loading="@(itemSetTransactions == null)"
+                LoadingProgressColor="Color.Primary"
+                Style="@($"background:{Colors.DeepPurple.Lighten5};")"
+            >
+                <HeaderContent>
+		            <MudTh/>
+                    <MudTh>Item Set</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh>From</MudTh>
+                    <MudTh>To</MudTh>
+                    <MudTh>Created At</MudTh>
+                    <MudTh>Completed At</MudTh>
+                </HeaderContent>
+                <RowTemplate>
+                    <MudTd>
+                        <MudIconButton
+                            Color="Color.Default"
+                            Icon="@(expanded.GetValueOrDefault(context.Id) ? @Icons.Filled.ExpandLess : @Icons.Filled.ExpandMore)"
+                            OnClick="@(() => expanded[context.Id] = !expanded.GetValueOrDefault(context.Id))"
+                        />
+                    </MudTd>
+                    <MudTd DataLabel="Item Set">@context.ItemSetName</MudTd>
+                    <MudTd DataLabel="Status">@context.Status</MudTd>
+                    <MudTd DataLabel="From">@context.SenderUser.UserName</MudTd>
+                    <MudTd DataLabel="To">@context.ReceiverUser.UserName</MudTd>
+                    <MudTd DataLabel="Created At">@context.CreatedAt.Add(context.CreatedAt.Offset).DateTime</MudTd>
+                    <MudTd DataLabel="Completed At">@context.CompletedAt?.Add(context.CreatedAt.Offset).DateTime</MudTd>
+                </RowTemplate>
+                <ChildRowContent>
+                    @if (expanded.GetValueOrDefault(context.Id))
+                    {
+                         <MudTr>
+                            <td colspan="7">
+                                <MudStack Spacing="2" Class="px-1">
+                                    @foreach (var item in context.Items)
+                                    {
+                                        <BasicItemListView
+                                            Item="item"
+                                        />
+                                    }
+                                </MudStack>
+                            </td>
+                        </MudTr>
+                    }
+                </ChildRowContent>
+            </MudTable>
+        </MudTabPanel>
+    </MudTabs>
 </MudStack>
 
 @code {
     private ICollection<DetailedItemTransactionDto> itemTransactions;
+    private ICollection<ItemSetTransactionDto> itemSetTransactions;
+
+    private Dictionary<int, bool> expanded = new Dictionary<int, bool>();
 
     protected override async Task OnInitializedAsync()
     {
         itemTransactions = await ItemTransactionClient.GetItemTransactionsAsync();
+        itemSetTransactions = await ItemSetTransactionClient.GetItemSetTransactionsAsync();
     }
-
-    // TODO sorting, pagination?
 }
