@@ -1,5 +1,6 @@
 ﻿@using Client
 @inject ICategoryClient CategoryClient
+@inject ISnackbar Snackbar
 
 <MudPaper
     Class="d-flex align-center"
@@ -46,7 +47,7 @@
         }
         catch (Exception e)
         {
-            // TODO toast message: name must be unique
+            Snackbar.Add("Category name must be unique!", Severity.Error);
         }
         finally
         {

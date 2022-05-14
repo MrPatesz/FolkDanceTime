@@ -1,6 +1,7 @@
 ﻿@using Client
 @inject NavigationManager NavigationManager
 @inject IItemClient ItemClient
+@inject ISnackbar Snackbar
 
 <MudCard
     Style="@($"background:{Colors.DeepPurple.Lighten4}; max-width:150px")"
@@ -56,7 +57,7 @@
         }
         catch (Exception e)
         {
-            // TODO toast message: something went wrong
+            Snackbar.Add("Something went wrong!", Severity.Error);
         }
     }
 

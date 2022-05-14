@@ -2,6 +2,7 @@
 @inject IItemTransactionClient ItemTransactionClient
 @inject IItemSetTransactionClient ItemSetTransactionClient
 @inject IUserClient UserClient
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
@@ -72,7 +73,14 @@
             }
             catch(Exception e)
             {
-                // TODO toast message
+                if(ItemSet == null && Item != null)
+                {
+                    Snackbar.Add("Item is already in a pending transaction!", Severity.Error);
+                }
+                else if(Item == null && ItemSet != null)
+                {
+                    Snackbar.Add("Item set is already in a pending transaction!", Severity.Error);
+                }
                 MudDialog.Cancel();
             }
         }

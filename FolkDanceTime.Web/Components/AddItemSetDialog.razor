@@ -1,6 +1,7 @@
 ﻿@using Client
 @inject IItemClient ItemClient
 @inject IItemSetClient ItemSetClient
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
@@ -72,7 +73,7 @@
             }
             catch(Exception e)
             {
-                // TODO toast message
+                Snackbar.Add("Item set name must be unique!", Severity.Error);
                 MudDialog.Cancel();
             }
         }

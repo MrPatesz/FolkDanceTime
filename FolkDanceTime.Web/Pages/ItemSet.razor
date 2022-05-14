@@ -6,6 +6,7 @@
 @attribute [Authorize]
 @inject IItemClient ItemClient
 @inject IItemSetClient ItemSetClient
+@inject ISnackbar Snackbar
 
 <PageTitle>Item Set</PageTitle>
 
@@ -133,7 +134,7 @@ else
         }
         catch (Exception e)
         {
-            // TODO toast message: name must be unique
+            Snackbar.Add("Item set name must be unique!", Severity.Error);
             itemSet = currentItemSet;
         }
         finally

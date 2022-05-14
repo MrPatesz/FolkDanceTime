@@ -8,6 +8,7 @@
 @inject HttpClient client
 @inject IFileReaderService FileReader
 @inject IItemClient ItemClient
+@inject ISnackbar Snackbar
 
 <PageTitle>Item</PageTitle>
 
@@ -163,7 +164,7 @@ else
         }
         catch(Exception e)
         {
-            // TODO picture is too large!
+            Snackbar.Add("Selected image was too large!", Severity.Warning);
         }
     }
 
@@ -213,7 +214,7 @@ else
         }
         catch (Exception e)
         {
-            // TODO toast message: name must be unique
+            Snackbar.Add("Item name must be unique!", Severity.Error);
             item = currentItem;
         }
         finally

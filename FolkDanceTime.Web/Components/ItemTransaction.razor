@@ -1,6 +1,7 @@
 ﻿@using Client
 @using FolkDanceTime.Web.Enums
 @inject IItemTransactionClient ItemTransactionClient
+@inject ISnackbar Snackbar
 
 <MudPaper
     Style="@($"background:{Colors.DeepPurple.Lighten3};")"
@@ -64,6 +65,10 @@
         {
             await OnAccept.InvokeAsync(Transaction);
         }
+        else
+        {
+            Snackbar.Add("Something went wrong!", Severity.Error);
+        }
     }
 
     protected async void Decline()
@@ -73,6 +78,10 @@
         {
             await OnDecline.InvokeAsync(Transaction);
         }
+        else
+        {
+            Snackbar.Add("Something went wrong!", Severity.Error);
+        }
     }
 
     protected async void Revoke()
@@ -81,6 +90,10 @@
         if (success)
         {
             await OnRevoke.InvokeAsync(Transaction);
+        }
+        else
+        {
+            Snackbar.Add("Something went wrong!", Severity.Error);
         }
     }
 }

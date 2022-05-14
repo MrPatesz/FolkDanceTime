@@ -4,6 +4,7 @@
 @inject IFileReaderService FileReader
 @inject IItemClient ItemClient
 @inject ICategoryClient CategoryClient
+@inject ISnackbar Snackbar
 
 <MudDialog>
     <DialogContent>
@@ -123,7 +124,7 @@
         } 
         catch(Exception e)
         {
-            // TODO picture is too large!
+            Snackbar.Add("Selected image was too large!", Severity.Warning);
         }
     }
 
@@ -138,13 +139,12 @@
         {
             try
             {
-                // TODO upload image
                 var addedItem = await ItemClient.AddItemAsync(newItem, selectedCategory.Id);
                 MudDialog.Close(DialogResult.Ok(addedItem));
             }
             catch(Exception e)
             {
-                // TODO toast message
+                Snackbar.Add("Item name must be unique!", Severity.Error);
                 MudDialog.Cancel();
             }
         }

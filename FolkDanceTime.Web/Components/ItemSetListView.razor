@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject IItemSetClient ItemSetClient
 @inject IDialogService DialogService
+@inject ISnackbar Snackbar
 
 <MudPaper
     Class="cursor-pointer"
@@ -52,7 +53,7 @@
         }
         catch (Exception e)
         {
-            // TODO toast message: something went wrong
+            Snackbar.Add("Something went wrong!", Severity.Error);
         }
     }
 

@@ -1,6 +1,7 @@
 ﻿@using Client
 @inject NavigationManager NavigationManager
 @inject ICategoryClient CategoryClient
+@inject ISnackbar Snackbar
 
 <MudPaper
     Class="cursor-pointer"
@@ -40,8 +41,7 @@
         }
         catch (Exception e)
         {
-            // TODO toast message: something went wrong
-            // can't delete when there are items in the category
+            Snackbar.Add("There are items in this category!", Severity.Error);
         }
     }
 
