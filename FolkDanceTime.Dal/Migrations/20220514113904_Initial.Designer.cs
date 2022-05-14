@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FolkDanceTime.Dal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220512175535_Initial")]
+    [Migration("20220514113904_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -237,13 +237,16 @@ namespace FolkDanceTime.Dal.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("OwnerUserId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.HasIndex("OwnerUserId");
 
@@ -444,17 +447,17 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "9cade7ff-785b-4290-98a6-9d7a64a841ae",
+                            Id = "7e86ed82-cf6a-4e9d-aa69-b54c13d0893b",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "584b7c60-875a-4dd9-a423-316c72644428",
+                            ConcurrencyStamp = "6781c1b6-eab8-4480-848c-22ce5e943935",
                             Email = "admin@folkdancetime.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
                             NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEHwsOMhWCG46dSvP+8iSHlYwfmEhkOkJv08RljPgMvLusvmU2C1EbMOWOfrj6NQE/g==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEDF9p2WiWJOPB3scn34evqa9beR9sgQl3/7eM122xUveKExbnBN/YFo+o9zd/565cA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "70c22fdd-85be-4c31-8112-95e25479b22b",
+                            SecurityStamp = "7e04cbc5-3221-489b-a511-ebc14cc5fa4f",
                             TwoFactorEnabled = false,
                             UserName = "admin@folkdancetime.com"
                         });
@@ -490,14 +493,14 @@ namespace FolkDanceTime.Dal.Migrations
                         new
                         {
                             Id = "AdminRoleId",
-                            ConcurrencyStamp = "22cb9c67-80f8-40b8-85cd-763462061978",
+                            ConcurrencyStamp = "4a00037a-ca00-4de7-8f8c-31d5ab5bf4cb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "DancerRoleId",
-                            ConcurrencyStamp = "dbf37392-894f-41c1-ba71-7457d7876ac9",
+                            ConcurrencyStamp = "86c1b978-2a53-47d1-989f-2d2f0ffb7cb6",
                             Name = "Dancer",
                             NormalizedName = "DANCER"
                         });
@@ -567,7 +570,7 @@ namespace FolkDanceTime.Dal.Migrations
                             Id = 1,
                             ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
                             ClaimValue = "Admin",
-                            UserId = "9cade7ff-785b-4290-98a6-9d7a64a841ae"
+                            UserId = "7e86ed82-cf6a-4e9d-aa69-b54c13d0893b"
                         });
                 });
 
@@ -612,7 +615,7 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "9cade7ff-785b-4290-98a6-9d7a64a841ae",
+                            UserId = "7e86ed82-cf6a-4e9d-aa69-b54c13d0893b",
                             RoleId = "AdminRoleId"
                         });
                 });

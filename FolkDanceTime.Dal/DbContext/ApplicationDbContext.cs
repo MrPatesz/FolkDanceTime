@@ -72,6 +72,9 @@ namespace FolkDanceTime.Dal.DbContext
                 .WithOne(pv => pv.Item);
 
             builder.Entity<ItemSet>()
+                .HasIndex(i => i.Name)
+                .IsUnique();
+            builder.Entity<ItemSet>()
                 .HasOne(i => i.OwnerUser)
                 .WithMany(u => u.ItemSets)
                 .HasForeignKey(i => i.OwnerUserId)
