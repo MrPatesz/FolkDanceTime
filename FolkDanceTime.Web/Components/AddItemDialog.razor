@@ -114,7 +114,7 @@
             var sc = new StreamContent(fileStream, (int)fileStream.Length);
             content.Add(sc, "image", fileInfo.Name);
 
-            if(newItem.PictureFilename != "")
+            if(newItem.PictureFilename != "" && newItem.PictureFilename != null)
             {
                 await client.DeleteAsync($"api/Item/DeletePicture?fileName={newItem.PictureFilename}");
             }
@@ -135,18 +135,17 @@
 
     private async void Submit()
     {
-        if(selectedCategory != null && newItem.Name != "")
+        if (selectedCategory == null || newItem.Name == "") return;
+        
+        try
         {
-            try
-            {
-                var addedItem = await ItemClient.AddItemAsync(newItem, selectedCategory.Id);
-                MudDialog.Close(DialogResult.Ok(addedItem));
-            }
-            catch(Exception e)
-            {
-                Snackbar.Add("Item name must be unique!", Severity.Error);
-                MudDialog.Cancel();
-            }
+            var addedItem = await ItemClient.AddItemAsync(newItem, selectedCategory.Id);
+            MudDialog.Close(DialogResult.Ok(addedItem));
+        }
+        catch(Exception e)
+        {
+            Snackbar.Add("Item name must be unique!", Severity.Error);
+            MudDialog.Cancel();
         }
     }
 

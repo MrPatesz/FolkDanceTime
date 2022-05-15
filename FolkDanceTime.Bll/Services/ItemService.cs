@@ -50,6 +50,7 @@ namespace FolkDanceTime.Bll.Services
                 Description = itemDto.Description,
                 CategoryId = categoryId,
                 OwnerUserId = userId,
+                PictureFilename = itemDto.PictureFilename,
             };
 
             await _dbContext.Items.AddAsync(item);
