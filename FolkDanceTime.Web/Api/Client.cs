@@ -4873,9 +4873,11 @@ namespace Client
         [System.ComponentModel.DataAnnotations.Required]
         public UserDto OwnerUser { get; set; } = new UserDto();
 
-        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Always)]
-        [System.ComponentModel.DataAnnotations.Required]
-        public CategoryDto Category { get; set; } = new CategoryDto();
+        [Newtonsoft.Json.JsonProperty("category", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public CategoryDto Category { get; set; }
+
+        [Newtonsoft.Json.JsonProperty("itemSet", Required = Newtonsoft.Json.Required.Default, NullValueHandling = Newtonsoft.Json.NullValueHandling.Ignore)]
+        public ItemSetDto ItemSet { get; set; }
 
     }
 
@@ -4890,6 +4892,8 @@ namespace Client
         Category = 2,
 
         User = 3,
+
+        Set = 4,
 
     }
 

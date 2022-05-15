@@ -451,17 +451,17 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2b39e28f-e306-4704-95a5-b4e048dda5ec",
+                            Id = "0fe9683d-b0b5-4586-b04c-d53c3ee7daab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "290c5cde-b8fe-4257-b1d5-2bc659eb45cd",
+                            ConcurrencyStamp = "de2b07a9-82ce-4f0d-be6f-fc612f9f4ddf",
                             Email = "admin@folkdancetime.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
                             NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEKCKHMkyxQsnosMFof4Ps48b30uN2YR7q+2gh0PdS0jUsdTfjxR/Xru2NranedneAw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBN98hkpIbddfdTmVa0dJLZ/obxNkglAxhA5yQuUKECq1Xd4/f2ewayXbqst08lVZA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "01cdb74f-0c9d-452c-abaa-2c13a3bccc40",
+                            SecurityStamp = "d159d640-b884-4e60-b1f9-e7ed9e78456f",
                             TwoFactorEnabled = false,
                             UserName = "admin@folkdancetime.com"
                         });
@@ -497,14 +497,14 @@ namespace FolkDanceTime.Dal.Migrations
                         new
                         {
                             Id = "AdminRoleId",
-                            ConcurrencyStamp = "9df4f790-0e25-4919-a245-8319a7b5d419",
+                            ConcurrencyStamp = "5da66bd6-a15e-45b2-b759-892813e87544",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "DancerRoleId",
-                            ConcurrencyStamp = "821fcdca-c050-4f9d-85c1-f9f0b954dd5b",
+                            ConcurrencyStamp = "35394b0b-8033-465b-bd17-bb174af931d2",
                             Name = "Dancer",
                             NormalizedName = "DANCER"
                         });
@@ -574,7 +574,7 @@ namespace FolkDanceTime.Dal.Migrations
                             Id = 1,
                             ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
                             ClaimValue = "Admin",
-                            UserId = "2b39e28f-e306-4704-95a5-b4e048dda5ec"
+                            UserId = "0fe9683d-b0b5-4586-b04c-d53c3ee7daab"
                         });
                 });
 
@@ -619,7 +619,7 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "2b39e28f-e306-4704-95a5-b4e048dda5ec",
+                            UserId = "0fe9683d-b0b5-4586-b04c-d53c3ee7daab",
                             RoleId = "AdminRoleId"
                         });
                 });

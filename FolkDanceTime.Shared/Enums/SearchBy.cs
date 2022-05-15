@@ -6,5 +6,6 @@
         Item,
         Category,
         User,
+        Set,
     }
 }

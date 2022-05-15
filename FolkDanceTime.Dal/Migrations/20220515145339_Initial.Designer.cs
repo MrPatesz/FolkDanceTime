@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FolkDanceTime.Dal.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220514113904_Initial")]
+    [Migration("20220515145339_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -193,11 +193,14 @@ namespace FolkDanceTime.Dal.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("CategoryId")
+                    b.Property<int?>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<int?>("ItemSetId")
                         .HasColumnType("int");
@@ -234,6 +237,9 @@ namespace FolkDanceTime.Dal.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -447,17 +453,17 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7e86ed82-cf6a-4e9d-aa69-b54c13d0893b",
+                            Id = "0fe9683d-b0b5-4586-b04c-d53c3ee7daab",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6781c1b6-eab8-4480-848c-22ce5e943935",
+                            ConcurrencyStamp = "de2b07a9-82ce-4f0d-be6f-fc612f9f4ddf",
                             Email = "admin@folkdancetime.com",
                             EmailConfirmed = true,
                             LockoutEnabled = true,
                             NormalizedEmail = "ADMIN@FOLKDANCETIME.COM",
                             NormalizedUserName = "ADMIN@FOLKDANCETIME.COM",
-                            PasswordHash = "AQAAAAEAACcQAAAAEDF9p2WiWJOPB3scn34evqa9beR9sgQl3/7eM122xUveKExbnBN/YFo+o9zd/565cA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBN98hkpIbddfdTmVa0dJLZ/obxNkglAxhA5yQuUKECq1Xd4/f2ewayXbqst08lVZA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7e04cbc5-3221-489b-a511-ebc14cc5fa4f",
+                            SecurityStamp = "d159d640-b884-4e60-b1f9-e7ed9e78456f",
                             TwoFactorEnabled = false,
                             UserName = "admin@folkdancetime.com"
                         });
@@ -493,14 +499,14 @@ namespace FolkDanceTime.Dal.Migrations
                         new
                         {
                             Id = "AdminRoleId",
-                            ConcurrencyStamp = "4a00037a-ca00-4de7-8f8c-31d5ab5bf4cb",
+                            ConcurrencyStamp = "5da66bd6-a15e-45b2-b759-892813e87544",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
                             Id = "DancerRoleId",
-                            ConcurrencyStamp = "86c1b978-2a53-47d1-989f-2d2f0ffb7cb6",
+                            ConcurrencyStamp = "35394b0b-8033-465b-bd17-bb174af931d2",
                             Name = "Dancer",
                             NormalizedName = "DANCER"
                         });
@@ -570,7 +576,7 @@ namespace FolkDanceTime.Dal.Migrations
                             Id = 1,
                             ClaimType = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
                             ClaimValue = "Admin",
-                            UserId = "7e86ed82-cf6a-4e9d-aa69-b54c13d0893b"
+                            UserId = "0fe9683d-b0b5-4586-b04c-d53c3ee7daab"
                         });
                 });
 
@@ -615,7 +621,7 @@ namespace FolkDanceTime.Dal.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "7e86ed82-cf6a-4e9d-aa69-b54c13d0893b",
+                            UserId = "0fe9683d-b0b5-4586-b04c-d53c3ee7daab",
                             RoleId = "AdminRoleId"
                         });
                 });
@@ -645,9 +651,7 @@ namespace FolkDanceTime.Dal.Migrations
                 {
                     b.HasOne("FolkDanceTime.Dal.Entities.Category", "Category")
                         .WithMany("Items")
-                        .HasForeignKey("CategoryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CategoryId");
 
                     b.HasOne("FolkDanceTime.Dal.Entities.ItemSet", "ItemSet")
                         .WithMany("Items")
