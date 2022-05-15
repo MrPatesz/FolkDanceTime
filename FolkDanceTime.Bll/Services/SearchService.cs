@@ -40,7 +40,8 @@ namespace FolkDanceTime.Bll.Services
             return await _dbContext.Items
                 .Where(item => item.Name.ToLower().Contains(term.ToLower()) ||
                                item.Category.Name.ToLower().Contains(term.ToLower()) ||
-                               item.OwnerUser.UserName.ToLower().Contains(term.ToLower()))
+                               item.OwnerUser.UserName.ToLower().Contains(term.ToLower()) ||
+                               item.ItemSet.Name.ToLower().Contains(term.ToLower()))
                 .ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
