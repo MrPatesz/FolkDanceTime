@@ -68,7 +68,6 @@
                 {
                     var itemSetTransaction = await ItemSetTransactionClient.CreateItemSetTransactionAsync(ItemSet.Id, selectedUser.Id);
                     MudDialog.Close(DialogResult.Ok(itemSetTransaction));
-                    throw new Exception();
                 }
             }
             catch(Exception e)

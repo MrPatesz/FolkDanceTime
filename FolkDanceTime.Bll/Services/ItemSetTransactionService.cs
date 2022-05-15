@@ -61,7 +61,9 @@ namespace FolkDanceTime.Bll.Services
                 throw new Exception();
             }
 
-            var itemSet = await _dbContext.ItemSets.SingleAsync(i => i.Id == itemSetId);
+            var itemSet = await _dbContext.ItemSets
+                .Include(set => set.Items)
+                .SingleAsync(set => set.Id == itemSetId);
 
             var newItemSetTransaction = new ItemSetTransaction
             {
@@ -122,21 +124,30 @@ namespace FolkDanceTime.Bll.Services
                 .ThenInclude(t => t.Items)
                 .SingleAsync(t => t.Id == id);
 
-            if (transaction.Status == Status.Pending && transaction.ReceiverUserId == userId)
-            {
-                transaction.Status = Status.Accepted;
-                transaction.CompletedAt = DateTime.UtcNow;
-                transaction.ItemSet.OwnerUserId = userId;
+            if (transaction.Status != Status.Pending || transaction.ReceiverUserId != userId) return false;
 
-                transaction.ItemSet.Items.ForEach(i => i.OwnerUserId = userId);
+            var itemTransactions = new List<ItemTransaction>();
 
-                await _dbContext.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+            transaction.Status = Status.Accepted;
+            transaction.CompletedAt = DateTime.UtcNow;
+            transaction.ItemSet.OwnerUserId = userId;
+            transaction.ItemSet.Items.ForEach(i => {
+                i.OwnerUserId = userId;
+
+                itemTransactions.Add(new ItemTransaction
+                {
+                    ItemId = i.Id,
+                    Item = i,
+                    Status = Status.Accepted,
+                    SenderUserId = transaction.SenderUserId,
+                    ReceiverUserId = transaction.ReceiverUserId,
+                    CreatedAt = transaction.CreatedAt,
+                    CompletedAt = DateTime.UtcNow,
+                });
+            });
+
+            await _dbContext.SaveChangesAsync();
+            return true;
         }
     }
 }
