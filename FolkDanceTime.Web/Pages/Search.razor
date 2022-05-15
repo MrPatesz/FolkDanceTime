@@ -38,6 +38,7 @@
     </MudStack>
 
     <MudTable
+        Striped="true"
         Items="@results" 
         Hover="true" 
         Breakpoint="Breakpoint.Sm"
@@ -48,11 +49,13 @@
         <HeaderContent>
             <MudTh>Item</MudTh>
             <MudTh>Category</MudTh>
+            <MudTh>Set</MudTh>
             <MudTh>Owner</MudTh>
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Item">@context.ItemName</MudTd>
             <MudTd DataLabel="Category">@context.Category.Name</MudTd>
+            <MudTd DataLabel="Set">@context.ItemSet.Name</MudTd>
             <MudTd DataLabel="Owner">@context.OwnerUser.UserName</MudTd>
         </RowTemplate>
     </MudTable>
