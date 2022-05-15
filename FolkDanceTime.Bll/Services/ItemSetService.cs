@@ -50,12 +50,17 @@ namespace FolkDanceTime.Bll.Services
             await _dbContext.ItemSets.AddAsync(itemSet);
             await _dbContext.SaveChangesAsync();
 
-            var allItems = await _dbContext.Items.ToListAsync();
+            var allItems = await _dbContext.Items
+                .Include(i => i.ItemTransactions)
+                .ToListAsync();
             var results = allItems.Where(item => itemSetDto.Items.Any(i => i.Id == item.Id)).ToList();
 
             foreach(var item in results)
             {
-                item.ItemSetId = itemSet.Id;
+                if(item.ItemTransactions == null)
+                {
+                    item.ItemSetId = itemSet.Id;
+                }
             }
 
             await _dbContext.SaveChangesAsync();
@@ -74,11 +79,16 @@ namespace FolkDanceTime.Bll.Services
                 .Where(i => !itemSet.Items.Any(item => item.Id == i.Id))
                 .ToList();
 
-            await _dbContext.Items.ForEachAsync(i =>
+            await _dbContext.Items
+                .Include(i => i.ItemTransactions)
+                .ForEachAsync(i =>
             {
                 if(itemsToAdd.Any(item => item.Id == i.Id))
                 {
-                    i.ItemSetId = itemSet.Id;
+                    if (i.ItemTransactions == null)
+                    {
+                        i.ItemSetId = itemSet.Id;
+                    }
                 }
             });
 

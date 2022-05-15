@@ -68,7 +68,6 @@ namespace FolkDanceTime.Bll.Services
             var newItemSetTransaction = new ItemSetTransaction
             {
                 ItemSetId = itemSetId,
-                ItemSet = itemSet,
                 Status = Status.Pending,
                 SenderUserId = senderUserId,
                 ReceiverUserId = receiverUserId,
@@ -77,6 +76,8 @@ namespace FolkDanceTime.Bll.Services
 
             await _dbContext.ItemSetTransactions.AddAsync(newItemSetTransaction);
             await _dbContext.SaveChangesAsync();
+
+            newItemSetTransaction.ItemSet = itemSet;
 
             return _mapper.Map<ItemSetTransactionDto>(newItemSetTransaction);
         }
