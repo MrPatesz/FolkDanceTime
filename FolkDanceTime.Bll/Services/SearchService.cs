@@ -39,9 +39,9 @@ namespace FolkDanceTime.Bll.Services
         {
             return await _dbContext.Items
                 .Where(item => item.Name.ToLower().Contains(term.ToLower()) ||
-                               item.Category.Name.ToLower().Contains(term.ToLower()) ||
+                               (item.Category != null && item.Category.Name.ToLower().Contains(term.ToLower())) ||
                                item.OwnerUser.UserName.ToLower().Contains(term.ToLower()) ||
-                               item.ItemSet.Name.ToLower().Contains(term.ToLower()))
+                               (item.ItemSet != null && item.ItemSet.Name.ToLower().Contains(term.ToLower())))
                 .ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -57,7 +57,7 @@ namespace FolkDanceTime.Bll.Services
         private async Task<List<SearchResultDto>> SearchItemsByCategoryAsync(string term)
         {
             return await _dbContext.Items
-                .Where(item => item.Category.Name.ToLower().Contains(term.ToLower()))
+                .Where(item => (item.Category != null && item.Category.Name.ToLower().Contains(term.ToLower())))
                 .ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
@@ -73,7 +73,7 @@ namespace FolkDanceTime.Bll.Services
         private async Task<List<SearchResultDto>> SearchItemsBySetAsync(string term)
         {
             return await _dbContext.Items
-                .Where(item => item.ItemSet.Name.ToLower().Contains(term.ToLower()))
+                .Where(item => (item.ItemSet != null && item.ItemSet.Name.ToLower().Contains(term.ToLower())))
                 .ProjectTo<SearchResultDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }

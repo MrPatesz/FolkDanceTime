@@ -57,7 +57,7 @@ namespace FolkDanceTime.Bll.Services
 
             foreach(var item in results)
             {
-                if(item.ItemTransactions == null)
+                if(item.ItemTransactions == null || item.ItemTransactions.Count == 0)
                 {
                     item.ItemSetId = itemSet.Id;
                 }
@@ -85,7 +85,7 @@ namespace FolkDanceTime.Bll.Services
             {
                 if(itemsToAdd.Any(item => item.Id == i.Id))
                 {
-                    if (i.ItemTransactions == null)
+                    if (i.ItemTransactions == null || i.ItemTransactions.Count == 0)
                     {
                         i.ItemSetId = itemSet.Id;
                     }

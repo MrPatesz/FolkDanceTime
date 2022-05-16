@@ -54,8 +54,8 @@
         </HeaderContent>
         <RowTemplate>
             <MudTd DataLabel="Item">@context.ItemName</MudTd>
-            <MudTd DataLabel="Category">@context.Category.Name</MudTd>
-            <MudTd DataLabel="Set">@context.ItemSet.Name</MudTd>
+            <MudTd DataLabel="Category">@context.Category?.Name</MudTd>
+            <MudTd DataLabel="Set">@context.ItemSet?.Name</MudTd>
             <MudTd DataLabel="Owner">@context.OwnerUser.UserName</MudTd>
         </RowTemplate>
     </MudTable>
