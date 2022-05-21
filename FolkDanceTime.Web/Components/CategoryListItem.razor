@@ -34,7 +34,7 @@
     protected async Task DeleteCategory()
     {
         bool? result = await DialogService.ShowMessageBox(
-            $"Deleting Category: \"{Category.Name}\"", 
+            $"Deleting Category: '{Category.Name}'", 
             "Are you sure you want to delete this category?", 
             yesText:"Delete", cancelText:"Cancel");
 

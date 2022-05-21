@@ -45,7 +45,7 @@
     protected async Task DeleteItemSet()
     {
         bool? result = await DialogService.ShowMessageBox(
-            $"Deleting Item Set: \"{ItemSet.Name}\"", 
+            $"Deleting Item Set: '{ItemSet.Name}'", 
             "Are you sure you want to delete this item set?", 
             yesText:"Delete", cancelText:"Cancel");
 
