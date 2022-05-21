@@ -147,6 +147,8 @@ namespace FolkDanceTime.Bll.Services
                 });
             });
 
+            await _dbContext.ItemTransactions.AddRangeAsync(itemTransactions);
+
             await _dbContext.SaveChangesAsync();
             return true;
         }
