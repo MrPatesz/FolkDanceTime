@@ -55,13 +55,13 @@ else
                 Variant="Variant.Outlined"
                 @bind-Value="@itemSet.Name"
             />
-            @if(myItems == null)
+            @if(itemsOfSetOwner == null)
             {
                 <p><em>Loading...</em></p>
             }
             else
             {
-                @foreach(var item in myItems)
+                @foreach(var item in itemsOfSetOwner)
                 {
                     <ItemInItemSet
                         Item="item"
@@ -95,15 +95,12 @@ else
 
     private ItemSetDto itemSet;
     private ItemSetDto currentItemSet;
+    private IEnumerable<ItemSetItemDto> itemsOfSetOwner;
     private bool editing = false;
-    private IEnumerable<ItemDto> myItems;
-    private IEnumerable<ItemDto> itemsInSets;
 
     protected override async Task OnInitializedAsync()
     {
-        myItems = await ItemClient.GetMyItemsAsync();
-        var itemSets = await ItemSetClient.GetItemSetsAsync();
-        itemsInSets = itemSets.SelectMany(set => set.Items).ToList();
+        itemsOfSetOwner = await ItemClient.GetItemsOfItemSetOwnerAsync(Id);
         itemSet = await ItemSetClient.GetItemSetAsync(Id);
     }
 
@@ -131,6 +128,7 @@ else
         {
             var editedItemSet = await ItemSetClient.EditItemSetAsync(itemSet, Id.ToString());
             itemSet = editedItemSet;
+            itemsOfSetOwner = await ItemClient.GetItemsOfItemSetOwnerAsync(Id);
         }
         catch (Exception e)
         {
@@ -143,22 +141,21 @@ else
         }
     }
 
-    private bool IsChecked(ItemDto item)
+    private bool IsChecked(ItemSetItemDto item)
     {
         return itemSet.Items.Any(iis => iis.Id == item.Id);
     }
 
-    private bool Disabled(ItemDto item)
+    private bool Disabled(ItemSetItemDto item)
     {
-        return itemsInSets.Any(i => i.Id == item.Id) && 
-               !currentItemSet.Items.Any(iis => iis.Id == item.Id);
+        return item.IsInTransaction || (item.IsInItemSet && !currentItemSet.Items.Any(iis => iis.Id == item.Id));
     }
 
-    private void OnCheckChange(bool checkedValue, ItemDto item)
+    private void OnCheckChange(bool checkedValue, ItemSetItemDto item)
     {
         if(checkedValue)
         {
-            itemSet.Items.Add(item);
+            itemSet.Items.Add(new ItemDto{ Id = item.Id, Name = item.Name });
         }
         else
         {

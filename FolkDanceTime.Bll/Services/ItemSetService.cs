@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
 using FolkDanceTime.Shared.Dtos;
+using FolkDanceTime.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FolkDanceTime.Bll.Services
@@ -57,7 +58,7 @@ namespace FolkDanceTime.Bll.Services
 
             foreach(var item in results)
             {
-                if(item.ItemTransactions == null || item.ItemTransactions.Count == 0)
+                if (item.ItemTransactions == null || !item.ItemTransactions.Any(t => t.Status == Status.Pending))
                 {
                     item.ItemSetId = itemSet.Id;
                 }
@@ -82,15 +83,15 @@ namespace FolkDanceTime.Bll.Services
             await _dbContext.Items
                 .Include(i => i.ItemTransactions)
                 .ForEachAsync(i =>
-            {
-                if(itemsToAdd.Any(item => item.Id == i.Id))
                 {
-                    if (i.ItemTransactions == null || i.ItemTransactions.Count == 0)
+                    if(itemsToAdd.Any(item => item.Id == i.Id))
                     {
-                        i.ItemSetId = itemSet.Id;
+                        if (i.ItemTransactions == null || !i.ItemTransactions.Any(t =>  t.Status == Status.Pending))
+                        {
+                            i.ItemSetId = itemSet.Id;
+                        }
                     }
-                }
-            });
+                });
 
             itemSet.Items.RemoveAll(i => !itemSetDto.Items.Any(item => item.Id == i.Id));
 
@@ -101,7 +102,24 @@ namespace FolkDanceTime.Bll.Services
         public async Task DeleteItemSetAsync(int id)
         {
             var itemSet = await _dbContext.ItemSets
+                .Include(set => set.ItemSetTransactions)
+                .Include(set => set.Items)
                 .SingleAsync(i => i.Id == id);
+
+            itemSet.ItemSetTransactions.ForEach(t =>
+            {
+                if(t.Status == Status.Pending)
+                {
+                    t.Status = Status.Deleted;
+                }
+            });
+
+            itemSet.Items.ForEach(i =>
+            {
+                i.ItemSetId = null;
+                i.ItemSet = null;
+            });
+            await _dbContext.SaveChangesAsync();
 
             _dbContext.ItemSets.Remove(itemSet);
             await _dbContext.SaveChangesAsync();

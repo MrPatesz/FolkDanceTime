@@ -6,5 +6,6 @@
         Accepted,
         Declined,
         Revoked,
+        Deleted,
     }
 }

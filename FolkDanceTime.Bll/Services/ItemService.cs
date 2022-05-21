@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using FolkDanceTime.Dal.DbContext;
 using FolkDanceTime.Dal.Entities;
 using FolkDanceTime.Shared.Dtos;
+using FolkDanceTime.Shared.Enums;
 using Microsoft.EntityFrameworkCore;
 
 namespace FolkDanceTime.Bll.Services
@@ -24,6 +25,18 @@ namespace FolkDanceTime.Bll.Services
         {
             return await _dbContext.Items
                 .ProjectTo<ItemDto>(_mapper.ConfigurationProvider)
+                .ToListAsync();
+        }
+
+        public async Task<List<ItemSetItemDto>> GetItemsOfItemSetOwnerAsync(int itemSetId)
+        {
+            var itemSet = await _dbContext.ItemSets
+                .Include(set => set.OwnerUser)
+                .SingleAsync(set => set.Id == itemSetId);
+
+            return await _dbContext.Items
+                .Where(i => i.OwnerUser.Id == itemSet.OwnerUserId)
+                .ProjectTo<ItemSetItemDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
         }
 
@@ -91,7 +104,18 @@ namespace FolkDanceTime.Bll.Services
 
         public async Task DeleteItemAsync(int id)
         {
-            var item = await _dbContext.Items.SingleAsync(i => i.Id == id);
+            var item = await _dbContext.Items
+                .Include(i => i.ItemTransactions)
+                .SingleAsync(i => i.Id == id);
+
+            item.ItemTransactions.ForEach(t =>
+            {
+                if (t.Status == Status.Pending)
+                {
+                    t.Status = Status.Deleted;
+                }
+            });
+            await _dbContext.SaveChangesAsync();
 
             _dbContext.Items.Remove(item);
             await _dbContext.SaveChangesAsync();

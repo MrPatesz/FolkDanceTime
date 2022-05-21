@@ -27,6 +27,14 @@ namespace FolkDanceTime.Api.Controllers
             return Ok(await _itemService.GetItemsAsync());
         }
 
+        [Authorize(Policy = "AdminOnly")]
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<ActionResult<List<ItemSetItemDto>>> GetItemsOfItemSetOwnerAsync([FromQuery] int itemSetId)
+        {
+            return Ok(await _itemService.GetItemsOfItemSetOwnerAsync(itemSetId));
+        }
+
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<ActionResult<List<ItemDto>>> GetMyItemsAsync()

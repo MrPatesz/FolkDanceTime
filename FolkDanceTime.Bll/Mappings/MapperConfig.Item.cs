@@ -13,5 +13,14 @@ namespace FolkDanceTime.Bll.Mappings
 
             return cfg;
         }
+
+        private static IMapperConfigurationExpression ConfigureItemSetItem(this IMapperConfigurationExpression cfg)
+        {
+            cfg.CreateMap<Item, ItemSetItemDto>()
+                .ForMember(dto => dto.IsInItemSet, opt => opt.MapFrom(entity => entity.ItemSetId != null))
+                .ForMember(dto => dto.IsInTransaction, opt => opt.MapFrom(entity => entity.ItemTransactions != null && entity.ItemTransactions.Any(t => t.Status == Shared.Enums.Status.Pending)));
+
+            return cfg;
+        }
     }
 }
