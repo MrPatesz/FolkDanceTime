@@ -44,14 +44,19 @@
 
     protected async Task DeleteItemSet()
     {
-        // TODO confirm dialog
+        bool? result = await DialogService.ShowMessageBox(
+            $"Deleting Item Set: \"{ItemSet.Name}\"", 
+            "Are you sure you want to delete this item set?", 
+            yesText:"Delete", cancelText:"Cancel");
+
+        if(result == null) return;
 
         try
         {
             await ItemSetClient.DeleteItemSetAsync(ItemSet.Id);
             await OnDelete.InvokeAsync(ItemSet);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Snackbar.Add("Something went wrong!", Severity.Error);
         }

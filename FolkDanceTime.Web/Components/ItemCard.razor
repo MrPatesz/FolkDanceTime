@@ -2,6 +2,7 @@
 @inject NavigationManager NavigationManager
 @inject IItemClient ItemClient
 @inject ISnackbar Snackbar
+@inject IDialogService DialogService
 
 <MudCard
     Style="@($"background:{Colors.DeepPurple.Lighten4}; max-width:150px")"
@@ -48,14 +49,19 @@
 
     protected async Task DeleteItem()
     {
-        // TODO confirm dialog
+        bool? result = await DialogService.ShowMessageBox(
+            $"Deleting Item: \"{Item.Name}\"", 
+            "Are you sure you want to delete this item?", 
+            yesText:"Delete", cancelText:"Cancel");
+
+        if(result == null) return;
 
         try
         {
             await ItemClient.DeleteItemAsync(Item.Id);
             await OnDelete.InvokeAsync(Item);
         }
-        catch (Exception e)
+        catch (Exception)
         {
             Snackbar.Add("Something went wrong!", Severity.Error);
         }
